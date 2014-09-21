@@ -36,7 +36,7 @@ if (($_POST["macguard_update_force"] != "") && ($login)) {
 include "include/header.php";
 
 $macguard_status = "neznámý";
-if (exec("sudo /usr/sbin/iptables -L -n | grep valid_mac_fwd") == "") {
+if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
     $macguard_status = "<font color=red>vypnutý</font>";
 } else {
     $macguard_status = "<font color=green>zapnutý</font>";
@@ -59,7 +59,7 @@ if ($login) {
         <td>možnosti macguarda:</td>
         <td>
 <?
-if (exec("sudo /usr/sbin/iptables -L -n | grep valid_mac_fwd") == "") {
+if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
     echo '<input type="submit" name="macguard_start" value="zapnout">';
 } else {
     echo '<input type="submit" name="macguard_stop" value="vypnout">';

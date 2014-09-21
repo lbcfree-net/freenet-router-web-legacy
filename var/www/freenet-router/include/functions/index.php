@@ -95,7 +95,7 @@ function get_running($SERVICE,$SERVICES,$IPTABLES) {
 	    return array_eregi_search('/usr/sbin/dhcpd', $SERVICES);
 	    break;
 	case "firewall":
-	    if ((exec("sudo /usr/sbin/iptables -L FORWARD -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L INPUT -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L OUTPUT -n | wc -l") <= 2)) {
+	    if ((exec("sudo /sbin/iptables -L FORWARD -n | wc -l") <= 2) && (exec("sudo /sbin/iptables -L INPUT -n | wc -l") <= 2) && (exec("sudo /sbin/iptables -L OUTPUT -n | wc -l") <= 2)) {
 		return false;
 	    }
 	    return true;

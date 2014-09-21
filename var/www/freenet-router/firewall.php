@@ -47,7 +47,7 @@ include 'include/header.php';
     status firewallu:
 <?php
 $firewall_status = "neznámý";
-if ((exec("sudo /usr/sbin/iptables -L FORWARD -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L INPUT -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L OUTPUT -n | wc -l") <= 2)) {
+if ((exec("sudo /sbin/iptables -L FORWARD -n | wc -l") <= 2) && (exec("sudo /sbin/iptables -L INPUT -n | wc -l") <= 2) && (exec("sudo /sbin/iptables -L OUTPUT -n | wc -l") <= 2)) {
     $firewall_status = "<font color=red>vypnutý</font>";
 } else {
     $firewall_status = "<font color=green>zapnutý</font>";
@@ -72,7 +72,7 @@ if ($login) {
     </td>
     <td>
 <?
-    if (exec("sudo /usr/sbin/iptables -L -n | grep \"l7proto bittorrent reject-with icmp-port-unreachable\"") == "") {
+    if (exec("sudo /sbin/iptables -L -n | grep \"l7proto bittorrent reject-with icmp-port-unreachable\"") == "") {
 	echo '<input type="submit" name="p2p_start" value="zakázat p2p sítě">';
     } else {
 	echo '<input type="submit" name="p2p_stop" value="povolit p2p sítě">';
@@ -81,7 +81,7 @@ if ($login) {
     </td>
     <td>
 <?
-    if (exec("sudo /usr/sbin/iptables -L -n | grep valid_mac_fwd") == "") {
+    if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
 	echo '<input type="submit" name="macguard_start" value="zapnout macguarda">';
     } else {
 	echo '<input type="submit" name="macguard_stop" value="vypnout macguarda">';

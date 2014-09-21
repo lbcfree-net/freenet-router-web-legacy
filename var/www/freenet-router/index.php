@@ -116,7 +116,7 @@ table_line();
 <?
 table_line();
 exec("ps ax",$SERVICES);
-exec("sudo /usr/sbin/iptables -L -n",$IPTABLES);
+exec("sudo /sbin/iptables -L -n",$IPTABLES);
 create_selection_service("apache","APACHE", array("ano","ne"), get_startup("apache"),get_running("apache",$SERVICES,$IPTABLES));
 create_selection_service("dhcp server","DHCP", array("ano","ne"), get_startup("dhcp"),get_running("dhcp",$SERVICES,$IPTABLES));
 create_selection_service("firewall","FIREWALL", array("ano","ne"), get_startup("firewall"),get_running("firewall",$SERVICES,$IPTABLES));
