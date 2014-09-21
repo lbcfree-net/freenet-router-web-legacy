@@ -1,5 +1,5 @@
 # macguard
-safe            ALL=NOPASSWD: /usr/sbin/iptables -L -n
+safe            ALL=NOPASSWD: /sbin/iptables -L -n
 
 # web interface - services
 freenet-web        ALL=NOPASSWD: /etc/init.d/apache2
@@ -22,7 +22,7 @@ freenet-web        ALL=NOPASSWD: /sbin/iwconfig
 freenet-web        ALL=NOPASSWD: /sbin/reboot
 freenet-web        ALL=NOPASSWD: /usr/bin/iptaccount
 freenet-web        ALL=NOPASSWD: /usr/sbin/ethtool
-freenet-web        ALL=NOPASSWD: /usr/sbin/iptables
+freenet-web        ALL=NOPASSWD: /sbin/iptables
 freenet-web        ALL=NOPASSWD: /usr/sbin/pwd_change
 freenet-web        ALL=NOPASSWD: /usr/local/sbin/ro 
 freenet-web        ALL=NOPASSWD: /usr/local/sbin/rw
