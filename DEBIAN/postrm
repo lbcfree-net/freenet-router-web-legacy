@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+   remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+   ;;
+
+   purge)
+	# Apache
+	a2ensite default
+	a2dissite freenet-router
+	a2dissite freenet-router-ssl	
+   ;;
+
+   *)
+      echo "postrm called with unknown argument \`\$1'" >&2
+   ;;
+
+esac
+
+exit 0
+

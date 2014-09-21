@@ -1,0 +1,6 @@
+freenet-router (0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Switch to dpkg-source 3.0 (quilt) format
+
+ -- root <karel.picman@lbcfree.net>  Mon, 04 Nov 2013 08:44:18 +0100

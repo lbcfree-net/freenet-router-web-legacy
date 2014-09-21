@@ -1,0 +1,10 @@
+Source: freenet-router-web-legacy
+Section: unknown
+Priority: extra
+Maintainer: Karel Picman <karel.picman@lbcfree.net>
+Homepage: https://bbb.nfx.cz/projects/freenet-router-web-legacy
+Package: freenet-router-web-legacy
+Version: 0.1
+Architecture: all
+Depends: ssl-cert, apache2, php5, libapache2-mod-php5, freenet-router, freenet-router-auth
+Description: Legacy web interface for a full control of the Freenet router

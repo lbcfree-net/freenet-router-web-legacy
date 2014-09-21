@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+
+   configure)
+   	# Apache
+	a2dissite default
+	a2ensite freenet-router
+	a2ensite freenet-router-ssl	
+	mkdir -p /var/log/apache2
+	chown root:adm /var/log/apache2
+	chmod 750 /var/log/apache2 
+	a2enmod ssl
+        a2enmod rewrite
+	service apache2 restart
+	chown -R www-data:www-data /var/www/freenet-router
+   ;;
+
+   *)
+      echo "postinst called with unknown argument \`\$1'" >&2
+   ;;
+
+esac
+
+exit 0
+
