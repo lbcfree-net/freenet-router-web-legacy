@@ -25,6 +25,7 @@ case "$1" in
 	fi
 
 	chown -R freenet-web:freenet-web /var/www/freenet-router
+	chown root:root /etc/sudoers.d/freenet-router-sudoers
    ;;
 
    *)

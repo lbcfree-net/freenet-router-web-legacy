@@ -6,5 +6,5 @@ Homepage: https://bbb.nfx.cz/projects/freenet-router-web-legacy
 Package: freenet-router-web-legacy
 Version: 0.1
 Architecture: all
-Depends: ssl-cert, apache2, php5, freenet-router, freenet-router-auth, libapache2-mod-fastcgi, php5-fpm, php-apc
+Depends: ssl-cert, apache2, apache2-mpm-worker, php5, freenet-router, freenet-router-auth, libapache2-mod-fastcgi, php5-fpm, php-apc
 Description: Legacy web interface for a full control of the Freenet router
