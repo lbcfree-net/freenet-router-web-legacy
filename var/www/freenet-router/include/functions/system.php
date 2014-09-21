@@ -9,6 +9,16 @@ function system_get_cpu_model($CPUINFO) {
     }
     return "";
 }
+function system_get_cpu_temperature($SENSORS) {
+    if(count($SENSORS)>2){
+	$TEMPERATURE=explode(":        +",$SENSORS[2]);
+	$TEMPERATURE=explode(" C",$TEMPERATURE[1]);
+	$TEMPERATURE=$TEMPERATURE[0]."°C";
+    }else{
+	$TEMPERATURE="N/A";
+    }
+    return $TEMPERATURE;
+}
 function system_get_cpu_freq($CPUINFO) {
     foreach ($CPUINFO as $line) {
 	if (ereg("cpu MHz",$line)) {

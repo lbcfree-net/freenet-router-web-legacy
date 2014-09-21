@@ -120,7 +120,7 @@ function download_file($file,$name,$type = "",$length = "",$download = false,$de
                     if ($mtime != filemtime($file."_buffer.bin")) break;
                 }
                 if ($mime_type == "video/x-flv") {
-                    echo flash_update_timestamp($content,&$diff,&$last_timestamp,&$last_body_size,&$fps);
+                    //echo flash_update_timestamp($content,&$diff,&$last_timestamp,&$last_body_size,&$fps);
                 } else {
                     echo $content;
                 }
