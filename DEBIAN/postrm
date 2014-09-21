@@ -11,6 +11,10 @@ case "$1" in
 	a2ensite default
 	a2dissite freenet-router
 	a2dissite freenet-router-ssl	
+
+	# freenet-web user
+	deluser freenet-web 
+
    ;;
 
    *)

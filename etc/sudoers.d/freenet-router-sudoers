@@ -2,30 +2,30 @@
 safe            ALL=NOPASSWD: /usr/sbin/iptables -L -n
 
 # web interface - services
-www-data        ALL=NOPASSWD: /etc/init.d/apache2
-www-data        ALL=NOPASSWD: /etc/init.d/dhcp3-server
-www-data        ALL=NOPASSWD: /etc/init.d/firewall
-www-data        ALL=NOPASSWD: /etc/init.d/networking
-www-data        ALL=NOPASSWD: /etc/init.d/quagga
-www-data        ALL=NOPASSWD: /etc/init.d/set_readonly
-www-data        ALL=NOPASSWD: /etc/init.d/snmpd
-www-data        ALL=NOPASSWD: /etc/init.d/ssh
+freenet-web        ALL=NOPASSWD: /etc/init.d/apache2
+freenet-web        ALL=NOPASSWD: /etc/init.d/dhcp3-server
+freenet-web        ALL=NOPASSWD: /etc/init.d/firewall
+freenet-web        ALL=NOPASSWD: /etc/init.d/networking
+freenet-web        ALL=NOPASSWD: /etc/init.d/quagga
+freenet-web        ALL=NOPASSWD: /etc/init.d/set_readonly
+freenet-web        ALL=NOPASSWD: /etc/init.d/snmpd
+freenet-web        ALL=NOPASSWD: /etc/init.d/ssh
 
 # web interface - apps
-www-data        ALL=NOPASSWD: /bin/cat
-www-data        ALL=NOPASSWD: /bin/cp
-www-data        ALL=NOPASSWD: /bin/hostname
-www-data        ALL=NOPASSWD: /bin/chown
-www-data        ALL=NOPASSWD: /bin/ln
-www-data        ALL=NOPASSWD: /bin/rm
-www-data        ALL=NOPASSWD: /sbin/iwconfig
-www-data        ALL=NOPASSWD: /sbin/reboot
-www-data        ALL=NOPASSWD: /usr/bin/iptaccount
-www-data        ALL=NOPASSWD: /usr/sbin/ethtool
-www-data        ALL=NOPASSWD: /usr/sbin/iptables
-www-data        ALL=NOPASSWD: /usr/sbin/pwd_change
-www-data        ALL=NOPASSWD: /usr/local/sbin/ro 
-www-data        ALL=NOPASSWD: /usr/local/sbin/rw
+freenet-web        ALL=NOPASSWD: /bin/cat
+freenet-web        ALL=NOPASSWD: /bin/cp
+freenet-web        ALL=NOPASSWD: /bin/hostname
+freenet-web        ALL=NOPASSWD: /bin/chown
+freenet-web        ALL=NOPASSWD: /bin/ln
+freenet-web        ALL=NOPASSWD: /bin/rm
+freenet-web        ALL=NOPASSWD: /sbin/iwconfig
+freenet-web        ALL=NOPASSWD: /sbin/reboot
+freenet-web        ALL=NOPASSWD: /usr/bin/iptaccount
+freenet-web        ALL=NOPASSWD: /usr/sbin/ethtool
+freenet-web        ALL=NOPASSWD: /usr/sbin/iptables
+freenet-web        ALL=NOPASSWD: /usr/sbin/pwd_change
+freenet-web        ALL=NOPASSWD: /usr/local/sbin/ro 
+freenet-web        ALL=NOPASSWD: /usr/local/sbin/rw
 
 # freenet-router
-www-data        ALL=NOPASSWD: /usr/local/bin/web-auth
+freenet-web        ALL=NOPASSWD: /usr/local/bin/web-auth
