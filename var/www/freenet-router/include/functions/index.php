@@ -92,7 +92,7 @@ function get_running($SERVICE,$SERVICES,$IPTABLES) {
 	    return array_eregi_search("/usr/sbin/apache2",$SERVICES);
 	    break;
 	case "dhcp":
-	    return array_eregi_search("/usr/sbin/dhcpd3",$SERVICES);
+	    return array_eregi_search('/usr/sbin/dhcpd', $SERVICES);
 	    break;
 	case "firewall":
 	    if ((exec("sudo /usr/sbin/iptables -L FORWARD -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L INPUT -n | wc -l") <= 2) && (exec("sudo /usr/sbin/iptables -L OUTPUT -n | wc -l") <= 2)) {
