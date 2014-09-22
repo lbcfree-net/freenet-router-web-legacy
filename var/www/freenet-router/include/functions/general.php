@@ -65,7 +65,7 @@ if (($user != "") && ($password != "") && (!$login))
     }
 }
 // odhlášení
-if ($_POST['logout'] != "") {
+if (isset($_POST['logout'])) {
     setcookie($cookie_name,'',time()-2592000);
     setcookie($cookie_pass,'',time()-2592000);
     $login = false;

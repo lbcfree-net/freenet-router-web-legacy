@@ -3,13 +3,13 @@
 include 'include/functions/general.php';
 include 'include/functions/index.php';
 include 'include/functions/system.php';
-if (($_GET["password"] != "") && ($login)) {
+if (isset($_GET['password']) && $login) {
     setcookie($cookie_pass,$_GET["password"],time()+2592000);
 }
 include 'include/header.php';
 ?>
 <?php
-if (($_POST["save"] != "") && ($login)) {
+if (isset($_POST['save']) && $login) {
     set_hostname($_POST["HOSTNAME"]);
     set_dns($_POST["PRIMARY_DNS"],$_POST["SECONDARY_DNS"],$_POST["DOMAIN"]);
     set_internal_ip($_POST["INTERNAL_IP"]);
