@@ -193,9 +193,10 @@ function get_quagga_adapter_description($ADAPTER) {
 function get_quagga_adapter_cost($ADAPTER) {
     global $quagga;
     // rychlost přečteme z konfigurace firewallu a případně vypočítáme cost
+    $rate = get_firewall_qos_rate($FIREWALL,$ADAPTER);
     if ($quagga["cost"] == "rate") {
 	exec("cat /etc/init.d/firewall", $FIREWALL);
-	$rate = get_firewall_qos_rate($FIREWALL,$ADAPTER);
+	
 	if ($rate > 0) {
 	    $cost = bcdiv(1000000,$rate);
 	    if ($cost > 0) {
@@ -203,18 +204,26 @@ function get_quagga_adapter_cost($ADAPTER) {
 	    }
 	}
     }
-    if (get_adapter_settings_is_bridge($ADAPTER)) {
-	return "100";
-    } else if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	return "10";
-    } else if (get_adapter_settings_is_madwifi($ADAPTER)) {
-	return "10";
-    } else if (get_adapter_settings_is_wifi("",$ADAPTER)) {
-	return "100";
-    } else if (get_adapter_settings_is_vlan($ADAPTER)) {
-	return "10";
+    
+    $qos_dir = get_firewall_qos_direction($FIREWALL,$ADAPTER);
+    if (($qos_dir == "WBCK" || $qos_dir == "LBCK" )) {
+	$cost = 7;
     } else {
-	return "100";
+	$cost = 0;
+    }
+
+    if (get_adapter_settings_is_bridge($ADAPTER)) {
+	return $cost+ 100;
+    } else if (get_adapter_settings_is_ethernet($ADAPTER)) {
+	return $cost+ 10;
+    } else if (get_adapter_settings_is_madwifi($ADAPTER)) {
+	return $cost+ 10;
+    } else if (get_adapter_settings_is_wifi("",$ADAPTER)) {
+	return $cost+ 100;
+    } else if (get_adapter_settings_is_vlan($ADAPTER)) {
+	return $cost+ 10;
+    } else {
+	return $cost+ 100;
     }
     return false;
 }

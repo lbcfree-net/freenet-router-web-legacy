@@ -226,7 +226,7 @@ foreach ($ADAPTERS as $ADAPTER) {
 	create_selection("macguard",$ADAPTER."_MACGUARD", array("ano", "ne"), get_firewall_macguard($FIREWALL, $ADAPTER),"");
 	// qos
 	create_selection("qos",$ADAPTER."_QOS", array("ano", "ne"), get_firewall_qos($FIREWALL, $ADAPTER),"");
-	create_selection("qos - typ",$ADAPTER."_QOS_DIRECTION", array("LAN", "WAN", "NAT"), get_firewall_qos_direction($FIREWALL, $ADAPTER),"");
+	create_selection("qos - typ",$ADAPTER."_QOS_DIRECTION", array("LAN", "WAN", "NAT", "WBCK", "LBCK"), get_firewall_qos_direction($FIREWALL, $ADAPTER),"");
 	table_text_array("rychlost", $ADAPTER."_QOS_RATE", get_firewall_qos_rate($FIREWALL, $ADAPTER),"6","kbit/s","Reálně dosažitelná rychlost na rozhraní!");
 	create_selection("dhcp klient",$ADAPTER."_DHCP_CLIENT", array("ano", "ne"), get_interfaces_dhcp($INTERFACES,$ADAPTER),"");
     }

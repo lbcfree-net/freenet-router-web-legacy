@@ -132,6 +132,10 @@ function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
         if ($FIREWALL_DATA_DEV != "") {
             if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WAN\"",$LINE)) {
                 return "WAN";
+            }else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WBCK\"",$LINE)) {
+                return "WBCK";
+            }else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"LBCK\"",$LINE)) {
+                return "LBCK";
     	    } else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"NAT\"",$LINE)) {
                 return "NAT";
     	    }
