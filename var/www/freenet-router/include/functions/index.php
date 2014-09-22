@@ -176,6 +176,23 @@ function get_mail_server() {
     }
     return "";
 }
+
+function get_physical_location() {
+    $filename="storage/physical_location";
+    //uvazujeme volani z rootu webu(vola se tak frontend), pri odlisne implementaci by bylo vhodne predavat cestu
+    if(!file_exists($filename)){
+        @mkdir("storage");
+        file_put_contents($filename, "");
+        chmod($filename, 0777);
+    }
+    $filecontent=  file($filename);
+    if(is_array($filecontent)){
+        return array_shift($filecontent);
+    }else{
+        return"";
+    }
+}
+
 function get_domain() {
     if (($f = fopen("/etc/resolv.conf","r"))) {
         while (!feof($f)) {            
@@ -335,6 +352,17 @@ function set_mail_server($server) {
         exec("sudo /bin/cp -a /tmp/ssmtp /etc/");
     }
 }
+
+function set_physical_location($location) {
+    $filename="storage/physical_location";
+    //uvazujeme volani z rootu webu(vola se tak frontend), pri odlisne implementaci by bylo vhodne predavat cestu
+    if(!file_exists($filename)){
+        @mkdir("storage");       
+    }
+    file_put_contents($filename, $location);
+    chmod($filename, 0777);
+}
+
 function set_startup($SERVICE,$VALUE) {
     switch ($SERVICE) {
 	case "apache":

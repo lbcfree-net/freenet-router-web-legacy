@@ -15,6 +15,7 @@ if (isset($_POST['save']) && $login) {
     set_internal_ip($_POST["INTERNAL_IP"]);
     set_admin_email($_POST["ADMIN_EMAIL"]);
     set_mail_server($_POST["MAIL_SERVER"]);
+    set_physical_location($_POST["PHYSICAL_LOCATION"]);
     set_startup("apache",$_POST["APACHE"]);
     set_startup("dhcp",$_POST["DHCP"]);
     set_startup("firewall",$_POST["FIREWALL"]);
@@ -108,6 +109,7 @@ if ($login) {
     table_text_array("email správce", "ADMIN_EMAIL", get_admin_email_hash(),"23","");
 }
 table_text_array("mail server", "MAIL_SERVER", get_mail_server(),"23","");
+table_text_array("fyzické umístění routeru", "PHYSICAL_LOCATION", get_physical_location(),"34","");
 table_line();
 ?>
     <tr>
