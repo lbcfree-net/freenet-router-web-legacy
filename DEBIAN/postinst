@@ -26,6 +26,9 @@ case "$1" in
 
 	chown -R freenet-web:freenet-web /var/www/freenet-router
 	chown root:root /etc/sudoers.d/freenet-router-sudoers
+
+	# Lets leave the initial daemons generation on the web interface
+        rm -f /etc/quagga/daemons
    ;;
 
    *)
