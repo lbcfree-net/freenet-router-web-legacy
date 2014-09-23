@@ -109,7 +109,7 @@ if ($login) {
     table_text_array("email správce", "ADMIN_EMAIL", get_admin_email_hash(),"23","");
 }
 table_text_array("mail server", "MAIL_SERVER", get_mail_server(),"23","");
-table_text_array("fyzické umístění routeru", "PHYSICAL_LOCATION", get_physical_location(),"34","");
+table_text_array("fyzické umístění routeru", "PHYSICAL_LOCATION ", get_physical_location(),"23","");
 table_line();
 ?>
     <tr>
