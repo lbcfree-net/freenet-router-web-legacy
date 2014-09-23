@@ -3,7 +3,7 @@ safe            ALL=NOPASSWD: /sbin/iptables -L -n
 
 # web interface - services
 freenet-web        ALL=NOPASSWD: /etc/init.d/apache2
-freenet-web        ALL=NOPASSWD: /etc/init.d/dhcp3-server
+freenet-web        ALL=NOPASSWD: /etc/init.d/isc-dhcp-server
 freenet-web        ALL=NOPASSWD: /etc/init.d/firewall
 freenet-web        ALL=NOPASSWD: /etc/init.d/networking
 freenet-web        ALL=NOPASSWD: /etc/init.d/quagga
@@ -26,6 +26,9 @@ freenet-web        ALL=NOPASSWD: /sbin/iptables
 freenet-web        ALL=NOPASSWD: /usr/sbin/pwd_change
 freenet-web        ALL=NOPASSWD: /usr/local/sbin/ro 
 freenet-web        ALL=NOPASSWD: /usr/local/sbin/rw
+freenet-web        ALL=NOPASSWD: /sbin/chkconfig
+freenet-web        ALL=NOPASSWD: /usr/sbin/service
+freenet-web        ALL=NOPASSWD: /bin/hostname
 
 # freenet-router
 freenet-web        ALL=NOPASSWD: /usr/local/bin/web-auth
