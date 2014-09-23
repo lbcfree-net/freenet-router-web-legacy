@@ -252,9 +252,7 @@ function get_physical_location() {
     $filename="storage/physical_location";
     //uvazujeme volani z rootu webu(vola se tak frontend), pri odlisne implementaci by bylo vhodne predavat cestu
     if(!file_exists($filename)){
-        @mkdir("storage");
-        file_put_contents($filename, "");
-        chmod($filename, 0777);
+        return "";
     }
     $filecontent=  file($filename);
     if(is_array($filecontent)){
@@ -431,11 +429,17 @@ function set_mail_server($server) {
 function set_physical_location($location) {
     $filename="storage/physical_location";
     //uvazujeme volani z rootu webu(vola se tak frontend), pri odlisne implementaci by bylo vhodne predavat cestu
-    if(!file_exists($filename)){
-        @mkdir("storage");       
+    if(!system_get_rootfs_status_ro("")){
+        if(!file_exists("storage")){
+            mkdir("storage");
+        }
+        if(($soubor = fopen($filename,"w")))
+        {
+            fwrite($soubor, $location);
+            fclose($soubor);
+            chmod($filename, 0777);
+        } 
     }
-    file_put_contents($filename, $location);
-    chmod($filename, 0777);
 }
 
 function set_startup($SERVICE, $VALUE) 
