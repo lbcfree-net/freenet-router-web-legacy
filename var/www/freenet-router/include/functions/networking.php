@@ -20,8 +20,11 @@ function get_networking_adapter_exists($ADAPTER) {
 function get_networking_adapter_ip($NETWORK,$ADAPTER) {
     $I = "0";
     $array = array();
-    foreach ($NETWORK as $LINE) {
-        $LINE = preg_split("/[\ :@]+/", $LINE);
+    $last_iface="";
+    foreach ($NETWORK as $LINE_NOT_SPLIT) {
+        $LINE = preg_split("/[\ :@]+/", $LINE_NOT_SPLIT);
+        if($LINE[0]!="")
+            $last_iface=$LINE[1];
         // ip adresa rozhraní
         if (($ADAPTER == $LINE[7]) && ("inet" == $LINE[1])) {
 	    $LINE = explode("/", $LINE[2]);
@@ -37,7 +40,15 @@ function get_networking_adapter_ip($NETWORK,$ADAPTER) {
 		$array[$I][1] = "".(256 - (1 << (8 - $LINE[1])))."0.0.0";
 	    }
 	    $I++;
-	}
+        }else if(("inet6" == $LINE[1]) && ($ADAPTER==$last_iface)){
+            $LINE_SPLIT2=  explode("inet6", $LINE_NOT_SPLIT);
+            if(strpos($LINE_SPLIT2[1], "fe80") !== 0){
+                $addr=preg_split("/[\ \/]+/", $LINE_SPLIT2[1]);
+                    $array[$I][0]=$addr[1];
+                    $array[$I][1]=$addr[2];
+                    $I++;
+            }
+        }
     }
     return $array;
 }
