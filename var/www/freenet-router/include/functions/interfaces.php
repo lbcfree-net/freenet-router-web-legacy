@@ -35,7 +35,11 @@ function save_interfaces_converted($DATA) {
                 if ($DATA[$NAME[0].$VLAN_POM."_DHCP_CLIENT"] == "ano") {
                     fwrite($soubor, "iface ".$NAME[0].$VLAN." inet dhcp\n");
                 } else {
-                    fwrite($soubor, "iface ".$NAME[0].$VLAN." inet static\n");
+                    if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_0"], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+                        fwrite($soubor, "iface ".$NAME[0].$VLAN." inet static\n");
+                    }else{
+                        fwrite($soubor, "iface ".$NAME[0].$VLAN." inet6 static\n");
+                    }
                 }
                 $J = 0;
                 $K = 0;
@@ -52,12 +56,18 @@ function save_interfaces_converted($DATA) {
                             if (($VALUE == "ano") && ((!eregi("br",$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
                                 fwrite($soubor, "auto ".$NAME[0].$VLAN.":".$J."\n");
                             }
-                            fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet static\n");
+                            if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+                                fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet static\n");
+                            }else{
+                                fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet6 static\n");
+                            }
                         }
                         fwrite($soubor,"\taddress ".$DATA[$NAME[0].$VLAN_POM."_IP_".$J]."\n");
                         if ($DATA[$NAME[0].$VLAN_POM."_MASK_".$J] != "") {
                             fwrite($soubor, "\tnetmask ".$DATA[$NAME[0].$VLAN_POM."_MASK_".$J]."\n");
-                            fwrite($soubor, "\tbroadcast ".get_broadcast($DATA[$NAME[0].$VLAN_POM."_IP_".$J], $DATA[$NAME[0].$VLAN_POM."_MASK_".$J])."\n");
+                            if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+                                fwrite($soubor, "\tbroadcast ".get_broadcast($DATA[$NAME[0].$VLAN_POM."_IP_".$J], $DATA[$NAME[0].$VLAN_POM."_MASK_".$J])."\n");
+                            }
                         }
                         if (($DATA[$NAME[0].$VLAN_POM."_GATEWAY_".$J] != "") && ($DATA[$NAME[0].$VLAN_POM."_DEL_GATEWAY"] == "")) {
                             fwrite($soubor, "\tgateway ".$DATA[$NAME[0].$VLAN_POM."_GATEWAY_".$J]."\n");
@@ -100,7 +110,7 @@ function get_interfaces_all($INTERFACES) {
     $array = array();
     foreach ($INTERFACES as $LINE) {
 	$LINE = preg_split("/[\ :\t]+/", $LINE);
-	if (($LINE[0] == "iface") && ($LINE[2] == "inet")) {
+	if (($LINE[0] == "iface") && ($LINE[2] == "inet"||$LINE[2] == "inet6")) {
 	    if ($LINE[1] != "lo") {
 		$array[] = $LINE[1];
 	    }
@@ -113,24 +123,33 @@ function get_interfaces_ip($INTERFACES,$ADAPTER) {
     $pom = false;
     $I = "0";
     $array = array();
-    foreach ($INTERFACES as $LINE) {
-	$LINE = preg_split("/[\ :\t]+/", $LINE);
+    
+    foreach ($INTERFACES as $LINE_NOT_SPLIT) {
+	$LINE = preg_split("/[\ :\t]+/", $LINE_NOT_SPLIT);
 	// ip adresa rozhraní
-	if (($LINE[0] == "iface") && ($LINE[1] == $ADAPTER) && ($LINE[2] == "inet")) {
+	if (($LINE[0] == "iface") && ($LINE[1] == $ADAPTER) && (($LINE[2] == "inet")||($LINE[2] == "inet6"))) {
 	    if ($pom) {
 		$I++;
 	    }
 	    $pom = true;
+            $pom_ipv4=(($LINE[2]=="inet")?true:false);
 	//dodatečné ip adresy rozhraní
-	} else if (($LINE[0] == "iface") && ($LINE[1] == $ADAPTER) && ($LINE[2] != "inet")) {
+	} else if (($LINE[0] == "iface") && ($LINE[1] == $ADAPTER) && ($LINE[2] != "inet") && ($LINE[2] != "inet6")) {
 	    if ($pom) {
 		$I++;
 	    }
 	    $pom = true;
+            $pom_ipv4=(($LINE[3]=="inet")?true:false);
 	} else if ($LINE[0] == "iface") {
 	    $pom = false;
 	} else if (($LINE[1] == "address") && ($pom)) {
-	    $array[$I][0] = $LINE[2];
+            if($pom_ipv4){
+                //normalni ipv4
+                $array[$I][0] = $LINE[2];
+            }else{//jedna se o ipv6
+                $addr_split=  explode("address ", $LINE_NOT_SPLIT);
+                $array[$I][0] = $addr_split[1];
+            }
 	} else if (($LINE[1] == "netmask") && ($pom)) {
 	    $array[$I][1] = $LINE[2];
 	} else if (($LINE[1] == "gateway") && ($pom)) {
