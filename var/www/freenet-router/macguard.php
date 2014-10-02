@@ -94,8 +94,6 @@ if (($login) || ($monitoring["show_mac"])) {
 }
 ?>
     </textarea>
-}
-?>
 </form>
 <?
 include "include/footer.php";
