@@ -297,7 +297,7 @@ function get_adapter_settings_rate($IWCONFIG,$ADAPTER) {
 }
 function get_adapter_settings_ethtool_rate($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	exec("sudo /usr/sbin/ethtool ".$ADAPTER,$ETHTOOL);
+	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
 	    if (eregi("speed",$LINE)) {
 		$LINE = preg_split("/[\ M]+/", $LINE);
@@ -308,7 +308,7 @@ function get_adapter_settings_ethtool_rate($ADAPTER) {
     return "";
 }
 function get_adapter_settings_ethtool_link($ADAPTER) {
-    exec("sudo /usr/sbin/ethtool ".$ADAPTER,$ETHTOOL);
+    exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
     foreach ($ETHTOOL as $LINE) {
     	if (eregi("link detected: yes",$LINE)) {
 	    return "aktivní";
@@ -320,7 +320,7 @@ function get_adapter_settings_ethtool_link($ADAPTER) {
 }
 function get_adapter_settings_ethtool_duplex($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	exec("sudo /usr/sbin/ethtool ".$ADAPTER,$ETHTOOL);
+	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
 	    if (eregi("duplex: full",$LINE)) {
 		return "plný";
@@ -333,7 +333,7 @@ function get_adapter_settings_ethtool_duplex($ADAPTER) {
 }
 function get_adapter_settings_ethtool_autoneg($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	exec("sudo /usr/sbin/ethtool ".$ADAPTER,$ETHTOOL);
+	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
 	    if (eregi("auto-negotiation: on",$LINE)) {
 		return "ano";
@@ -461,7 +461,7 @@ function get_adapter_settings_iwlist_txpowers($adapter) {
 function get_adapter_settings_ethtool_rates($adapter) {
     $array = array();
     $array_pom = array();
-    exec("sudo /usr/sbin/ethtool ".$adapter." | grep baseT", $array_pom);
+    exec("sudo /sbin/ethtool ".$adapter." | grep baseT", $array_pom);
     foreach ($array_pom as $pom) {
 	$pom = preg_split("/[\ ]+/", $pom);
 	foreach ($pom as $p) {
