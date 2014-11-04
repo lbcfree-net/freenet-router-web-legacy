@@ -110,11 +110,11 @@ function system_get_rootfs_status($MOUNTINFO)
     
     foreach ($MOUNTINFO as $line) 
     {
-        $start = strpos($line, 'VOYAGE_FS');
+        $start = strpos($line, 'on / ');
         
         if($start !== false)
         {
-            $start += strlen('VOYAGE_FS');
+            $start += strlen('on / ');
             $start = strpos($line, 'type', $start);
             
             if($start !== false)
@@ -143,7 +143,7 @@ function system_get_rootfs_status_ro($MOUNTINFO)
             
     foreach ($MOUNTINFO as $line) 
     {
-        $pos = strpos($line, 'VOYAGE_FS');
+        $pos = strpos($line, 'on /');
         
         if($pos !== false)
         {
