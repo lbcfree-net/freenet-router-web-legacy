@@ -305,7 +305,7 @@ function monitoring_get_macs_from_macguard($ADAPTER) {
 	    if (eregi(":", $line[1])) {
 		foreach (get_interfaces_ip($INTERFACES,$ADAPTER) as $ADAPTER_IP) {
 		    if (!$pom) {
-			$pom = is_ip_from_subnet($line[0],$ADAPTER_IP[0]."/".netmask2CIDR($ADAPTER_IP[1]));
+			$pom = is_ip_from_subnet($line[0],$ADAPTER_IP[0]."/".netmask2CIDR($ADAPTER_IP[1]));                        
 		    }
 		}
 		if (($pom) || ($ADAPTER == $ADAPTER_ALL)) {

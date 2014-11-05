@@ -135,26 +135,30 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
 <?
 }
 
-// patri dana ip do subnetu - subnet je ve formatu a.b.c.d/y
-function is_ip_from_subnet($ip, $subnet) {
-	// prevod ip na cislo
-	$ip = ip2long($ip);
-	// rozseknuti subnetu na ip a pocet bitu masky
-	list($subnet, $bits) = explode('/', $subnet);
-	// prevod ip subnetu na cislo
-	$subnet = ip2long($subnet);
-	// prevod poctu bitu masky na bitovou masku
-	$netmask = $bits == 0 ? 0 : (~0 << (32 - $bits));
-	
-	// vlastni kontrola - pro oboji se pocita adresa site a kdyz sedi tak je to o
-	return 0 + (($ip & $netmask) == ($subnet & $netmask));
+// Does the given IP belong to the subnet?
+// 10.101.111.199 in 10.101.111.193/26 => true
+function is_ip_from_subnet($ip, $subnet)
+{
+    $network = long2ip((ip2long($ip)) & ((-1 << (32 - (int)$subnet))));
+    
+    if ((ip2long($ip) & ~((1 << (32 - $subnet)) - 1) ) == ip2long($network) - 1)
+    {
+        return true;
+    }
+
+    return false;
 }
 
-function netmask2CIDR($netmask) {
-    $netmask = ip2long($netmask);
-    $netbin = decbin($netmask);
-    for($n = 0;$n < 32; $n++) if($netbin[$n]==0) break;
-    return $n;
+// 255.255.255.125 => 25
+function netmask2CIDR($netmask)
+{
+    $bits = 0;
+    $netmask = explode(".", $netmask);
+
+    foreach($netmask as $octect)
+    $bits += strlen(str_replace("0", "", decbin($octect)));
+
+    return $bits;
 }
 
 // funkce na prohledání pole, hledá jen část stringu

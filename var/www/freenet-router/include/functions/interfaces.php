@@ -145,15 +145,15 @@ function get_interfaces_ip($INTERFACES,$ADAPTER) {
 	} else if (($LINE[1] == "address") && ($pom)) {
             if($pom_ipv4){
                 //normalni ipv4
-                $array[$I][0] = $LINE[2];
+                $array[$I][0] = trim($LINE[2]);
             }else{//jedna se o ipv6
                 $addr_split=  explode("address ", $LINE_NOT_SPLIT);
                 $array[$I][0] = $addr_split[1];
             }
 	} else if (($LINE[1] == "netmask") && ($pom)) {
-	    $array[$I][1] = $LINE[2];
+	    $array[$I][1] = trim($LINE[2]);
 	} else if (($LINE[1] == "gateway") && ($pom)) {
-	    $array[$I][2] = $LINE[2];
+	    $array[$I][2] = trim($LINE[2]);
 	}
     }
     return $array;
