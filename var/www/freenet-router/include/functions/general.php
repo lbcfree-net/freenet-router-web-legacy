@@ -139,9 +139,9 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
 // 10.101.111.199 in 10.101.111.193/26 => true
 function is_ip_from_subnet($ip, $subnet)
 {
-    $network = long2ip((ip2long($ip)) & ((-1 << (32 - (int)$subnet))));
+    list($network, $cidr) = explode('/', $subnet);
     
-    if ((ip2long($ip) & ~((1 << (32 - $subnet)) - 1) ) == ip2long($network) - 1)
+    if ((ip2long($ip) & ~((1 << (32 - $cidr)) - 1) ) == ip2long($network) - 1)
     {
         return true;
     }
