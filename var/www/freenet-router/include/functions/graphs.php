@@ -9,12 +9,12 @@ function graphs_create_ip($ip,$period) {
     $low = "0";
     $high = "no";
     $scale = "yes";
-    $v_label = "rychlost [bytes/sec]";
+    $v_label = "rychlost [bytes/s]";
     $base = "1024";
     $units = "B/s";
 
-    if ($monitoring["rate_units"] == "bites") {
-        $v_label = "rychlost [bites/sec]";
+    if ($monitoring["rate_units"] == "bits") {
+        $v_label = "rychlost [bits/s]";
         $base = "1000";
         $units = "b/s";
         $multiply = "8";
@@ -37,12 +37,12 @@ function graphs_create_interface($interface,$period) {
     $low = "0";
     $high = "no";
     $scale = "yes";
-    $v_label = "rychlost [bytes/sec]";
+    $v_label = "rychlost [bytes/s]";
     $base = "1024";
     $units = "B/s";
 
-    if ($monitoring["rate_units"] == "bites") {
-        $v_label = "rychlost [bites/sec]";
+    if ($monitoring["rate_units"] == "bits") {
+        $v_label = "rychlost [bits/s]";
         $base = "1000";
         $units = "b/s";
         $multiply = "8";
@@ -250,7 +250,7 @@ function graphs_create($file_rrd,$period,$label,$low,$high,$scale,$v_label,$base
         $exec.= "DEF:".$val[0]."=".$file_rrd.":".$val[0].":AVERAGE ";
     }
 
-    /* násobení hodnot, hlavně pro převod bytes -> bites */
+    /* násobení hodnot, hlavně pro převod bytes -> bits */
     if ($multiply != "") {
         foreach ($data as $i => $val) {
             $exec.= "CDEF:".$val[0]."_multi=".$val[0].",".$multiply.",* ";

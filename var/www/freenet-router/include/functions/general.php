@@ -430,7 +430,7 @@ function change_password ($username,$password) {
 function convert_units($value,$unit,$limit,$prec = 1) {
     /* bity používají násobky 1000, zatímco byty používájí násobky 1024 */
     switch ($unit) {
-        case "bites":
+        case "bits":
             $value = (8 * $value);
             $unit = "b";
             $base = 1000;

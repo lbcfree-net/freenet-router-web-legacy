@@ -31,7 +31,7 @@ $quagga["password"] = "zebra";
 # Pokud chceme zobrazovat MAC adresy i nepřihlášeným uživatelům nastavíme na true
 $monitoring["show_mac"] = false;
 
-# Jednotky pro zobrazení přenosových rychlostí v grafech a monitoringu, bytes/bites
-$monitoring["rate_units"] = "bites"
+# Jednotky pro zobrazení přenosových rychlostí v grafech a monitoringu, bytes/bits
+$monitoring["rate_units"] = "bits"
 
 ?>
