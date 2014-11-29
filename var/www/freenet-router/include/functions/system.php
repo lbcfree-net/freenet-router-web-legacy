@@ -138,12 +138,12 @@ function system_get_rootfs_status_ro($MOUNTINFO)
 {
     if (!is_array($MOUNTINFO)) 
     {
-	exec('mount',$MOUNTINFO);
+	exec('mount', $MOUNTINFO);
     }
             
     foreach ($MOUNTINFO as $line) 
     {
-        $pos = strpos($line, 'on /');
+        $pos = strpos($line, 'on / ');
         
         if($pos !== false)
         {
