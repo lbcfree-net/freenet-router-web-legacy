@@ -80,16 +80,16 @@ function system_get_rootfs_free($DISKINFO) {
     return system_get_disk($DISKINFO,"/",3);
 }
 function system_get_tmpfs_total($DISKINFO) {
-    return system_get_disk($DISKINFO,"/var/tmpfs",1);
+    return system_get_disk($DISKINFO, '/var/log', 1);
 }
 function system_get_tmpfs_free($DISKINFO) {
-    return system_get_disk($DISKINFO,"/var/tmpfs",3);
+    return system_get_disk($DISKINFO, '/var/log', 3);
 }
 function system_get_tmpfss_total($DISKINFO) {
-    return system_get_disk($DISKINFO,"/var/tmpfs/small",1);
+    return system_get_disk($DISKINFO, '/var/tmp', 1);
 }
 function system_get_tmpfss_free($DISKINFO) {
-    return system_get_disk($DISKINFO,"/var/tmpfs/small",3);
+    return system_get_disk($DISKINFO, '/var/tmp', 3);
 }
 function system_get_kernel_version() {
     $type = preg_split("/[\ \t\n]+/",exec("uname -v"));

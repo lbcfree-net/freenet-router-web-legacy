@@ -35,10 +35,10 @@ if (($_GET["reset_response"]) && ($login)) {
     table_entry("velikost systémového disku",system_get_rootfs_total($DISKINFO)." MB",true);
     table_entry("<a href=\"/graphs.php?drive=root\">volné místo na systémovém disku</a>",system_get_rootfs_free($DISKINFO)." MB",true);
     table_entry("stav systémového disku",system_get_rootfs_status($MOUNTINFO),true);
-    table_entry("velikost tmpfs",system_get_tmpfs_total($DISKINFO)." MB",true);
-    table_entry("<a href=\"/graphs.php?drive=tmpfs\">volné místo na tmpfs</a>",system_get_tmpfs_free($DISKINFO)." MB",true);
-    table_entry("velikost tmpfs pro malé soubory",system_get_tmpfss_total($DISKINFO)." MB",true);
-    table_entry("<a href=\"/graphs.php?drive=tmpfss\">volné místo na tmpfs pro malé soubory</a>",system_get_tmpfss_free($DISKINFO)." MB",true);
+    table_entry('velikost tmpfs pro logy', system_get_tmpfs_total($DISKINFO).' MB', true);
+    table_entry("<a href=\"/graphs.php?drive=tmpfs\">volné místo pro logy</a>", system_get_tmpfs_free($DISKINFO).' MB', true);
+    table_entry("velikost tmpfs pro dočasné soubory",system_get_tmpfss_total($DISKINFO).' MB', true);
+    table_entry("<a href=\"/graphs.php?drive=tmpfss\">volné místo na tmpfs pro dočasné soubory</a>", system_get_tmpfss_free($DISKINFO).' MB', true);
     table_entry("verze linuxového jádra",system_get_kernel_version(),true);
     table_entry("verze operačního systému",system_get_os_version(),true);
     table_entry("aktuální čas a datum serveru","<span id=\"datum_a_cas\"></span><br>",true);
