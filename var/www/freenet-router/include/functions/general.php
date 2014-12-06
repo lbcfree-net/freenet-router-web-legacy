@@ -1,4 +1,8 @@
 <?php
+
+// Switch off notices due to planty uninitialized variables in the original code
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
+
 // automatické znovunačítání obsahu, hlavně pro operu
 header("Cache-Control: no-cache, must-revalidate");
 /* Nastavíme PATH */
