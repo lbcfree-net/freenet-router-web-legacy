@@ -5,6 +5,9 @@ set -e
 case "$1" in
 
    configure)
+	# Timezone - We need to reinstall tzdata as many timezone data is removed due to save space in Voyage
+	apt-get install --reinstall tzdata
+
    	# Apache
 	a2dissite default
 	a2ensite freenet-router
