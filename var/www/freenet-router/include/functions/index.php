@@ -235,17 +235,32 @@ function get_admin_email() {
 function get_admin_email_hash() {
     return ereg_replace("@","<at>",get_file_value("/etc/admin_email"));
 }
-function get_mail_server() {
-    if (($f = fopen("/etc/ssmtp/ssmtp.conf","r"))) {        
-        while (!feof($f)) {            
-	    $value = preg_split("/[\ =\t\n]+/", fgets($f,1024));
-	    if ($value[0] == "mailhub") {
-		return $value[1];
-	    }
+
+function get_mail_server() 
+{
+  $filename = '/etc/ssmtp/ssmtp.conf';
+  
+  if(!file_exists($filename))
+  {
+    return '';
+  }
+  
+  if (($f = fopen($filename, 'r'))) 
+  {        
+      while (!feof($f)) 
+      {            
+        $value = preg_split('/[\ =\t\n]+/', fgets($f, 1024));
+
+        if ($value[0] == 'mailhub') 
+        {
+          return $value[1];
         }
-        fclose($f);
-    }
-    return "";
+      }
+      
+      fclose($f);
+  }
+  
+  return '';
 }
 
 function get_physical_location() {
