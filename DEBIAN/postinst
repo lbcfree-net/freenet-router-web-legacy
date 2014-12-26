@@ -6,7 +6,7 @@ case "$1" in
 
    configure)
 	# Timezone - We need to reinstall tzdata as many timezone data is removed due to save space in Voyage
-	apt-get install --reinstall tzdata
+	apt-get install --reinstall tzdata -y
 
    	# Apache
 	a2dissite default
