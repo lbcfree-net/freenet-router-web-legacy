@@ -528,9 +528,9 @@ function monitoring_set_qos($mac,$limit) {
     }
 
     if ($limit) {
-        exec("sudo /firewall qos_guaranted_class_add_user 1 ".$mac." all");
+        exec("sudo /etc/init.d/firewall qos_guaranted_class_add_user 1 ".$mac." all");
     } else {
-        exec("sudo /firewall qos_guaranted_class_del_user ".$mac);
+        exec("sudo /etc/init.d/firewall qos_guaranted_class_del_user ".$mac);
     }
 
     unlink("/tmp/qos.conf");
@@ -769,9 +769,9 @@ function monitoring_set_macguard_conf($val) {
     }
 
     if (($type == "0") || ($type == "2")) {
-        exec("sudo /firewall macguard_deny_user \"".$mac."\" \"".$ip."\"");
+        exec("sudo /etc/init.d/firewall macguard_deny_user \"".$mac."\" \"".$ip."\"");
     } else if (($type == "1") || ($type == "3")) {
-        exec("sudo /firewall macguard_allow_user \"".$mac."\" \"".$ip."\"");
+        exec("sudo /etc/init.d/firewall macguard_allow_user \"".$mac."\" \"".$ip."\"");
     }
 
     unlink("/tmp/macguard.conf");
