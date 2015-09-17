@@ -16,15 +16,9 @@ case "$1" in
         a2enmod rewrite
 	a2enmod actions 
 	a2enmod alias 
-        a2enmod fastcgi
 	service apache2 restart
-	service php5-fpm restart
 
-	if ! id -u freenet-web >/dev/null 2>&1; then
-		adduser --quiet --home /var/www/freenet-router --shell /bin/false --disabled-password -gecos "" freenet-web
-	fi
-
-	chown -R freenet-web:freenet-web /var/www/freenet-router
+	chown -R www-data:www-data /var/www/freenet-router
 	chown root:root /etc/sudoers.d/freenet-router-sudoers
 
 	# Lets leave the initial daemons generation on the web interface

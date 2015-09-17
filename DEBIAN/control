@@ -4,8 +4,8 @@ Priority: extra
 Maintainer: Karel Picman <karel.picman@lbcfree.net>
 Homepage: https://bbb.nfx.cz/projects/freenet-router-web-legacy
 Package: freenet-router-web-legacy
-Version: 0.1
+Version: 1.1
 Architecture: all
 Conflicts: freenet-router-web
-Depends: ssl-cert, apache2, apache2-mpm-worker, php5, freenet-router, freenet-router-auth, libapache2-mod-fastcgi, php5-fpm, php-apc, rrdtool, php5-gd, ethtool
+Depends: ssl-cert, apache2, php5, freenet-router, freenet-router-auth, rrdtool, php5-gd, ethtool
 Description: Legacy web interface for a full control of the Freenet router
