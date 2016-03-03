@@ -13,8 +13,8 @@ function save_quagga_daemons() {
     if (!file_exists("/etc/quagga/daemons")) {
 	if(($soubor = fopen("/tmp/daemons","w")))
         {
-            fwrite($soubor, "! created by Czela Debian web interface ".date("H:i j.n.Y")."\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "zebra=".(($quagga["zebra"] != "") ? $quagga["zebra"] : "yes")."\n");
             fwrite($soubor, "bgpd=".(($quagga["bgpd"] != "") ? $quagga["bgpd"] : "no")."\n");
             fwrite($soubor, "ospfd=".(($quagga["ospfd"] != "") ? $quagga["ospfd"] : "yes")."\n");
@@ -47,35 +47,35 @@ function save_quagga_zebra() {
     if (!$pom) {
 	if(($soubor = fopen("/tmp/zebra.conf","w")))
         {
-            fwrite($soubor, "! created by Czela Debian web interface ".date("H:i j.n.Y")."\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "hostname ".$hostname."\n");
             fwrite($soubor, "password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
             fwrite($soubor, "enable password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
             fwrite($soubor, "log stdout\n");
-            fwrite($soubor, "!log file /var/log/quagga/zebra.log\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "#log file /var/log/quagga/zebra.log\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "service advanced-vty\n");
-            fwrite($soubor, "!\n");
-            fwrite($soubor, "! OSPF-ALL.MCAST.NET\n");
+            fwrite($soubor, "#\n");
+            fwrite($soubor, "# OSPF-ALL.MCAST.NET\n");
             fwrite($soubor, "ip route 224.0.0.5/32 127.0.0.1\n");
-            fwrite($soubor, "!\n");
-            fwrite($soubor, "! OSPF-DSIG.MCAST.NET\n");
+            fwrite($soubor, "#\n");
+            fwrite($soubor, "# OSPF-DSIG.MCAST.NET\n");
             fwrite($soubor, "ip route 224.0.0.6/32 127.0.0.1\n");
-            fwrite($soubor, "!\n");
-            fwrite($soubor, "! RIP2-ROUTERS.MCAST.NET (ok, so we don't use rip, but we might as well have it here).\n");
+            fwrite($soubor, "#\n");
+            fwrite($soubor, "# RIP2-ROUTERS.MCAST.NET (ok, so we don't use rip, but we might as well have it here).\n");
             fwrite($soubor, "ip route 224.0.0.9/32 127.0.0.1\n");
-            fwrite($soubor, "!\n");
-            fwrite($soubor, "! example of static route\n");
-            fwrite($soubor, "!ip route 10.93.249.128/26 10.93.249.250\n");
-            fwrite($soubor, "!ip route 0.0.0.0/0 10.93.249.249\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "#\n");
+            fwrite($soubor, "# example of static route\n");
+            fwrite($soubor, "#ip route 10.93.249.128/26 10.93.249.250\n");
+            fwrite($soubor, "#ip route 0.0.0.0/0 10.93.249.249\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "access-list term permit 127.0.0.1/32\n");
             fwrite($soubor, "access-list term deny any\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "line vty\n");
             fwrite($soubor, " access-class vtylist\n");
-            fwrite($soubor, "!\n");
+            fwrite($soubor, "#\n");
             fwrite($soubor, "\n");
             fclose($soubor);
             exec("sudo /bin/cp /tmp/zebra.conf /etc/quagga/zebra.conf");
@@ -90,18 +90,18 @@ function save_quagga_ospfd($DATA) {
     exec("cat /etc/init.d/firewall", $FIREWALL);
     if(($soubor = fopen("/tmp/ospfd.conf","w")))
     {
-        fwrite($soubor, "! created by Czela Debian web interface ".date("H:i j.n.Y")."\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "hostname ".$hostname."\n");
         fwrite($soubor, "password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
         fwrite($soubor, "enable password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
         fwrite($soubor, "log stdout\n");
-        fwrite($soubor, "!log file /var/log/quagga/zebra.log\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#log file /var/log/quagga/zebra.log\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "service advanced-vty\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "interface lo\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         foreach ($DATA as $NAME => $VALUE) {
             $NAME = explode("_",$NAME);
             unset($VLAN);

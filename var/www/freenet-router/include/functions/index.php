@@ -313,6 +313,7 @@ function set_dns($dns_primary,$dns_secondary,$domain) {
     if (($soubor = fopen("/tmp/hosts","w")))
     {
         fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor,"127.0.0.1\tlocalhost\n");
         fwrite($soubor,"127.0.0.1\t".get_hostname().".".$domain."\t".get_hostname()."\n");
         if ($dummy_ip != "") {
@@ -325,6 +326,7 @@ function set_dns($dns_primary,$dns_secondary,$domain) {
     if(($soubor = fopen("/tmp/resolv.conf","w")))
     {
         fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor,"search ".$domain."\n");
         fwrite($soubor,"nameserver ".$dns_primary."\n");
         fwrite($soubor,"nameserver ".$dns_secondary."\n");
