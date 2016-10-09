@@ -501,7 +501,8 @@ function set_startup($SERVICE, $VALUE)
       }	
       
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
-      exec("sudo chkconfig firewall $status");      
+      exec("sudo chkconfig firewall $status");
+      exec("sudo chkconfig firewall6 $status");
       break;
     case 'macguard':
       if(($soubor = fopen('/tmp/firewall', 'w')))
