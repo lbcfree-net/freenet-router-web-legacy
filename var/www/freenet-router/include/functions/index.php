@@ -47,7 +47,7 @@ function get_startup($SERVICE)
     case 'firewall':
       foreach($output as $item)
       {
-        if (preg_match('/^firewall.*[\dS]:on/', $item))
+        if (preg_match('/^firewall.*[\dS]:on/', $item) && preg_match('/^firewall6.*[\dS]:on/', $item))
         {
           return true;
         }
@@ -172,7 +172,8 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
       exec('sudo service isc-dhcp-server status', $output, $result);
       return !$result;
     case 'firewall':
-      return !((exec('sudo iptables -L FORWARD -n | wc -l') <= 2) && (exec('sudo iptables -L INPUT -n | wc -l') <= 2) && (exec('sudo iptables -L OUTPUT -n | wc -l') <= 2));
+      exec('sudo service firewall6 status', $output, $result);
+      return !$result && !((exec('sudo iptables -L FORWARD -n | wc -l') <= 2) && (exec('sudo iptables -L INPUT -n | wc -l') <= 2) && (exec('sudo iptables -L OUTPUT -n | wc -l') <= 2));
     case 'macguard':
       return array_eregi_search('valid_mac_fwd', $IPTABLES);	    
     case 'account':
