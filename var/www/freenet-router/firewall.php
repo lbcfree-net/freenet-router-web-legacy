@@ -111,7 +111,7 @@ if ($login) {
 } else {
     echo '<textarea cols="130" rows="50" tabindex="2" name="text" wrap=off disabled>';
 }
-if(($firewall = fopen("/etc/init.d/firewall","r")))
+if(($firewall = fopen('/etc/firewall/firewall.conf', 'r')))
 {
     while (! feof($firewall)) {
         echo fgets($firewall, 1000);

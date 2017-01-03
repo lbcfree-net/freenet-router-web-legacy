@@ -115,7 +115,7 @@ exec("ip addr show", $NETWORK);
 // jestli je na zařízení quagga aktivní poznáme podle ospfd.conf
 exec("cat /etc/quagga/ospfd.conf", $QUAGGA);
 // macguarda a qos přečteme z konfigurace firewallu
-exec("cat /etc/init.d/firewall",$FIREWALL);
+exec("cat /etc/firewall/firewall.conf",$FIREWALL);
 // načteme data z iwconfigu
 exec("sudo /sbin/iwconfig 2>/dev/null",$IWCONFIGS);
 // načteme dat z lspci

@@ -1,17 +1,14 @@
 <?php
-function save_firewall($TEXT){
-    if(($soubor = fopen("/tmp/firewall","w")))
-    {
-        fwrite($soubor,stripslashes(str_replace("\r","",$TEXT)));
+function save_firewall($text){
+    if(($soubor = fopen('/tmp/firewall.conf', 'w'))){
+        fwrite($soubor, stripslashes(str_replace("\r", '', $text)));
         fclose($soubor);
-        exec("sudo /bin/cp /tmp/firewall /etc/init.d/firewall");
+        exec('sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf');
     }
 }
 function save_firewall_converted($DATA){    
-    if(($soubor = fopen("/tmp/firewall","w")))
-    {
-        if(($soubor_orig = fopen("/etc/init.d/firewall","r")))
-        {
+    if(($soubor = fopen('/tmp/firewall.conf', 'w'))){
+        if(($soubor_orig = fopen('/etc/firewall/firewall.conf', 'r'))){
             while (!feof($soubor_orig)) {
                 $pom2 = fgets($soubor_orig, 4096);
                 if (preg_match('/IFACE/',$pom2) && (preg_match('/DUMMY/',$pom2) || preg_match('/DEV/',$pom2))) {
@@ -96,8 +93,9 @@ function save_firewall_converted($DATA){
         }
         fclose($soubor);
     }
-    exec("sudo /bin/cp /tmp/firewall /etc/init.d/firewall");
+    exec('sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf');
 }
+
 function get_firewall_macguard($FIREWALL,$ADAPTER) {
     $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
@@ -114,7 +112,9 @@ function get_firewall_macguard($FIREWALL,$ADAPTER) {
     }
     return false;
 }
+
 function get_firewall_qos($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
             if (preg_match("/^${FIREWALL_DATA_DEV}_QOS=\"yes\"/",$LINE)) {
@@ -129,7 +129,9 @@ function get_firewall_qos($FIREWALL,$ADAPTER) {
     }
     return false;
 }
+
 function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
             if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WAN\"/",$LINE)) {
@@ -150,7 +152,9 @@ function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
     }
     return "LAN";
 }
+
 function get_firewall_qos_rate($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
             if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_RATE=/",$LINE)) {
@@ -166,7 +170,9 @@ function get_firewall_qos_rate($FIREWALL,$ADAPTER) {
     }
     return false;
 }
+
 function get_firewall_description($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
             if (preg_match("/^${FIREWALL_DATA_DEV}_DESCRIPTION=/",$LINE)) {
@@ -182,7 +188,9 @@ function get_firewall_description($FIREWALL,$ADAPTER) {
     }
     return false;
 }
+
 function get_firewall_dhcp($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
             if (preg_match("/^${FIREWALL_DATA_DEV}_MACGUARD_DHCP=\"yes\"/",$LINE)) {

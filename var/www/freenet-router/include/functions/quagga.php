@@ -87,7 +87,7 @@ function save_quagga_ospfd($DATA) {
     global $dummy_ip;
     global $quagga;
     // načteme firewall
-    exec("cat /etc/init.d/firewall", $FIREWALL);
+    exec("cat /etc/firewall/firewall.conf", $FIREWALL);
     if(($soubor = fopen("/tmp/ospfd.conf","w")))
     {
         fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
@@ -194,8 +194,8 @@ function get_quagga_adapter_cost($ADAPTER) {
     global $quagga;
     // rychlost přečteme z konfigurace firewallu a případně vypočítáme cost
     $rate = get_firewall_qos_rate($FIREWALL,$ADAPTER);
-    if ($quagga["cost"] == "rate") {
-	exec("cat /etc/init.d/firewall", $FIREWALL);
+    if ($quagga['cost'] == 'rate') {
+	exec('cat /etc/firewall/firewall.conf', $FIREWALL);
 	
 	if ($rate > 0) {
 	    $cost = bcdiv(1000000,$rate);

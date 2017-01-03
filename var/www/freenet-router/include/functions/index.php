@@ -58,7 +58,7 @@ function get_startup($SERVICE)
       $pom1 = false;
       $pom2 = false;
 
-      if (($f = fopen('/etc/init.d/firewall', 'r'))) 
+      if (($f = fopen('/etc/firewall/firewall.conf', 'r')))
       {
         while (!feof($f)) 
         {        	    
@@ -91,7 +91,7 @@ function get_startup($SERVICE)
       $pom2 = false;
       $pom3 = false;
 
-      if (($f = fopen('/etc/init.d/firewall', 'r'))) 
+      if (($f = fopen('/etc/firewall/firewall.conf', 'r')))
       {
         while (!feof($f)) 
         {        	    
@@ -203,7 +203,7 @@ function get_primary_dns() {
     return "";
 }
 function get_internal_ip() {
-    if (($f = fopen("/etc/init.d/firewall","r")))
+    if (($f = fopen('/etc/firewall/firewall.conf', 'r')))
     {	
 	while (!feof($f)) {	    
 	    $value = preg_split("/[\ =\"\t\n]+/", fgets($f,1024));
@@ -336,10 +336,10 @@ function set_dns($dns_primary,$dns_secondary,$domain) {
     exec("sudo /bin/cp /tmp/resolv.conf /etc/resolvconf/resolv.conf.d/base");
     exec('sudo resolvconf -u');
     
-    // /etc/init.d/firewall
-    if(($soubor = fopen("/tmp/firewall","w")))
+    // /etc/firewall/firewall.conf
+    if(($soubor = fopen('/tmp/firewall.conf', 'w')))
     {
-        if (($f = fopen('/etc/init.d/firewall', 'r'))) 
+        if (($f = fopen('/etc/firewall/firewall.conf', 'r')))
         {  
             $pom1 = false;
             $pom2 = false;
@@ -379,7 +379,7 @@ function set_dns($dns_primary,$dns_secondary,$domain) {
           fclose($f);
         }
         fclose($soubor);
-        exec("sudo /bin/cp /tmp/firewall /etc/init.d/firewall");
+        exec("sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf");
     }    
     // správně bychom měli i /etc/dhcpd.conf, ale o ten se v normální situaci stará macguard
     // správně musíme ještě nastavit ssmtp.conf, ale protože se stejně volá v index.html až potom, tak je to zbytečné
@@ -473,9 +473,9 @@ function set_startup($SERVICE, $VALUE)
       exec("sudo chkconfig isc-dhcp-server $status");      
       break;
     case 'firewall':
-      if(($soubor = fopen('/tmp/firewall', 'w')))
+      if(($soubor = fopen('/tmp/firewall.conf', 'w')))
       {
-        if(($f = fopen('/etc/init.d/firewall', 'r')))
+        if(($f = fopen('/etc/firewall/firewall.conf', 'r')))
         {                       
           while (!feof($f)) 
           {
@@ -497,7 +497,7 @@ function set_startup($SERVICE, $VALUE)
         }
 
         fclose($soubor);
-        exec('sudo cp /tmp/firewall /etc/init.d/firewall');
+        exec('sudo cp /tmp/firewall.conf /etc/firewall/firewall.conf');
       }	
       
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
@@ -505,9 +505,9 @@ function set_startup($SERVICE, $VALUE)
       exec("sudo chkconfig firewall6 $status");
       break;
     case 'macguard':
-      if(($soubor = fopen('/tmp/firewall', 'w')))
+      if(($soubor = fopen('/tmp/firewall.conf', 'w')))
       {
-        if(($f = fopen('/etc/init.d/firewall', 'r')))
+        if(($f = fopen('/etc/firewall/firewall.conf', 'r')))
         {
           $pom1 = false;
           $pom2 = false;
@@ -546,7 +546,7 @@ function set_startup($SERVICE, $VALUE)
         }
 
         fclose($soubor);
-        exec('sudo cp /tmp/firewall /etc/init.d/firewall');
+        exec('sudo cp /tmp/firewall.conf /etc/firewall/firewall.conf');
       }	    
        
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
@@ -558,9 +558,9 @@ function set_startup($SERVICE, $VALUE)
       
       break;
     case 'account':
-      if(($soubor = fopen('/tmp/firewall', 'w')))
+      if(($soubor = fopen('/tmp/firewall.conf', 'w')))
       {
-        if(($f = fopen('/etc/init.d/firewall', 'r')))
+        if(($f = fopen('/etc/firewall/firewall.conf', 'r')))
         {
           $pom1 = false;
           $pom2 = false;
@@ -605,7 +605,7 @@ function set_startup($SERVICE, $VALUE)
         }
 
         fclose($soubor);
-        exec('sudo cp /tmp/firewall /etc/init.d/firewall');
+        exec('sudo cp /tmp/firewall.conf /etc/firewall/firewall.conf');
       }
         
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
@@ -653,9 +653,9 @@ function set_startup($SERVICE, $VALUE)
 }
 
 function set_internal_ip($VALUE) {
-    if(($soubor = fopen("/tmp/firewall","w")))
+    if(($soubor = fopen('/tmp/firewall.conf', 'w')))
     {
-        if(($f = fopen("/etc/init.d/firewall","r")))
+        if(($f = fopen('/etc/firewall/firewall.conf', 'r')))
         {
             $pom1 = false;
             while (!feof($f)) {
@@ -672,7 +672,7 @@ function set_internal_ip($VALUE) {
             fclose($f);
         }
         fclose($soubor);
-        exec("sudo /bin/cp /tmp/firewall /etc/init.d/firewall");
+        exec('sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf');
     }
 }
 

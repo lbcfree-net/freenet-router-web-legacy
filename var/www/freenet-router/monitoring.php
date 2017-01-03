@@ -46,7 +46,7 @@ if (file_exists("/etc/network/interfaces")) $INTERFACES = file("/etc/network/int
 // získáme data o QoSu
 if (file_exists("/etc/firewall/qos.conf")) $QOS_DATA = file("/etc/firewall/qos.conf");
 
-if (file_exists("/etc/init.d/firewall")) exec("cat /etc/init.d/firewall",$FIREWALL);
+if (file_exists('/etc/firewall/firewall.conf')) exec('/etc/firewall/firewall.conf', $FIREWALL);
 
 // získáme seznam zařízení
 $ADAPTERS = array_unique(array_merge(get_interfaces_all($INTERFACES),get_networking_all($NETWORK)));
