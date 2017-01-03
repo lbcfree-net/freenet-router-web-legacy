@@ -86,9 +86,9 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
     <tr>
     <td align=left><?= $name ?>: </td>
     <td align="right">
-<?  
-    if ((!is_array($list)) && ereg(":",$list)) {
-	$pom = split("[:]",$list);
+<?php
+    if ((!is_array($list)) && preg_match('/:/',$list)) {
+	$pom = explode('[:]', $list);
 	unset($list);
 	// krok
 	if ($pom[2] != "") {
@@ -111,32 +111,32 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
     }
 ?>
         <select name="<?= $select_name ?>" size="1">
-<?
+<?php
     $selected_pom = false;
     foreach ($list as $I => $option) {
         if ((ereg_replace("[^0-9]","",$option) != "") && ((ereg_replace("[^0-9]","",$selected) != "") || ($selected == "auto")) && ($units != "")) {
             if (ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) $selected_pom = true;
 ?>
             <option <?= ((ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) ? "selected=\"selected\"" : "") ?> value="<?= $option ?>"><?= $option ?><?= ((is_array($units)) ? " ".$units[$I] : (($units != "none") ? " ".$units : "" )) ?></option>
-<?
+<?php
         } else {
             if ($option == $selected) $selected_pom = true;
 ?>
             <option <?= (($option == $selected) ? "selected=\"selected\"" : "") ?> value="<?= $option ?>"><?= $option ?><?= ((is_array($units)) ? " ".$units[$I] : "") ?></option>
-<?
+<?php
         }
     }
 
     if ((!$selected_pom) && (preg_replace("/[\s]+/i","",$selected) != "")) {
 ?>
             <option selected="selected" value="<?= $selected ?>">! <?= $selected ?><?= ((($units != "") && ($units != "none") && (!is_array($units))) ? " ".$units : "") ?> !</option>
-<?
+<?php
     }
 ?>
         </select>
     </td>
     </tr>
-<?
+<?php
 }
 
 // Does the given IP belong to the subnet?
@@ -183,7 +183,7 @@ function table_entry($string_1,$string_2,$width_auto = false) {
     <td align="left" <?= ($width_auto) ? '' : 'width="35%"' ?>><?= $string_1 ?>: </td>
     <td align="right" <?= ($width_auto) ? '' : 'width="65%"' ?>><?= $string_2 ?></td>
     </tr>
-<?
+<?php
 }
 function table_text_array($string_1,$string_2,$string_3,$length,$units,$string_4 = "") {
 ?>
@@ -191,7 +191,7 @@ function table_text_array($string_1,$string_2,$string_3,$length,$units,$string_4
     <td align="left"><?= $string_1 ?>: </td>
     <td align="right"><input title="<?= $string_4 ?>" type="text" name="<?= $string_2 ?>" value="<?= $string_3 ?>" <?= ($length != "") ? "size=\"".$length."\"" : "" ?>> <?= $units ?></td>
     </tr>
-<?
+<?php
 }
 function table_button($string_1,$string_2) {
 ?>
@@ -199,7 +199,7 @@ function table_button($string_1,$string_2) {
     <td align="left"></td>
     <td align="right"><input type="submit" name="<?= $string_1 ?>" value="<?= $string_2 ?>"></td>
     </tr>
-<?
+<?php
 }
 function table_button_action($string_1,$string_2,$string_3) {
 ?>
@@ -207,19 +207,19 @@ function table_button_action($string_1,$string_2,$string_3) {
     <td align="left"></td>
     <td align="right"><input type="button" name="<?= $string_1 ?>" value="<?= $string_2 ?>" onclick="<?= $string_3 ?>"></td>
     </tr>
-<?
+<?php
 }
 // funkce pro vytvoření odřádkování v tabulce
 function table_line() {
 ?>
     <tr><td colspan="2"><hr></td></tr>
-<?
+<?php
 }
 // funkce pro vytvoření odřádkování v tabulce
 function table_head($name) {
 ?>
     <tr><th colspan="2"><?= $name ?></th></tr>
-<?
+<?php
 }
 function show_card_properites($ADAPTER) {
     global $wifi;
@@ -240,7 +240,7 @@ function show_card_properites($ADAPTER) {
     global $ADAPTER_SIGNAL;
 ?>
     <td align="left" width="10%">adapter: <span class="graphs_link_black"><a href="/graphs.php?interface=<?= $ADAPTER ?>"><b><?= $ADAPTER ?></b></a></span></td>
-<?
+<?php
     if ($wifi) {
 ?>
         <td width="9%">režim: <b><?= $ADAPTER_MODE ?></b></td>
@@ -256,7 +256,7 @@ function show_card_properites($ADAPTER) {
                 </tr>
             </table>
         </td>
-<?
+<?php
     } else if ($ethernet) {
 ?>
         <td width="9%">linka: <b><?= $ADAPTER_LINK ?></b></td>
@@ -264,7 +264,7 @@ function show_card_properites($ADAPTER) {
         <td width="12%">duplex: <b><?= $ADAPTER_DUPLEX ?></b></td>
         <td width="46%">model: <b><?= $ADAPTER_MODEL ?></b></td>
         <td width="10%">ovladač: <b><?= $ADAPTER_DRIVER ?></b></td>
-<?  }
+<?php  }
 }
 // funkce pro získání dat ze souboru
 function get_file_value($file) {
@@ -379,9 +379,9 @@ function create_selection_service($name ,$select_name, $list, $selected, $active
     </table>
     </td>
     <td align=right>
-<?
-    if ((!is_array($list)) && ereg(":",$list)) {
-	$pom = split("[:]",$list);
+<?php
+    if ((!is_array($list)) && preg_match('/:/',$list)) {
+	$pom = explode('[:]',$list);
 	unset($list);
 	// krok
 	if ($pom[2] != "") {
@@ -404,7 +404,7 @@ function create_selection_service($name ,$select_name, $list, $selected, $active
     }
 ?>
     <select name="<?= $select_name ?>" size="1">
-<?
+<?php
     foreach ( $list as $I => $option ) {
 	if ((ereg_replace("[^0-9]","",$option) != "") && (ereg_replace("[^0-9]","",$selected) != "")) {
 	    if (ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) {
@@ -424,7 +424,7 @@ function create_selection_service($name ,$select_name, $list, $selected, $active
     </select>
     </td>
     </tr>
-<?
+<?php
 }
 function change_password ($username,$password) {
     exec("sudo /usr/sbin/pwd_change ".$username." ".$password);

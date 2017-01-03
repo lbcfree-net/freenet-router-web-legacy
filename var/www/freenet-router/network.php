@@ -20,19 +20,19 @@ if (($_POST["reboot"] != "") && ($login)) {
 }
 $remove = false;
 foreach ($_POST as $NAME => $VALUE) {
-    if (ereg("REMOVE",$NAME)) {
+    if (preg_match('/REMOVE/',$NAME)) {
 	$remove = true;
     }
-    if (ereg("ADD_IP",$NAME)) {
+    if (preg_match('/ADD_IP/',$NAME)) {
 	$add_ip = true;
     }
-    if (ereg("ADD_GATEWAY",$NAME)) {
+    if (preg_match('/ADD_GATEWAY/',$NAME)) {
 	$add_gateway = true;
     }
-    if (ereg("DEL_GATEWAY",$NAME)) {
+    if (preg_match('/DEL_GATEWAY/',$NAME)) {
 	$del_gateway = true;
     }
-    if (ereg("ADD_VLAN",$NAME)) {
+    if (preg_match('/ADD_VLAN/',$NAME)) {
 	$add_vlan = true;
     }
 }
@@ -87,7 +87,7 @@ if ($login) {
 	</td>
 	</tr>
     </table>
-<?
+<?php
 }
 ?>
 <?php
@@ -95,7 +95,7 @@ if ($interfaces_edit) {
 ?>  <hr>
     <br>
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap=off>
-<?    
+<?php
     if(($file = fopen("/etc/network/interfaces","r")))
     {
         while(!feof($file)) 
@@ -108,7 +108,7 @@ if ($interfaces_edit) {
     <br>
     <input type="submit" name="save" value="uložit">
     <input type="hidden" name="edit" value="neco">
-<?
+<?php
 } else {
 // přečteme data z ip
 exec("ip addr show", $NETWORK);
@@ -150,23 +150,23 @@ usort($ADAPTERS,"sort_adapters");
 // zalozky rozhrani
 ?>
     <div id="menu"><ul>
-<?
+<?php
 $actual_num = $_GET['actual_interface'];
 $int_num = 0;
 foreach ($ADAPTERS as $ADAPTER) { ?>
 	<li><a class="<?= ((($actual_num == "") && ($int_num == 0)) || ($actual_num == $int_num)) ? 'active' : '' ?>" id="menu<?= $int_num ?>" href="JavaScript: set(<?= $int_num ?>);"><?= $ADAPTER ?></a></li>
-<?	$int_num++;
+<?php	$int_num++;
 }
 ?>
     </ul></div>
     <br clear="all">
-<?
+<?php
 
 $int_num = 0;
 foreach ($ADAPTERS as $ADAPTER) {
 ?>
     <div class="interface" id="interface<?= $int_num ?>">
-<?  // získáme informace o adapteru
+<?php  // získáme informace o adapteru
     $loopback = get_adapter_settings_is_loopback($ADAPTER);
     $dummy = get_adapter_settings_is_dummy($ADAPTER);
     $adapter = get_adapter_settings_is_adapter($ADAPTER);
@@ -208,7 +208,7 @@ foreach ($ADAPTERS as $ADAPTER) {
     <tr>
     <td width="31%" align="left" valign=top>
     <table width="100%" class="settings">
-<?  // hlavička
+<?php  // hlavička
     table_head("základní nastavení");
     // zjistíme jestli je karta nahozená
     create_selection("aktivní","${ADAPTER}_ACTIVE", array("ano", "ne"), get_interfaces_active($INTERFACES,$ADAPTER),"");
@@ -474,7 +474,7 @@ foreach ($ADAPTERS as $ADAPTER) {
     </table>
     <hr>
     </div>
-<?  $int_num++;
+<?php  $int_num++;
 }
 }
 ?>

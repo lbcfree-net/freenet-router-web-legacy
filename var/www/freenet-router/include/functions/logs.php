@@ -1,4 +1,4 @@
-<?
+<?php
 function logs_show_part_of_log_file($FILE,$LAST_LINES) {
     $array = array();
     if (is_file($FILE) && (filesize($FILE) > 0)) {
@@ -16,7 +16,7 @@ function logs_show_part_of_log_file($FILE,$LAST_LINES) {
 	foreach ($array as $line) {
 ?>
 	    <tr><td align="left"><?= htmlspecialchars($line) ?></td></tr>
-<?
+<?php
 	}
     }
 }
@@ -43,7 +43,7 @@ function logs_show_log_file($FILE,$FIND) {
             }
 ?>
             <tr><td align="left"><?= htmlspecialchars($line) ?></td></tr>
-<?
+<?php
         }
     }
 }

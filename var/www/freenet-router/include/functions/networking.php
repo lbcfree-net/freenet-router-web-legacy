@@ -71,7 +71,7 @@ function get_network_adapter_active($NETWORK,$ADAPTER) {
     foreach ($NETWORK as $I => $LINE) {
         $LINE = preg_split("/[\ :@]+/", $LINE);
         if ($ADAPTER == $LINE[1]) {
-            if (ereg("UP",$NETWORK[$I])) {
+            if (preg_match('/UP/',$NETWORK[$I])) {
                 return "ano";
             }
         }

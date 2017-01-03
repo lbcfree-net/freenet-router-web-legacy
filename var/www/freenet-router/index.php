@@ -52,7 +52,7 @@ if (isset($_POST['save']) && $login) {
     window.location=('/index.php')
     //-->
     </script>
-<?
+<?php
 }
 ?>
 <form method=post action="<?=$_SERVER['PHP_SELF']?> ">
@@ -77,13 +77,13 @@ if ($login)  {
     <td></td>
     <td colspan="2" align="right"><input type="submit" name="set_<?= ((system_get_rootfs_status_ro("")) ? "rw" : "ro") ?>" value="<?= ((system_get_rootfs_status_ro("")) ? "povolit zápis" : "uzamknout") ?>"></td>
     </tr>
-<?
+<?php
 } else {
 ?>
     <tr><td align="left" width="11%">jméno:</td><td align="left" width="20%"><input type="text" name="jmeno" size="14"></td><td></td><td></td></tr>
     <tr><td align="left">heslo:</td><td align="left"><input type="password" name="heslo" size="14"></td><td></td><td></td></tr>
     <tr><td colspan="2" align="left"><input type="submit" name="login" value="přihlásit se"></td><td></td><td></td></tr>
-<?
+<?php
 }
 ?>
     </table>
@@ -115,7 +115,7 @@ table_line();
     <tr>
     <td colspan="2">služby spouštěné po startu systému</td>
     </tr>
-<?
+<?php
 table_line();
 exec("ps ax",$SERVICES);
 exec("sudo /sbin/iptables -L -n",$IPTABLES);
@@ -133,7 +133,7 @@ if ($login) {
     <tr>
     <td colspan="2"><input type="submit" name="save" value="uložit"></td>
     </tr>
-<?
+<?php
 }
 ?>
     </table>
@@ -155,7 +155,7 @@ if ($login) {
     <span id="active_ips_text">celkový přenos dat: </span>
     </td>
     <td width="200" align="right">
-<?
+<?php
     $total_rate = 0;
     if (file_exists("/var/log/account/interfaces_data.txt")) {
         $ifaces_data = file("/var/log/account/interfaces_data.txt");
@@ -173,7 +173,7 @@ if ($login) {
     <tr height="30">
     </tr>
     </table>
-<?
+<?php
 if ($login) {
 ?>
     <ul class="bullets">
@@ -185,7 +185,7 @@ if ($login) {
     </ul>
     <hr>
     <font color="777777">
-<?
+<?php
 }
 ?>
     <ul class="bullets">
@@ -200,7 +200,7 @@ if ($login) {
 if ($login) {
 ?>
     </font>
-<?
+<?php
 }
 ?>
     </td>

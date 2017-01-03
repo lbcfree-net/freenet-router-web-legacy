@@ -1,11 +1,11 @@
-<?
+<?php
 include 'include/functions/general.php';
 include 'include/header.php';
 include 'include/functions/logs.php';
 include 'include/functions/monitoring.php';
 ?>
 <form method="get" action="<?= $_SERVER['PHP_SELF'] ?>">
-<?
+<?php
 $LOG_DIR = "/var/log";
 $LOG_FILES = array("auth.log","daemon.log","debug","dmesg","kern.log","mail.log","messages","snmp.log","sudo.log","syslog","user.log");
 
@@ -19,15 +19,15 @@ if (($_GET["show_file"] != "") && ($login)) {
             <th>den poslední změny</th>
             <th>velikost</th>
         </tr>
-<?
+<?php
     // najdeme a zobrazíme podobné soubory
-    if (ereg('/',$_GET["show_file"])) {
+    if (preg_match('/\//', $_GET["show_file"])) {
         $BASE_NAME = substr(strrchr($_GET["show_file"],'/'),1);
         $POM_DIR = substr($_GET["show_file"],0,strrpos($_GET["show_file"], '/'))."/";
     } else {
         $BASE_NAME = $_GET["show_file"];
     }
-    if (ereg('\.',$BASE_NAME)) {
+    if (preg_match('/\./',$BASE_NAME)) {
         $BASE_NAME = substr($BASE_NAME,0,strpos($BASE_NAME, '.'));
     }
     if (is_dir($LOG_DIR."/".$POM_DIR)) {
@@ -41,7 +41,7 @@ if (($_GET["show_file"] != "") && ($login)) {
         <td><?= date("d.m.Y",filemtime($LOG_DIR."/".$POM_DIR.$FILE)) ?></td>
         <td><?= convert_units(filesize($LOG_DIR."/".$POM_DIR.$FILE),"bytes","k") ?></td>
     </tr>
-<?
+<?php
             }
         }
     }
@@ -61,7 +61,7 @@ if (($_GET["show_file"] != "") && ($login)) {
         </tr>
         <?= logs_show_log_file($LOG_DIR."/".$_GET["show_file"],$_GET["find"]) ?>
     </table>
-<?
+<?php
 } else if ($login) {
     foreach ($LOG_FILES as $FILE) {
 ?>
@@ -72,11 +72,11 @@ if (($_GET["show_file"] != "") && ($login)) {
         </tr>
         <?= logs_show_part_of_log_file($LOG_DIR."/".$FILE,"10") ?>
     </table>
-<?
+<?php
     }
 }
 ?>
 </form>
-<?
+<?php
 include 'include/footer.php';
 ?>

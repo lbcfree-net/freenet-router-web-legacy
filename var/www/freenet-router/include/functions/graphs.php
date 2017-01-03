@@ -1,4 +1,4 @@
-<?
+<?php
 
 function graphs_create_ip($ip,$period) {
     global $monitoring;

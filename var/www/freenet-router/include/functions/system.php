@@ -1,8 +1,8 @@
 <?php
 function system_get_cpu_model($CPUINFO) {
     foreach ($CPUINFO as $line) {
-	if (ereg("model name",$line)) {
-	    $line = split(":",$line);
+	if (preg_match('/model name/',$line)) {
+	    $line = explode(":",$line);
 	    $pom = preg_split("/[\ \t\n]+/",$line[1]);
 	    return implode(" ",$pom);
 	}
@@ -21,8 +21,8 @@ function system_get_cpu_temperature($SENSORS) {
 }
 function system_get_cpu_freq($CPUINFO) {
     foreach ($CPUINFO as $line) {
-	if (ereg("cpu MHz",$line)) {
-	    $line = split(":",$line);
+	if (preg_match('/cpu MHz/', $line)) {
+	    $line = explode(":",$line);
 	    $pom = preg_split("/[\ \t\n]+/",$line[1]);
 	    return round($pom[1],0);
 	}
@@ -32,7 +32,7 @@ function system_get_cpu_freq($CPUINFO) {
 function system_get_cpu_count($CPUINFO) {
     $pom = 0;
     foreach ($CPUINFO as $line) {
-	if (ereg("processor",$line)) {
+	if (preg_match('/processor/',$line)) {
 	    $pom++;
 	}
     }
@@ -44,8 +44,8 @@ function system_get_cpu_usage() {
 }
 function system_get_memory($MEMINFO,$VALUE) {
     foreach ($MEMINFO as $line) {
-	if (eregi($VALUE,$line)) {
-	    $line = split(":",$line);
+	if (preg_match("/$VALUE/", $line)) {
+	    $line = explode(":",$line);
 	    $pom = preg_split("/[\ \t\n]+/",$line[1]);
 	    return round(($pom[1] / 1024),0);
 	}
@@ -162,7 +162,7 @@ function system_get_ping_response_from_defined_routers() {
     if (file_exists("/etc/firewall/routers.conf")) {
 	$routers = file("/etc/firewall/routers.conf");
 	foreach($routers as $router) {
-	    if (!ereg("#", $router) && ereg("\.", $router)) {
+	    if (!preg_match('/#/', $router) && preg_match('/\./', $router)) {
 		$router = preg_split("/[\"\t\n]+/",$router);
 		system_table_entry_ping($router[0],$router[1],implode(" ",array_slice($router,2)),system_get_router_accessibility($router[0]));
 	    }
@@ -173,7 +173,7 @@ function system_get_router_accessibility($router) {
     if (file_exists("/var/log/account/routers.txt")) {
 	$file = file("/var/log/account/routers.txt");
 	foreach($file as $line) {
-	    if (!ereg("#", $line) && (ereg($router, $line))) {
+	    if (!preg_match('/#/', $line) && (preg_match("/$router/", $line))) {
 		$line = preg_split("/[:]+/",$line);
 		if ($line[0] == $router) {
 		    return round((($line[1]/ ($line[1] + $line[2])) * 100),1)."%";
@@ -187,7 +187,7 @@ function system_get_ping_response_from_all_dummy() {
     $array = array();
     exec("ip ro | grep -F \".0.\" | grep -v -F \"224.0.0.\"",$ips);
     foreach($ips as $ip) {
-        $ip = split(" ",$ip);
+        $ip = explode(" ",$ip);
         $array[] = $ip[0];
     }
     usort($array,"sort_by_ip");
@@ -203,6 +203,6 @@ function system_table_entry_ping($string_1,$string_2 = "<br>",$string_3 = "<br>"
     <td align="right"><?= (is_file("/var/log/account/rrd/ping-".$string_1.".rrd")) ? '<a href="/graphs.php?ping='.$string_1.'" class="info_link">'.system_get_ping_response($string_1).'</a>' : system_get_ping_response($string_1) ?></td>
     <td align="right"><?= $string_4 ?></td>
     </tr>
-<?
+<?php
 }
 ?>

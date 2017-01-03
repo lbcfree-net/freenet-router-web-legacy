@@ -53,12 +53,12 @@ if (file_exists("/home/safe/macguard/table-$dummy_ip.csv")) {
     <tr>
         <td width="20%">status macguarda: <?= $macguard_status ?></td>
         <td width="26%">poslední změna dat: <?= $macguard_last_update ?></td>
-<?
+<?php
 if ($login) {
 ?>
         <td>možnosti macguarda:</td>
         <td>
-<?
+<?php
 if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
     echo '<input type="submit" name="macguard_start" value="zapnout">';
 } else {
@@ -68,11 +68,11 @@ if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
         </td>
         <td><input type="submit" name="macguard_update" value="aktualizovat"></td>
         <td><input type="submit" name="macguard_update_force" value="vynucená aktualizace"></td>
-<?
+<?php
 } else {
 ?>
         <td></td>
-<?
+<?php
 }
 ?>
     </tr>
@@ -81,7 +81,7 @@ if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
 </form>
 <form method=post action="<?=$_SERVER['PHP_SELF']?> ">
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off" readonly>
-<?
+<?php
 if (($login) || ($monitoring["show_mac"])) {
     if(($firewall = fopen("/home/safe/macguard/table-$dummy_ip.csv","r"))) 
     {       
@@ -95,6 +95,6 @@ if (($login) || ($monitoring["show_mac"])) {
 ?>
     </textarea>
 </form>
-<?
+<?php
 include "include/footer.php";
 ?>

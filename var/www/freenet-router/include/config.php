@@ -1,4 +1,4 @@
-<?
+<?php
 # Upřesňující nastavení sítí mimo czela.net
 
 # Název routeru zobrazovaného v názvu stránky

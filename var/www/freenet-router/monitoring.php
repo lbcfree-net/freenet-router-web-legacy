@@ -1,4 +1,4 @@
-<?
+<?php
 // načteme hlavičku a často používané funkce, create_selection, is_ip_from_subnet
 include 'include/functions/general.php';
 include 'include/functions/adapter_settings.php';
@@ -59,7 +59,7 @@ $ADAPTERS = array_merge($ADAPTERS,array($ADAPTER_ALL));
 ?>
 <div id="menu">
     <ul>
-<?
+<?php
 $ADAPTER = $_GET['actual_interface'];
 $int_num = 0;
 foreach ($ADAPTERS as $a) {
@@ -67,7 +67,7 @@ foreach ($ADAPTERS as $a) {
     if (($a != "dummy0") && (!eregi("ifb",$a))) {
 	if (($int_num == 0) && ($ADAPTER == '')) $ADAPTER = $a;
 ?>	<li><a class="<?= $ADAPTER == $a ? 'active' : '' ?>" href="<?= change_url("actual_interface",$a) ?>"><?= $a ?></a></li>
-<?	$int_num++;
+<?php	$int_num++;
     }
 }
 ?>
@@ -76,7 +76,7 @@ foreach ($ADAPTERS as $a) {
 
 <br clear="all">
 <form method="post" action="<?= $_SERVER['PHP_SELF']."?actual_interface=".$ADAPTER ?>">
-<?
+<?php
 $int_num = 0;
 if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!eregi("ifb",$ADAPTER))) || ($ADAPTER == $ADAPTER_ALL)) {
     // získáme informace o adapteru
@@ -129,7 +129,7 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!ere
             <th width="9%"><a href="<?= change_url("sort_by","qos") ?>" class="sort_link">omezení</a></th>
             <th width="6%"><a href="<?= change_url("sort_by","signal") ?>" class="sort_link">signál</a></th>
         </tr>
-<?
+<?php
     /* Informace pro dané rozhraní získáme z interfaces_data.txt */
     if (file_exists("/var/log/account/interfaces_data.txt")) {
         $ifaces_data = file("/var/log/account/interfaces_data.txt");
@@ -140,45 +140,45 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!ere
         <tr class="monitoring_iface_stats">
             <td><span class="img_active">&nbsp;</span></td>
             <td align="left"><?= $hostname ?></td>
-<?
+<?php
             if ($ADAPTER == $ADAPTER_ALL) {
 ?>
             <td><br/></td>
             <td><br/></td>
-<?
+<?php
             } else {
 ?>
             <td align="left">
-<?
+<?php
                 foreach (get_interfaces_ip($INTERFACES,$ADAPTER) as $K => $ADAPTER_IP) {
 ?>
                 <a href="graphs.php?interface=<?= $ADAPTER ?>"><?= $ADAPTER_IP[0] ?></a><br/>
-<?
+<?php
                 }
 ?>
             </td>
             <td><?= ((($monitoring["show_mac"]) || ($login)) ? $ADAPTER_MAC : "------------") ?></td>
-<?
+<?php
             }
 ?>
             <td align="right"><?= convert_units($v[1],"bytes","M") ?></td>
             <td align="right"><?= convert_units($v[3],$monitoring["rate_units"],"k") ?>/s</td>
             <td align="right"><?= convert_units($v[2],"bytes","M") ?></td>
             <td align="right"><?= convert_units($v[4],$monitoring["rate_units"],"k") ?>/s</td>
-<?
+<?php
             if ($ADAPTER == $ADAPTER_ALL) {
 ?>
             <td><br/></td>
-<?
+<?php
             } else {
 ?>
             <td><?= ((get_firewall_qos($FIREWALL,$ADAPTER)) ? "zapnuto" : "vypnuto") ?></td>
-<?
+<?php
             }
 ?>
             <td><br/></td>
         </tr>
-<?
+<?php
             break;
         }
     }
@@ -211,11 +211,11 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!ere
         /* tady začneme konečně vypisovat */
 ?>
         <tr>
-<?
+<?php
         if (is_array($OPTION["ips"]) && (sizeof($OPTION["ips"]) > 0)) {
 ?>
             <td>
-<?
+<?php
         foreach ($OPTION["ips"] as $OPTION_IP) {
             if (($OPTION_IP["enabled"]) && ($OPTION_IP["active"]))  {
                 $pom_class = "active";
@@ -244,97 +244,97 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!ere
             if ($login) {
 ?>
                 <a class="img_<?= $pom_class ?>" href="<?= change_url("macguard_conf",$pom_type."_".(($OPTION["mac"] == "") ? "0" : $OPTION["mac"])."_".$OPTION_IP["ip"]) ?>">&nbsp;</a>
-<?
+<?php
             } else {
 ?>
                 <span class="img_<?= $pom_class ?>">&nbsp;</span>
-<?
+<?php
             }
         }
 ?>
             </td>
             <td align="left">
-<?
+<?php
         foreach ($OPTION["ips"] as $OPTION_IP) {
 ?>
                 <?= $OPTION_IP["name"] ?><br/>
-<?
+<?php
         }
 ?>
             </td>
             <td align="left">
-<?
+<?php
         foreach ($OPTION["ips"] as $OPTION_IP) {
 ?>
                 <span class="graphs_link_<?= (($OPTION_IP["enabled"]) && (($OPTION_IP["active"]))) ? 'green' : ( ($OPTION_IP["enabled"]) ? 'black' : 'red' ) ?>"><a href="graphs.php?ip=<?= $OPTION_IP["ip"] ?>"><?= $OPTION_IP["ip"] ?></a></span><br/>
-<?
+<?php
         }
 ?>
             </td>
             <td><font color="<?= ($OPTION["enabled"] && ($OPTION["active"] || ($OPTION["signal"] != ""))) ? 'green' : ( ($OPTION["enabled"]) ? 'black' : 'red' ) ?>"><?= (($OPTION["mac"] != "")) ? ((($monitoring["show_mac"]) || ($login)) ? $OPTION["mac"] : "------------") : "<br/>" ?></font></td>
             <td align="right">
-<?
+<?php
         foreach ($OPTION["ips"] as $OPTION_IP) {
 ?>
                 <?= convert_units($OPTION_IP["upload"],"bytes","M") ?><br/>
-<?
+<?php
         }
 ?>
             </td>
             <td align="right">
-<?
+<?php
         foreach ($OPTION["ips"] as  $OPTION_IP) {
 ?>
                 <?= convert_units($OPTION_IP["upload_rate"],$monitoring["rate_units"],"k") ?>/s<br/>
-<?
+<?php
         }
 ?>
             </td>
             <td align="right">
-<?
+<?php
         foreach ($OPTION["ips"] as  $OPTION_IP) {
 ?>
                 <?= convert_units($OPTION_IP["download"],"bytes","M") ?><br/>
-<?
+<?php
         }
 ?>
             </td>
             <td align="right">
-<?
+<?php
         foreach ($OPTION["ips"] as  $OPTION_IP) {
 ?>
                 <?= convert_units($OPTION_IP["download_rate"],$monitoring["rate_units"],"k") ?>/s<br/>
-<?
+<?php
         }
 ?>
             </td>
             <td class="td_inset">
                 <table class="inset_table">
-<?
+<?php
         foreach ($OPTION["ips"] as $i => $OPTION_IP) {
 ?>
                     <tr>
                         <td class="td_50<?= ($OPTION_IP["qos"] ? " qos_class_".$OPTION_IP["qos"] : "") ?>"><?= ($login) ? '<a href="'.change_url("QOS_".$OPTION_IP["ip"],($OPTION_IP["qos"] ? 'povolit' : 'omezit')).'">ip</a>' : "ip" ?></td>
-<?
+<?php
             if ($i == 0) {
                 if  ($OPTION["mac"] != "") {
 ?>
                         <td rowspan="<?= sizeof($OPTION["ips"]) ?>" class="td_50<?= ($OPTION["qos"] ? " qos_class_".$OPTION["qos"] : "") ?>"><?= ($login) ? '<a href="'.change_url("QOS_".$OPTION["mac"],($OPTION["qos"] ? 'povolit' : 'omezit')).'">mac</a>' : "mac" ?></td>
-<?
+<?php
                 } else {
 ?>
                         <td rowspan="<?= sizeof($OPTION["ips"]) ?>" class="td_50"><br/></td>
-<?
+<?php
                 }
             }
 ?>
                     </tr>
-<?
+<?php
         }
 ?>
                 </table>
             </td>
-<?
+<?php
         } else {
 ?>
             <td><span class="img_disabled">&nbsp;</span></td>
@@ -353,44 +353,44 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!ere
                     </tr>
                 </table>
             </td>
-<?
+<?php
         }
 ?>
             <td align="right">
-<?
+<?php
             if ($OPTION["mac"] != "") {
                 if (@file_exists("/var/log/account/rrd/signal-".str_replace(":","-",$OPTION["mac"]).".rrd")) {
 ?>
                 <span class="graphs_link_black"><a href="graphs.php?signal=<?= rawurlencode((($monitoring["show_mac"]) || ($login)) ? $OPTION["mac"] : base64_encode($OPTION["mac"])) ?>"><?= (($OPTION["signal"] != "") ? $OPTION["signal"] : "-?? dB") ?></a></span>
-<?
+<?php
                 } else if ($OPTION["signal"] != "") {
 ?>
                 <?= $OPTION["signal"] ?>
-<?
+<?php
                 } else {
 ?>
                 <br/>
-<?
+<?php
                 }
             } else {
 ?>
                 <br/>
-<?
+<?php
             }
 ?>
             </td>
         </tr>
-<?
+<?php
     }
 ?>
     </table>
-<?
+<?php
 }
 
 if ($CLIENTS["0"]["mac"] != "") {
     if (is_array($ACCOUNTS_DATA)) {
         foreach($ACCOUNTS_DATA as $DATA) {
-            if (ereg("#",$DATA)) {
+            if (preg_match('/#/',$DATA)) {
                 $DATA = preg_split("/[\ #]+/",$DATA);
                 $pom[0] = $DATA[2];
                 $pom[1] = $DATA[3];
@@ -410,11 +410,11 @@ if ($CLIENTS["0"]["mac"] != "") {
             <td width="30%"><?= ($login) ? '<input type="submit" name="RESET_ALL" value="resetovat všechny grafy a data"/>' : "<br/>" ?></td>
         </tr>
     </table>
-<?
+<?php
 }
 ?>
     <input type="hidden" name="sort_by" value="<?= $_REQUEST["sort_by"] ?>"/>
 </form>
-<?
+<?php
 include 'include/footer.php';
 ?>

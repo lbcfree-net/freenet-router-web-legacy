@@ -45,7 +45,7 @@ include 'include/header.php';
 <table width=100%>
     <tr>
     <td width="20%">status quaggy: <font color=<?= (exec("ps ax | grep -v grep | grep quagga") == "") ? '"red">vypnutá' : '"green">zapnutá' ?></font></td>
-<?
+<?php
 if ($login) {
 ?>
     <td>možnosti quaggy:</td>
@@ -53,7 +53,7 @@ if ($login) {
     <td><input type="submit" name="quagga_restart" value="restartovat"></td>
     <td><input type="submit" name="<?= ($ospfd_edit) ? 'clear" value="zobrazit routy' : 'quagga_ospfd" value="editovat ospfd.conf' ?>"></td>
     <td><input type="submit" name="<?= ($zebra_edit) ? 'clear" value="zobrazit routy' : 'quagga_zebra" value="editovat zebra.conf' ?>"></td>
-<?
+<?php
 } else {
 ?>
     <td></td>
@@ -61,7 +61,7 @@ if ($login) {
     <td></td>
     <td></td>
     <td></td>
-<?
+<?php
 }
 ?>
     </tr>
@@ -73,7 +73,7 @@ if ($login) {
 if ($ospfd_edit) {
 ?>
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
-<?
+<?php
     if(($file = fopen("/etc/quagga/ospfd.conf","r"))) {
 	while (!feof($file)) {
     	    echo fgets($file, 1000);
@@ -85,11 +85,11 @@ if ($ospfd_edit) {
     <br>
     <input type="submit" name="save_ospfd" value="uložit">
     <input type="hidden" name="quagga_ospfd" value="neco">
-<?
+<?php
 } else if ($zebra_edit) {
 ?>
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
-<?
+<?php
     if(($file = fopen("/etc/quagga/zebra.conf","r"))) {	
 	while (!feof($file)) {
     	    echo fgets($file, 1000);
@@ -101,11 +101,11 @@ if ($ospfd_edit) {
     <br>
     <input type="submit" name="save_zebra" value="uložit">
     <input type="hidden" name="quagga_zebra" value="neco">
-<?
+<?php
 } else {
 ?>
     <table align="center" width="98%">
-<?
+<?php
     if ((($_POST['network'] != "") || ($_POST['gateway'] != "") || ($_POST['device'] != "") || ($_POST['type'] != "") || ($_POST['cost'] != "")) && ($_POST['clear'] == "")) {
 ?>
 	<tr>
@@ -113,7 +113,7 @@ if ($ospfd_edit) {
 	<input type="submit" name="clear" value="zobrazit vše">
 	</td>
 	</tr>
-<?
+<?php
     }
 ?>
     <tr>
@@ -123,7 +123,7 @@ if ($ospfd_edit) {
     <th width=10%>typ</th>
     <th width=10%>cost</th>
     </tr>
-<?
+<?php
     exec("ip ro",$routes);
     foreach($routes as $I => $route) {
 	$route = preg_split("/[\ ]+/", $route);
@@ -173,15 +173,15 @@ if ($ospfd_edit) {
 	    <td><input type="submit" name="type" value="<?= $route[6] ?>" class="submitlink2"></td>
 	    <td align=right><input type="submit" name="cost" value="<?= $route[8] ?>" class="submitlink2"></td>
 	    </tr>
-<?
+<?php
 	}
     }
 ?>
     </table>
-<?
+<?php
 }
 ?>
 </form>
-<?
+<?php
 include 'include/footer.php';
 ?>

@@ -36,7 +36,7 @@ function save_quagga_zebra() {
     if(($soubor = fopen("/etc/quagga/zebra.conf","r")))
     {
         while (!feof($soubor)) {
-            if (ereg("^hostname ".$hostname,fgets($soubor, 4096))) {
+            if (preg_match("/^hostname $hostname/",fgets($soubor, 4096))) {
                 $pom = true;
                 break;
             }

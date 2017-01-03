@@ -14,7 +14,7 @@ function save_firewall_converted($DATA){
         {
             while (!feof($soubor_orig)) {
                 $pom2 = fgets($soubor_orig, 4096);
-                if (ereg("IFACE",$pom2) && (ereg("DUMMY",$pom2) || ereg("DEV",$pom2))) {
+                if (preg_match('/IFACE/',$pom2) && (preg_match('/DUMMY/',$pom2) || preg_match('/DEV/',$pom2))) {
                     break;
                 } else {
                     fwrite($soubor,$pom2);
@@ -84,7 +84,7 @@ function save_firewall_converted($DATA){
             }
             while (!feof($soubor_orig)) {
                 $pom2 = fgets($soubor_orig, 4096);
-                if ((!ereg("DEV",$pom2)) && (!ereg("DUMMY_IFACE=",$pom2))) {
+                if ((!preg_match('/DEV/',$pom2)) && (!preg_match('/DUMMY_IFACE='/,$pom2))) {
                     if ((($pom2 != "\n") && ($pom2 != "") && ($pom2 != "\t")) || ($pom3)) {
                         $pom3 = true;
                         fwrite($soubor,$pom2);
@@ -100,11 +100,11 @@ function save_firewall_converted($DATA){
 function get_firewall_macguard($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_MACGUARD=\"yes\"",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_MACGUARD=\"yes\"/",$LINE)) {
                 return true;
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }
@@ -115,11 +115,11 @@ function get_firewall_macguard($FIREWALL,$ADAPTER) {
 function get_firewall_qos($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_QOS=\"yes\"",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS=\"yes\"/",$LINE)) {
                 return true;
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }
@@ -130,17 +130,17 @@ function get_firewall_qos($FIREWALL,$ADAPTER) {
 function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WAN\"",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WAN\"/",$LINE)) {
                 return "WAN";
-            }else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WBCK\"",$LINE)) {
+            }else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WBCK\"/",$LINE)) {
                 return "WBCK";
-            }else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"LBCK\"",$LINE)) {
+            }else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"LBCK\"/",$LINE)) {
                 return "LBCK";
-    	    } else if (ereg("^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"NAT\"",$LINE)) {
+    	    } else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"NAT\"/",$LINE)) {
                 return "NAT";
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }
@@ -151,12 +151,12 @@ function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
 function get_firewall_qos_rate($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_QOS_RATE=",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_RATE=/",$LINE)) {
 		$LINE = preg_split("/[=\"]+/",$LINE);
                 return $LINE[1];
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }
@@ -167,12 +167,12 @@ function get_firewall_qos_rate($FIREWALL,$ADAPTER) {
 function get_firewall_description($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_DESCRIPTION=",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_DESCRIPTION=/",$LINE)) {
 		$LINE = preg_split("/[=\"]+/",$LINE);
                 return $LINE[1];
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }
@@ -183,11 +183,11 @@ function get_firewall_description($FIREWALL,$ADAPTER) {
 function get_firewall_dhcp($FIREWALL,$ADAPTER) {
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != "") {
-            if (ereg("^${FIREWALL_DATA_DEV}_MACGUARD_DHCP=\"yes\"",$LINE)) {
+            if (preg_match("/^${FIREWALL_DATA_DEV}_MACGUARD_DHCP=\"yes\"/",$LINE)) {
                 return true;
     	    }
         } else {
-            if (ereg("^DEV._IFACE=\"$ADAPTER\"",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }

@@ -1,9 +1,9 @@
-<?
+<?php
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
     <head>
-<?
+<?php
 if ($_SERVER['PHP_SELF'] == "/dalsi.php") {
 ?>
 <script language="JavaScript" type="text/javascript">
@@ -40,7 +40,7 @@ function zobrazit_uptime(){
 }
 //-->
 </script>
-<?
+<?php
 } else if (($_SERVER['PHP_SELF'] == "/network.php") || ($_SERVER['PHP_SELF'] == "/index.php") || ($_SERVER['PHP_SELF'] == "/monitoring.php")) {
 ?>
 <script language="JavaScript" type="text/javascript">
@@ -62,7 +62,7 @@ function set(num) {
     }
 }
 </script>
-<?
+<?php
 }
 if ($_SERVER['PHP_SELF'] == "/monitoring.php") {
 ?>
@@ -86,7 +86,7 @@ function setReloadTime(secs) {
 }
 //-->
 </script>
-<?
+<?php
 }
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -103,7 +103,7 @@ function setReloadTime(secs) {
 	      <div class="pad"></div>
 	      <div class="menu">
 		<div class="firstseparator"></div>
-<?
+<?php
 	$menu = array(
 			array('title' => 'další', 'url' => '/dalsi.php'),
 			array('title' => 'logy', 'url' => '/logs.php'),
@@ -122,7 +122,7 @@ function setReloadTime(secs) {
 		    <div class="separator"></div>
 		    <div class="contents"><a href="<?= $url ?>"><?= $title ?></a></div>
 		</div>
-<? } ?>
+<?php } ?>
 	
 	      </div>
 	    </div>
@@ -146,72 +146,72 @@ switch ($_SERVER['PHP_SELF']) {
     case "/dalsi.php":
 ?>
 		další informace
-<?
+<?php
 	break;
     case "/quagga.php":
 ?>
 		quagga - dynamické routování
-<?
+<?php
 	break;
     case "/macguard.php":
 ?>
 		úprava a nastavení macguarda
-<?
+<?php
 	break;
     case "/firewall.php":
 ?>
 		úprava a nastavení firewallu
-<?
+<?php
 	break;
     case "/monitoring.php":
 ?>
 		monitorování členů
-<?
+<?php
 	break;
     case "/logs.php":
 ?>
 		zobrazení logů
-<?
+<?php
 	break;
     case "/network.php":
 ?>
 		nastavení síťových karet
-<?
+<?php
 	break;
     case "/index.php":
 ?>
 		rozhraní pro správu Freenet routeru
-<?
+<?php
 	break;
     case "/graphs.php":
 	if ($_GET["ip"] != "") {
 ?>
 		grafy pro ip <?= $_GET["ip"] ?>
-<?
+<?php
 	} else if ($_GET["cpu"] != "") {
 ?>
 		grafy zatížení pro cpu <?= $_GET["cpu"] ?>
-<?
+<?php
 	} else if ($_GET["memory"] != "") {
 ?>
 		grafy využití operační paměti
-<?
+<?php
 	} else if ($_GET["drive"] != "") {
 ?>
 		grafy obsazení disku <?= $_GET["drive"] ?>
-<?
+<?php
 	} else if ($_GET["users"] != "") {
 ?>
 		grafy připojených počítačů
-<?
+<?php
 	} else if ($_GET["interface"] != "") {
 ?>
 		grafy pro rozhraní <?= $_GET["interface"] ?>
-<?
+<?php
 	} else if ($_GET["ping"] != "") {
 ?>
 		grafy pro ip <?= $_GET["ping"] ?>
-<?
+<?php
 	}
 	break;
 }

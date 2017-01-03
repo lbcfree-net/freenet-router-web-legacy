@@ -1,4 +1,4 @@
-<?
+<?php
 function monitoring_get_ips_info_all($ADAPTER,$IPS) {
     global $CLIENTS;
     $array = array();
@@ -653,7 +653,7 @@ function change_url($name,$value) {
     foreach ($_GET as $NAME => $VALUE) {
 	if ($NAME == $name) {
 	    // budeme chtit dělat i něco jiného
-	    if (($VALUE == $value) && ($NAME == "sort_by") && (!ereg("desc",$VALUE))) {
+	    if (($VALUE == $value) && ($NAME == "sort_by") && (!preg_match('/desc/',$VALUE))) {
 		$array[] = urlencode($NAME)."=".urlencode($value)."_desc";
 	    } else {
 		$array[] = urlencode($NAME)."=".urlencode($value);

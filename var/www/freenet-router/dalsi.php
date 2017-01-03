@@ -5,14 +5,14 @@ include 'include/functions/monitoring.php';
 include 'include/functions/system.php';
 include 'include/header.php';
 ?>
-<?
+<?php
 $CPUINFO = file("/proc/cpuinfo");
 $MEMINFO = file("/proc/meminfo");
 exec("df",$DISKINFO);
 exec("mount",$MOUNTINFO);
 exec("sensors",$SENSORS);
 ?>
-<?
+<?php
 if (($_GET["reset_response"]) && ($login)) {
     exec("sudo /bin/rm -f /var/log/account/routers.txt");
 }
@@ -22,7 +22,7 @@ if (($_GET["reset_response"]) && ($login)) {
         <td width="50%" valign="top">
             <table class="bordered">
                 <tr><th colspan="2">systémové informace</th></tr>
-<?
+<?php
     table_entry("model procesoru",system_get_cpu_model($CPUINFO),true);
     table_entry("frekvence procesoru",system_get_cpu_freq($CPUINFO)." MHz",true);
     table_entry("<a href=\"/graphs.php?cpu=0\">vytížení procesoru</a>",system_get_cpu_usage()."%",true);
@@ -50,7 +50,7 @@ if (($_GET["reset_response"]) && ($login)) {
 
             <table class="bordered">
                 <tr><th colspan="5">odezvy routerů</th></tr>
-<?
+<?php
 if ($_GET["response_from_all_dummy"]) {
     system_get_ping_response_from_all_dummy();
 } else {
@@ -58,16 +58,16 @@ if ($_GET["response_from_all_dummy"]) {
 }
 ?>
                 <tr>
-<?
+<?php
 if ($_GET["response_from_all_dummy"] || (!$login))  {
 ?>
                     <td colspan="5"><a href="?response_from_all_dummy=<?= (!$_GET["response_from_all_dummy"]) ?>">zobrazit odezvu jen definovaných routerů</a></td>
-<?
+<?php
 } else {
 ?>
                     <td colspan="3"><a href="?response_from_all_dummy=1">zobrazit odezvu všech dummy routerů</a></td>
                     <td colspan="2"><a href="?reset_response=1">reset dostupnosti</a></td>
-<?
+<?php
 }
 ?>
                 </tr>
@@ -75,6 +75,6 @@ if ($_GET["response_from_all_dummy"] || (!$login))  {
         </td>
     </tr>
 </table>
-<?
+<?php
 include "include/footer.php";
 ?>

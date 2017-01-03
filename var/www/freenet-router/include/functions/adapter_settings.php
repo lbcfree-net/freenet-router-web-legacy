@@ -1,4 +1,4 @@
-<?
+<?php
 function save_adapter_settings($DATA,$ADAPTER) {
 if (get_adapter_settings_is_adapter($ADAPTER)) {
     if(($soubor = fopen("/tmp/".$ADAPTER,"w")))
@@ -109,11 +109,11 @@ function get_adapter_settings_value($ADAPTER_INFO,$SETTING) {
 }
 // funkce pro získání dat z iwpriv
 function get_adapter_settings_iwpriv_value($adapter,$string) {
-    $value = split(":",exec("iwpriv ".$adapter." ".$string));
+    $value = explode(":",exec("iwpriv ".$adapter." ".$string));
     return $value[1];
 }
 function get_adapter_settings_is_loopback($ADAPTER) {
-    if (eregi("lo",$ADAPTER)) {
+    if (preg_match('/lo/i',$ADAPTER)) {
 	return true;
     }
     return false;
@@ -352,7 +352,7 @@ function get_adapter_settings_model($LSPCI,$ADAPTER) {
 		foreach ($LSPCI as $LINE) {
                     /* musíme převést formát 0000:00:13.0 na formát, který nabízí lspci */
 		    if ((strpos($LINE,$pom) === 0) || (strpos("0000:".$LINE,$pom) === 0)) {
-			$pom = split(": ",$LINE);
+			$pom = explode(': ', $LINE);
 			return $pom[1];
 		    }
 		}

@@ -182,7 +182,7 @@ function get_interfaces_active($INTERFACES,$ADAPTER) {
 function get_interfaces_bridge($INTERFACES,$ADAPTER) {
     foreach ($INTERFACES as $LINE) {
 	$LINE = preg_split("/[\ :\t]+/", $LINE);
-	if (($LINE[0] == "iface") && (ereg("br",$LINE[1])) && ($LINE[2] == "inet")) {
+	if (($LINE[0] == "iface") && (preg_match('/br/', $LINE[1])) && ($LINE[2] == "inet")) {
 	    $BRIDGE_DEV = $LINE[1];
 	}
 	if (($LINE[1] == "bridge_ports")) {
@@ -199,7 +199,7 @@ function get_interfaces_all_bridges($INTERFACES) {
     $array = array();
     foreach ($INTERFACES as $LINE) {
 	$LINE = preg_split("/[\ :\t]+/", $LINE);
-	if (($LINE[0] == "iface") && (ereg("br",$LINE[1])) && ($LINE[2] == "inet")) {
+	if (($LINE[0] == "iface") && (preg_match('/br/',$LINE[1])) && ($LINE[2] == "inet")) {
 	    $array[] = $LINE[1];
 	}
     }

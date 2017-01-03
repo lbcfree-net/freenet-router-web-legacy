@@ -62,7 +62,7 @@ if ($login) {
     <td><input type="submit" name="start" value="zapnout/restartovat"></td>
     <td><input type="submit" name="stop" value="vypnout"></td>
     <td>
-<?
+<?php
     if (exec("tc qdisc | grep -v priomap") == "") {
 	echo '<input type="submit" name="qos_start" value="zapnout qos">';
     } else {
@@ -71,7 +71,7 @@ if ($login) {
 ?>
     </td>
     <td>
-<?
+<?php
     if (exec("sudo /sbin/iptables -L -n | grep \"l7proto bittorrent reject-with icmp-port-unreachable\"") == "") {
 	echo '<input type="submit" name="p2p_start" value="zakázat p2p sítě">';
     } else {
@@ -80,7 +80,7 @@ if ($login) {
 ?>
     </td>
     <td>
-<?
+<?php
     if (exec("sudo /sbin/iptables -L -n | grep valid_mac_fwd") == "") {
 	echo '<input type="submit" name="macguard_start" value="zapnout macguarda">';
     } else {
@@ -97,7 +97,7 @@ if ($login) {
     <td></td>
     <td></td>
     <td></td>
-<?
+<?php
 }
 ?>
     </tr>
@@ -105,7 +105,7 @@ if ($login) {
 <hr>
 </form>
 <form method=post action="<?=$_SERVER['PHP_SELF']?> ">
-<?
+<?php
 if ($login) {
     echo '<textarea cols="130" rows="50" tabindex="2" name="text" wrap=off>';
 } else {

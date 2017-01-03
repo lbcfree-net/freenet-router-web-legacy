@@ -1,4 +1,4 @@
-<?
+<?php
 include "include/functions/general.php";
 include "include/functions/graphs.php";
 
@@ -54,48 +54,48 @@ $periods = array("hourly","daily","weekly","monthly");
 
 ?>
 <table width="100%">
-<?
+<?php
 foreach ($periods as $period) {
 ?>
     <tr>
     <td>
-<?
+<?php
     if ($ip != "") {
 ?>
         <img src="graphs.php?ip=<?= $ip ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf přenosu dat ip adresy" />
-<?
+<?php
     } else if ($cpu != "") {
 ?>
         <img src="graphs.php?cpu=<?= $cpu ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf vytížení procesoru" />
-<?
+<?php
     } else if ($memory != "") {
 ?>
         <img src="graphs.php?memory=1&amp;period=<?= $period ?>&amp;download=1" alt="graf obsazení operační paměti" />
-<?
+<?php
     } else if ($swap != "") {
 ?>
         <img src="graphs.php?swap=1&amp;period=<?= $period ?>&amp;download=1" alt="graf obsazení swap paměti" />
-<?
+<?php
     } else if ($drive != "") {
 ?>
         <img src="graphs.php?drive=<?= $drive ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf využití pevného disku" />
-<?
+<?php
     } else if ($tmpfs != "") {
 ?>
         <img src="graphs.php?tmpfs=<?= $tmpfs ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf využití tmpfs disku" />
-<?
+<?php
     } else if ($users != "") {
 ?>
         <img src="graphs.php?users=1&amp;period=<?= $period ?>&amp;download=1" alt="graf připojených počítačů" />
-<?
+<?php
     } else if ($interface != "") {
 ?>
         <img src="graphs.php?interface=<?= rawurlencode($interface) ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf přenosu na rozhraní" />
-<?
+<?php
     } else if ($ping != "") {
 ?>
         <img src="graphs.php?ping=<?= $ping ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf odezvy (ping)" />
-<?
+<?php
     } else if ($signal != "") {
 ?>
         <img src="graphs.php?signal=<?= rawurlencode($signal) ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf síly signálu" />
@@ -104,10 +104,10 @@ foreach ($periods as $period) {
 ?>
     </td>
     </tr>
-<?
+<?php
 }
 ?>
 </table>
-<?
+<?php
 include "include/footer.php";
 ?>

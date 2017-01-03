@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * popis:       Funkce pro stahování souborů
  * typ:         základní
