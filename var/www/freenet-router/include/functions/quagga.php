@@ -121,20 +121,20 @@ function save_quagga_ospfd($DATA) {
                 if (($quagga["dead-interval"] > 0) || ($quagga["dead-interval"] == "")) {
                     fwrite($soubor, " ip ospf dead-interval ".(($quagga["dead-interval"] != "") ? $quagga["dead-interval"] : "240")."\n");
                 }
-                fwrite($soubor, "!\n");
+                fwrite($soubor, "#\n");
             } else if (($NAME[1] == "ACTIVE") && (get_adapter_settings_is_dummy($NAME[0])) && (!$pom) && ($DATA[$NAME[0].$VLAN_POM."_REMOVE"] == "") && ($DATA[$NAME[0].$VLAN_POM."_QUAGGA"] == "ano")) {
                 fwrite($soubor, "interface ".$NAME[0].$VLAN."\n");
-                fwrite($soubor, "!\n");
+                fwrite($soubor, "#\n");
                 $pom = true;
             }
         }
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "router ospf\n");
         fwrite($soubor, " ospf router-id ".$dummy_ip."\n");
         fwrite($soubor, " redistribute connected route-map just-10\n");
         fwrite($soubor, " redistribute static metric-type 1\n");
         fwrite($soubor, " redistribute kernel metric-type 1\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         foreach ($DATA as $NAME => $VALUE) {
             $NAME = explode("_",$NAME);
             unset($VLAN);
@@ -157,19 +157,18 @@ function save_quagga_ospfd($DATA) {
                 }
             }
         }
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "area 0 authentication message-digest\n");
-        fwrite($soubor, "!\n");
-        fwrite($soubor, "!access-list net-10 permit 10.0.0.0/8\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "access-list term permit 127.0.0.1/32\n");
         fwrite($soubor, "access-list term deny any\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "route-map just-10 permit 10\n");
         fwrite($soubor, "match ip address net-10\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fwrite($soubor, "line vty\n");
         fwrite($soubor, " access-class term\n");
-        fwrite($soubor, "!\n");
+        fwrite($soubor, "#\n");
         fclose($soubor);
         exec("sudo /bin/cp /tmp/ospfd.conf /etc/quagga/ospfd.conf");
     }
