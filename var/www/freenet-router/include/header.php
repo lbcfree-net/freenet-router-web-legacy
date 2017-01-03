@@ -15,7 +15,7 @@ function doplnit_nulu(what){
 var serverdate = new Date('<?=date("F d, Y H:i:s", time())?>');
 function zobrazit_datum_a_cas(){
     serverdate.setSeconds(serverdate.getSeconds()+1);
-    var datestring=doplnit_nulu(serverdate.getDate())+"."+doplnit_nulu(serverdate.getMonth())+"."+serverdate.getFullYear();
+    var datestring=doplnit_nulu(serverdate.getDate())+"."+doplnit_nulu(serverdate.getMonth() + 1)+"."+serverdate.getFullYear();
     var timestring=doplnit_nulu(serverdate.getHours())+":"+doplnit_nulu(serverdate.getMinutes())+":"+doplnit_nulu(serverdate.getSeconds());
     document.getElementById("datum_a_cas").innerHTML=timestring+" "+datestring;
     window.setTimeout("zobrazit_datum_a_cas()",1000);
