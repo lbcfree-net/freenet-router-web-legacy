@@ -301,9 +301,9 @@ foreach ($ADAPTERS as $ADAPTER) {
 	    } else if ((substr($WEP_KEY_VALUE,0,2) == "s:") && (strlen($WEP_KEY_VALUE) > 7)) {
 		$WEP_KEY_TYPE = "128bit ASCII";
 		$WEP_KEY_VALUE = substr($WEP_KEY_VALUE,2);
-	    } else if ((substr($WEP_KEY_VALUE,0,2) != "s:") && (strlen(ereg_replace("[^0-9A-F]","",$WEP_KEY_VALUE)) <= 10)) {
+	    } else if ((substr($WEP_KEY_VALUE,0,2) != "s:") && (strlen(preg_replace("[^0-9A-F]","",$WEP_KEY_VALUE)) <= 10)) {
 		$WEP_KEY_TYPE = "64bit HEXA";
-	    } else if ((substr($WEP_KEY_VALUE,0,2) != "s:") && (strlen(ereg_replace("[^0-9A-F]","",$WEP_KEY_VALUE)) > 10)) {
+	    } else if ((substr($WEP_KEY_VALUE,0,2) != "s:") && (strlen(preg_replace("[^0-9A-F]","",$WEP_KEY_VALUE)) > 10)) {
 		$WEP_KEY_TYPE = "128bit HEXA";
 	    }
 	    if (!$login) {

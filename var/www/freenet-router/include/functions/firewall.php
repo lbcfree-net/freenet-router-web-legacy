@@ -37,7 +37,7 @@ function save_firewall_converted($DATA){
                 // nebudeme ukládat dummy
                 if (($NAME[1] == "ACTIVE") && (!get_adapter_settings_is_dummy($NAME[0])) && ($DATA[$NAME[0].$VLAN_POM."_REMOVE"] == "") && ($VALUE == "ano")) {
                 // výjimka pro bridge
-                if ((!eregi("br",$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != "")) {
+                if ((!preg_match('/br/',$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != "")) {
                     fwrite($soubor,"DEV".$I."_IFACE=\"".$NAME[0].$VLAN."\"\n");
                     if ($DATA[$NAME[0].$VLAN_POM."_QOS"] != "") {
                         fwrite($soubor,"DEV".$I."_QOS=\"".convert_czech_to_english($DATA[$NAME[0].$VLAN_POM."_QOS"])."\"\n");
@@ -84,10 +84,11 @@ function save_firewall_converted($DATA){
             }
             while (!feof($soubor_orig)) {
                 $pom2 = fgets($soubor_orig, 4096);
-                if ((!preg_match('/DEV/',$pom2)) && (!preg_match('/DUMMY_IFACE='/,$pom2))) {
-                    if ((($pom2 != "\n") && ($pom2 != "") && ($pom2 != "\t")) || ($pom3)) {
+                $pom3 = false;
+                if ((!preg_match('/DEV/', $pom2)) && (!preg_match('/DUMMY_IFACE=/', $pom2))) {
+                    if ((($pom2 != "\n") && ($pom2 != '') && ($pom2 != "\t")) || ($pom3)) {
                         $pom3 = true;
-                        fwrite($soubor,$pom2);
+                        fwrite($soubor, $pom2);
                     }
                 }
             }
@@ -98,8 +99,9 @@ function save_firewall_converted($DATA){
     exec("sudo /bin/cp /tmp/firewall /etc/init.d/firewall");
 }
 function get_firewall_macguard($FIREWALL,$ADAPTER) {
+    $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
-        if ($FIREWALL_DATA_DEV != "") {
+        if ($FIREWALL_DATA_DEV != '') {
             if (preg_match("/^${FIREWALL_DATA_DEV}_MACGUARD=\"yes\"/",$LINE)) {
                 return true;
     	    }
@@ -187,7 +189,7 @@ function get_firewall_dhcp($FIREWALL,$ADAPTER) {
                 return true;
     	    }
         } else {
-            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
+            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/i",$LINE)) {
                 $FIREWALL_DATA_DEV = explode("_",$LINE);
                 $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
             }

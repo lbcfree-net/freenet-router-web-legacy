@@ -89,7 +89,7 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
 <?php
     if ((!is_array($list)) && preg_match('/:/',$list)) {
 	$pom = explode('[:]', $list);
-	unset($list);
+    $list = [];
 	// krok
 	if ($pom[2] != "") {
 	    for ($i=$pom[0]; $i<=$pom[1]; $i=$i+$pom[2]) {
@@ -114,10 +114,10 @@ function create_selection($name ,$select_name, $list, $selected, $units) {
 <?php
     $selected_pom = false;
     foreach ($list as $I => $option) {
-        if ((ereg_replace("[^0-9]","",$option) != "") && ((ereg_replace("[^0-9]","",$selected) != "") || ($selected == "auto")) && ($units != "")) {
-            if (ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) $selected_pom = true;
+        if ((preg_replace("[^0-9]","",$option) != "") && ((preg_replace("[^0-9]","",$selected) != "") || ($selected == "auto")) && ($units != "")) {
+            if (preg_replace("[^0-9]","",$option) == preg_replace("[^0-9]","",$selected)) $selected_pom = true;
 ?>
-            <option <?= ((ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) ? "selected=\"selected\"" : "") ?> value="<?= $option ?>"><?= $option ?><?= ((is_array($units)) ? " ".$units[$I] : (($units != "none") ? " ".$units : "" )) ?></option>
+            <option <?= ((preg_replace("[^0-9]","",$option) == preg_replace("[^0-9]","",$selected)) ? "selected=\"selected\"" : "") ?> value="<?= $option ?>"><?= $option ?><?= ((is_array($units)) ? " ".$units[$I] : (($units != "none") ? " ".$units : "" )) ?></option>
 <?php
         } else {
             if ($option == $selected) $selected_pom = true;
@@ -166,13 +166,13 @@ function netmask2CIDR($netmask)
 }
 
 // funkce na prohledání pole, hledá jen část stringu
-function array_eregi_search($string,$array) {
+function array_eregi_search($strin, $array) {
     if (is_array($array)) {
-	foreach ($array as $array_element) {
-	    if (eregi($string,$array_element)) {
-		return true;
-	    }
-	}
+        foreach ($array as $array_element) {
+            if (preg_match("/$string/i", $array_element)) {
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -280,34 +280,34 @@ function get_file_value($file) {
 }
 // pěkné seřazení adapterů
 function sort_adapters($a,$b) {
-    if (eregi("dummy",$a)) {
+    if (preg_match('/dummy/i',$a)) {
 	$dummy_a = true;
     }
-    if (eregi("dummy",$b)) {
+    if (preg_match('/dummy/i',$b)) {
 	$dummy_b = true;
     }
-    if (eregi("br",$a)) {
+    if (preg_match('/br/i',$a)) {
 	$bridge_a = true;
     }
-    if (eregi("br",$b)) {
+    if (preg_match('/br/i',$b)) {
 	$bridge_b = true;
     }
-    if (eregi("eth",$a)) {
+    if (preg_match('/eth/i',$a)) {
 	$eth_a = true;
     }
-    if (eregi("eth",$b)) {
+    if (preg_match('/eth/i',$b)) {
 	$eth_b = true;
     }
-    if (eregi("ath",$a)) {
+    if (preg_match('/ath/i',$a)) {
 	$ath_a = true;
     }
-    if (eregi("ath",$b)) {
+    if (preg_match('/ath/i',$b)) {
 	$ath_b = true;
     }
-    if (eregi("wlan",$a)) {
+    if (preg_match('/wlan/i',$a)) {
 	$wlan_a = true;
     }
-    if (eregi("wlan",$b)) {
+    if (preg_match('/wlan/i',$b)) {
 	$wlan_b = true;
     }
     if (($dummy_a) && ($dummy_b)) {
@@ -406,8 +406,8 @@ function create_selection_service($name ,$select_name, $list, $selected, $active
     <select name="<?= $select_name ?>" size="1">
 <?php
     foreach ( $list as $I => $option ) {
-	if ((ereg_replace("[^0-9]","",$option) != "") && (ereg_replace("[^0-9]","",$selected) != "")) {
-	    if (ereg_replace("[^0-9]","",$option) == ereg_replace("[^0-9]","",$selected)) {
+	if ((preg_replace("[^0-9]","",$option) != "") && (preg_replace("[^0-9]","",$selected) != "")) {
+	    if (preg_replace("[^0-9]","",$option) == preg_replace("[^0-9]","",$selected)) {
 		echo "<option selected=\"selected\" value=\"$option\">$option\n";
 	    } else {
 		echo "<option value=\"$option\">$option\n";

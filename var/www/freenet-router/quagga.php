@@ -128,7 +128,7 @@ if ($ospfd_edit) {
     foreach($routes as $I => $route) {
 	$route = preg_split("/[\ ]+/", $route);
 	// pokud je více cest se stejnou váhou
-	if (eregi("nexthop",$route[0])) {
+	if (preg_match('/nexthop/i',$route[0])) {
 	    $route[0] = $network_prev;
 	    $route[6] = $proto_prev;
 	    $route[8] = $metric_prev;

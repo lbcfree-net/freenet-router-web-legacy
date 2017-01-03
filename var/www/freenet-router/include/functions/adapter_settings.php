@@ -29,10 +29,10 @@ if (get_adapter_settings_is_adapter($ADAPTER)) {
                 }
             } else if (($SETTING == "RATE_LAN") && ($DATA[$ADAPTER."_ESSID"] == "")) {
                 $pom = explode(" ",$DATA[$ADAPTER."_RATE"]);
-                fwrite($soubor, "RATE=\"".ereg_replace("[^0-9]","",$pom[0]).$SETTINGS_UNITS[$I]."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
+                fwrite($soubor, "RATE=\"".preg_replace("[^0-9]","",$pom[0]).$SETTINGS_UNITS[$I]."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
             } else if (($SETTING == "DUPLEX") && ($DATA[$ADAPTER."_ESSID"] == "")) {
                 $pom = explode(" ",$DATA[$ADAPTER."_RATE"]);
-                if (eregi("half",$pom[0])) {
+                if (preg_match('/half/',$pom[0])) {
                     $pom = "HD";
                 } else {
                     $pom = "FD";
@@ -67,7 +67,7 @@ function get_adapter_settings_value($ADAPTER_INFO,$SETTING) {
 		} else {
 		    $pom = "Full";
 		}
-		return ereg_replace("[^0-9]","",$ADAPTER_INFO_DATA[1])."baseT/".$pom;
+		return preg_replace("[^0-9]","",$ADAPTER_INFO_DATA[1])."baseT/".$pom;
 	    }
 	}
     }
@@ -119,32 +119,33 @@ function get_adapter_settings_is_loopback($ADAPTER) {
     return false;
 }
 function get_adapter_settings_is_bridge($ADAPTER) {
-    if (eregi("br",$ADAPTER)) {
+    if (preg_match('/br/i',$ADAPTER)) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_dummy($ADAPTER) {
-    if (eregi("dummy",$ADAPTER)) {
+    if (preg_match('/dummy/i',$ADAPTER)) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_vlan($ADAPTER) {
-    if (eregi("\.",$ADAPTER)) {
+    if (preg_match('/\./',$ADAPTER)) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_ethernet($ADAPTER) {
-    if (eregi("eth",$ADAPTER) && ((!eregi(":",$ADAPTER)) && (!eregi("\.",$ADAPTER)))) {
+    if (preg_match('/eth/i',$ADAPTER) && ((!preg_match('/:/',$ADAPTER)) && (!preg_match('/\./',$ADAPTER)))) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_adapter($ADAPTER) {
-    if ((eregi("eth",$ADAPTER) || eregi("wlan",$ADAPTER) || eregi("ath",$ADAPTER)) && ((!eregi(":",$ADAPTER)) && (!eregi("\.",$ADAPTER)))) {
-	return true;
+    if ((preg_match('/eth/', $ADAPTER) || preg_match('/wlan/', $ADAPTER) || preg_match('/ath/', $ADAPTER)) &&
+		((!preg_match('/:/', $ADAPTER)) && (!preg_match('/\./', $ADAPTER)))) {
+		return true;
     }
     return false;
 }
@@ -157,15 +158,14 @@ function get_adapter_settings_is_wifi($IWCONFIG,$ADAPTER) {
 	    }
 	}
     }
-    if ((get_adapter_settings_is_adapter($ADAPTER)) && (eregi("ath",$ADAPTER) || eregi("wlan",$ADAPTER))) {
+    if ((get_adapter_settings_is_adapter($ADAPTER)) && (preg_match('/ath/i',$ADAPTER) || preg_match('/wlan/',$ADAPTER))) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_madwifi($ADAPTER) {
-    //if ((get_adapter_settings_is_wifi($IWCONFIG,$ADAPTER)) && eregi("ath",$ADAPTER)) {
-    if ((get_adapter_settings_is_adapter($ADAPTER)) && eregi("ath",$ADAPTER)) {
-	return true;
+    if (get_adapter_settings_is_adapter($ADAPTER) && preg_match('/ath/i',$ADAPTER)) {
+		return true;
     }
     return false;
 }
@@ -299,7 +299,7 @@ function get_adapter_settings_ethtool_rate($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (eregi("speed",$LINE)) {
+	    if (preg_match('/speed/',$LINE)) {
 		$LINE = preg_split("/[\ M]+/", $LINE);
 		return $LINE[1];
 	    }
@@ -310,9 +310,9 @@ function get_adapter_settings_ethtool_rate($ADAPTER) {
 function get_adapter_settings_ethtool_link($ADAPTER) {
     exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
     foreach ($ETHTOOL as $LINE) {
-    	if (eregi("link detected: yes",$LINE)) {
+    	if (preg_match('/link detected: yes/',$LINE)) {
 	    return "aktivní";
-	} else if (eregi("link detected: no",$LINE)) {
+	} else if (preg_match('/link detected: no/',$LINE)) {
     	    return "není";
         }
     }
@@ -322,9 +322,9 @@ function get_adapter_settings_ethtool_duplex($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (eregi("duplex: full",$LINE)) {
+	    if (preg_match('/duplex: full/',$LINE)) {
 		return "plný";
-	    } else if (eregi("duplex: half",$LINE)) {
+	    } else if (preg_match('/duplex: half/',$LINE)) {
 		return "poloviční";
 	    }
 	}
@@ -335,9 +335,9 @@ function get_adapter_settings_ethtool_autoneg($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (eregi("auto-negotiation: on",$LINE)) {
+	    if (preg_match('/auto-negotiation: on/',$LINE)) {
 		return "ano";
-	    } else if (eregi("auto-negotiation: off",$LINE)) {
+	    } else if (preg_match('/auto-negotiation: off/',$LINE)) {
 		return "ne";
 	    }
 	}
@@ -465,7 +465,7 @@ function get_adapter_settings_ethtool_rates($adapter) {
     foreach ($array_pom as $pom) {
 	$pom = preg_split("/[\ ]+/", $pom);
 	foreach ($pom as $p) {
-	    if (eregi("10",$p) && (!in_array($p,$array))) {
+	    if (preg_match('/10/i',$p) && (!in_array($p,$array))) {
 		$array[] = $p;
 	    }
 	}

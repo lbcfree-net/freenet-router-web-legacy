@@ -9,15 +9,21 @@ function system_get_cpu_model($CPUINFO) {
     }
     return "";
 }
-function system_get_cpu_temperature($SENSORS) {
-    if(count($SENSORS)>2){
-	$TEMPERATURE=explode(":        +",$SENSORS[2]);
-	$TEMPERATURE=explode(" C",$TEMPERATURE[1]);
-	$TEMPERATURE=$TEMPERATURE[0]."°C";
+function system_get_cpu_temperature($sensors) {
+    if(count($sensors) > 2){
+        $temperature = explode(':        +', $sensors[2]);
+        $temperature = explode(' C', $temperature[1]);
+        if(count($temperature) > 0) {
+            if (strpos($temperature[0], '°C') === false) {
+                $temperature = $temperature[0] . '°C';
+            } else {
+                $temperature = $temperature[0];
+            }
+        }
     }else{
-	$TEMPERATURE="N/A";
+        $temperature = 'N/A';
     }
-    return $TEMPERATURE;
+    return $temperature;
 }
 function system_get_cpu_freq($CPUINFO) {
     foreach ($CPUINFO as $line) {
@@ -173,7 +179,7 @@ function system_get_router_accessibility($router) {
     if (file_exists("/var/log/account/routers.txt")) {
 	$file = file("/var/log/account/routers.txt");
 	foreach($file as $line) {
-	    if (!preg_match('/#/', $line) && (preg_match("/$router/", $line))) {
+	    if (!preg_match('/#/', $line) && (preg_match($router, $line))) {
 		$line = preg_split("/[:]+/",$line);
 		if ($line[0] == $router) {
 		    return round((($line[1]/ ($line[1] + $line[2])) * 100),1)."%";

@@ -29,7 +29,7 @@ function save_interfaces_converted($DATA) {
             }
             if (($NAME[1] == "ACTIVE") && ($DATA[$NAME[0].$VLAN_POM."_REMOVE"] == "")) {
                 // pokud je zařízení v režimu bridge, tak ho nesmíme nahazovat ani VLAN, jen pokud odstraňujeme bridge rozhraní!
-                if (($VALUE == "ano") && ((!eregi("br",$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
+                if (($VALUE == "ano") && ((!preg_match('/br/',$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
                     fwrite($soubor, "auto ".$NAME[0].$VLAN."\n");
                 }
                 if ($DATA[$NAME[0].$VLAN_POM."_DHCP_CLIENT"] == "ano") {
@@ -53,7 +53,7 @@ function save_interfaces_converted($DATA) {
                     // zapsání ip
                     if ($DATA[$NAME[0].$VLAN_POM."_IP_".$J] != "") {
                         if ($K != 0) {
-                            if (($VALUE == "ano") && ((!eregi("br",$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
+                            if (($VALUE == "ano") && ((!preg_match('/br/',$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
                                 fwrite($soubor, "auto ".$NAME[0].$VLAN.":".$J."\n");
                             }
                             if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
@@ -77,7 +77,7 @@ function save_interfaces_converted($DATA) {
                         }
                     }
                     // bridge
-                    if (($J == 0) && (eregi("br",$NAME[0].$VLAN))) {
+                    if (($J == 0) && (preg_match('/br/',$NAME[0].$VLAN))) {
                         foreach ($DATA as $N => $V) {
                             if ($V == $NAME[0].$VLAN) {
                                 $N = explode("_",$N);
@@ -208,7 +208,7 @@ function get_interfaces_all_bridges($INTERFACES) {
 function get_interfaces_vlan($INTERFACES,$ADAPTER) {
     $array = array();
     foreach ($INTERFACES as $LINE) {
-	$LINE = preg_split("/[\ .\t]+/", $LINE);
+	$LINE = preg_split("/[\ .\t]+/i", $LINE);
 	if (($LINE[0] == "iface") && ($ADAPTER == $LINE[1]) && (($LINE[3] == "inet") || ($LINE[4] == "inet"))) {
 	    $LINE = explode(":", $LINE[2]);
 	    if (!in_array($LINE[0],$array)) {

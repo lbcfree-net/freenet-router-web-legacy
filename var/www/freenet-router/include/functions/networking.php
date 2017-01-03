@@ -85,7 +85,7 @@ function get_network_adapter_mac($NETWORK,$ADAPTER) {
     foreach ($NETWORK as $I => $LINE) {
         $LINE = preg_split("/[\ :@]+/", $LINE);
         if ($ADAPTER == $LINE[1]) {
-            if (eregi("link/ether",$NETWORK[($I+1)])) {
+            if (preg_match('/link\/ether/i',$NETWORK[($I+1)])) {
                 $pom = preg_split("/[\ @]+/", $NETWORK[($I+1)]);
                 return strtoupper($pom[2]);
             }

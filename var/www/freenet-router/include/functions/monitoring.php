@@ -99,7 +99,7 @@ function monitoring_get_is_in_qos($ADAPTER,$MAC) {
         /* přeskočíme zamřížkované řádky */
         if ($line[0] == "#") continue;
         /* pokud řádek neobsahuje mac adresu, nebo ip adresu, tak ho také přeskočíme, urychlí match */
-        if (!eregi($MAC,$line)) continue;
+        if (!preg_match("/$MAC/i", $line)) continue;
         $line = preg_split("/[\ \"=\t\n]+/",$line);
         /* pokud první znak z prvního matche je opět mřížka, tak řádek přeskočíme, musíme použít ' */
         if (!preg_match('/CLASS_([\d]+)\[\$\{#CLASS_[\d]+\[\*\]\}\]/',$line[0],$class)) continue;
@@ -129,7 +129,7 @@ function monitoring_get_mac_is_active($ADAPTER,$MAC) {
     $array = array();
     if (is_array($ARP_DATA)) {
 	foreach ($ARP_DATA as $line) {
-	    if (eregi($MAC,$line)) {
+	    if (preg_match("/$MAC/",$line)) {
 		$line = preg_split("/[\ \t\n]+/", $line);
 		if (((strcasecmp($line[4],$ADAPTER) == 0) || ($ADAPTER == $ADAPTER_ALL)) && (strcasecmp($line[2],$MAC) == 0)) {
 	    	    return true;
@@ -154,7 +154,7 @@ function monitoring_get_mac_is_enabled($ADAPTER,$MAC) {
     if (is_array($MACGUARD_DATA)) {
 	foreach ($MACGUARD_DATA as $line) {
 	    unset ($pom);
-	    if (eregi($MAC,$line)) {
+	    if (preg_match("/$MAC/",$line)) {
 		$line = preg_split("/[\ ;\t\n]+/", $line);
 		foreach (get_interfaces_ip($INTERFACES,$ADAPTER) as $ADAPTER_IP) {
 		    if (!$pom) {
@@ -184,7 +184,7 @@ function monitoring_get_ip_stats($IP) {
     $array = array();
     if (is_array($ACCOUNTS_DATA)) {
 	foreach ($ACCOUNTS_DATA as $line) {
-	    if (eregi($IP.":",$line)) {
+	    if (preg_match("/$IP:/",$line)) {
 		$line = preg_split("/[\ :\t\n]+/", $line);
 	        if ($IP == $line[0]) {
 		    $array[0] = $line[1];
@@ -210,7 +210,7 @@ function monitoring_get_ips_from_stats() {
     $I = "0";
     if (is_array($ACCOUNTS_DATA)) {
 	foreach ($ACCOUNTS_DATA as $line) {
-	    if (!eregi("#",$line)) {
+	    if (!preg_match('/#/',$line)) {
 		$line = preg_split("/[\ :\t\n]+/", $line);
 	        if ($line[0] != "") {
 		    $array[$I]["ip"] = $line[0];
@@ -234,7 +234,7 @@ function monitoring_get_mac_ips_from_arp($ADAPTER,$MAC) {
     $array = array();
     if (is_array($ARP_DATA)) {
 	foreach ($ARP_DATA as $line) {
-	    if (eregi($MAC,$line)) {
+	    if (preg_match("/$MAC/i",$line)) {
 		$line = preg_split("/[\ \t\n]+/", $line);
 		if (((strcasecmp($line[4],$ADAPTER) == 0) || ($ADAPTER == $ADAPTER_ALL)) && (strcasecmp($line[2],$MAC) == 0)) {
 	    	    $array[] = $line[0];
@@ -253,7 +253,7 @@ function monitoring_get_mac_ips_from_macguard($ADAPTER,$MAC) {
     if (is_array($MACGUARD_DATA)) {
 	foreach ($MACGUARD_DATA as $line) {
 	    unset ($pom);
-	    if (eregi($MAC,$line)) {
+	    if (preg_match("/$MAC/i",$line)) {
 		$line = preg_split("/[\ ;\t\n]+/", $line);
 		foreach (get_interfaces_ip($INTERFACES,$ADAPTER) as $ADAPTER_IP) {
 		    if (!$pom) {
@@ -285,7 +285,7 @@ function monitoring_get_macs_from_arp($ADAPTER) {
     if (is_array($ARP_DATA)) {
 	foreach ($ARP_DATA as $line) {
 	    $line = preg_split("/[\ \t\n]+/", $line);
-	    if (((strcasecmp($line[4],$ADAPTER) == 0) || ($ADAPTER == $ADAPTER_ALL)) && eregi(":", $line[2])) {
+	    if (((strcasecmp($line[4],$ADAPTER) == 0) || ($ADAPTER == $ADAPTER_ALL)) && preg_match('/:/', $line[2])) {
 	        $array[] = strtoupper($line[2]);
     	    }
         }
@@ -302,7 +302,7 @@ function monitoring_get_macs_from_macguard($ADAPTER) {
 	foreach ($MACGUARD_DATA as $line) {
 	    unset ($pom);
 	    $line = preg_split("/[\ ;\t\n]+/", $line);
-	    if (eregi(":", $line[1])) {
+	    if (preg_match('/:/', $line[1])) {
 		foreach (get_interfaces_ip($INTERFACES,$ADAPTER) as $ADAPTER_IP) {
 		    if (!$pom) {
 			$pom = is_ip_from_subnet($line[0],$ADAPTER_IP[0]."/".netmask2CIDR($ADAPTER_IP[1]));                        
@@ -342,7 +342,7 @@ function monitoring_get_macs_from_hostap($ADAPTER) {
 	if (file_exists("/proc/net/hostap/".$ADAPTER)) {
 	    if ($handle = @opendir("/proc/net/hostap/".$ADAPTER)) {
 		while (false !== ($file = readdir($handle))) {
-		    if ($file != "." && $file != ".." && eregi(":", $file)) {
+		    if ($file != "." && $file != ".." && preg_match('/:/', $file)) {
 	    		$array[] = strtoupper($file);
 	    	    }
 		}
@@ -374,7 +374,7 @@ function monitoring_get_macs_from_madwifi($ADAPTER) {
 	    if (is_array($MADWIFI_CLIENTS)) {
 		foreach ($MADWIFI_CLIENTS as $line) {
 		    $line = preg_split("/[\ \t\n]+/", $line);
-		    if (eregi(":", $line[0])) {
+		    if (preg_match('/:/', $line[0])) {
 	    		$array[] = strtoupper($line[0]);
     		    }
     		}
@@ -401,7 +401,7 @@ function monitoring_get_madwifi_signal($ADAPTER, $MAC) {
     }
     foreach ($ADAPTERS as $ADAPTER) {
 	if (file_exists("/proc/net/madwifi/".$ADAPTER)) {
-	    if (is_array($MADWIFI_CLIENTS) && (eregi(":",$MAC))) {
+	    if (is_array($MADWIFI_CLIENTS) && (preg_match('/:/',$MAC))) {
 		foreach ($MADWIFI_CLIENTS as $line) {
 		    $line = preg_split("/[\ \t\n]+/", $line);
 		    if (strcasecmp($line[0],$MAC) == 0) {
@@ -431,7 +431,7 @@ function monitoring_get_hostap_signal($ADAPTER, $MAC) {
     foreach ($ADAPTERS as $ADAPTER) {
 	if (file_exists("/proc/net/hostap/".$ADAPTER."/".strtolower($MAC))) {
 	    foreach (file("/proc/net/hostap/".$ADAPTER."/".strtolower($MAC)) as $line) {
-		if (eregi("signal",$line)) {
+		if (preg_match('/signal/i',$line)) {
 		    $line = preg_split("/[\ =:\t\n]+/", $line);
 		    if (($line[0] == "last_rx") && ($line[5] != "")) {
 			return $line[5]." dB";
@@ -446,7 +446,7 @@ function monitoring_get_mikrotik_signal($ADAPTER, $MAC) {
     global $MIKROTIK_WIFI_DATA;
     if (is_array($MIKROTIK_WIFI_DATA)) {
         foreach ($MIKROTIK_WIFI_DATA as $line) {
-            if (eregi($MAC,$line)) {
+            if (preg_match("/$MAC/i",$line)) {
                 $line = preg_split("/[\ =d\t\n]+/", $line);
                 if (($line[3] == $MAC) && ($line[5] != "")) {
                     return $line[5]." dB";

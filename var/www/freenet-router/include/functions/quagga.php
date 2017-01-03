@@ -176,17 +176,17 @@ function save_quagga_ospfd($DATA) {
 }
 function get_quagga_adapter_description($ADAPTER) {
     if (get_adapter_settings_is_bridge($ADAPTER)) {
-	return "BRIDGE".ereg_replace("[^0-9]","",$ADAPTER);
+	return "BRIDGE".preg_replace("[^0-9]","",$ADAPTER);
     } else if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	return "LAN".ereg_replace("[^0-9]","",$ADAPTER);
+	return "LAN".preg_replace("[^0-9]","",$ADAPTER);
     } else if (get_adapter_settings_is_madwifi($ADAPTER)) {
-	return "ATH".ereg_replace("[^0-9]","",$ADAPTER);
+	return "ATH".preg_replace("[^0-9]","",$ADAPTER);
     } else if (get_adapter_settings_is_wifi("",$ADAPTER)) {
-	return "WIFI".ereg_replace("[^0-9]","",$ADAPTER);
+	return "WIFI".preg_replace("[^0-9]","",$ADAPTER);
     } else if (get_adapter_settings_is_vlan($ADAPTER)) {
-	return "VLAN".ereg_replace("[^0-9]","",$ADAPTER);
+	return "VLAN".preg_replace("[^0-9]","",$ADAPTER);
     } else {
-	return "DEVICE".ereg_replace("[^0-9]","",$ADAPTER);
+	return "DEVICE".preg_replace("[^0-9]","",$ADAPTER);
     }
     return false;
 }

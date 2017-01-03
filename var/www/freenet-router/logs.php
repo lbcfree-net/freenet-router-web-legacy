@@ -33,7 +33,7 @@ if (($_GET["show_file"] != "") && ($login)) {
     if (is_dir($LOG_DIR."/".$POM_DIR)) {
         $dir = opendir($LOG_DIR."/".$POM_DIR);
         while ($FILE = readdir($dir)) {
-            if (is_file($LOG_DIR."/".$POM_DIR.$FILE) && (eregi($BASE_NAME,$FILE))) {
+            if (is_file($LOG_DIR."/".$POM_DIR.$FILE) && (preg_match("/$BASE_NAME/i", $FILE))) {
 ?>
     <tr>
         <td align="left"><a href="<?= $_SERVER['PHP_SELF']."?show_file=".$POM_DIR.$FILE ?>"><?= $FILE ?></a></td>

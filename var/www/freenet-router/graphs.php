@@ -99,7 +99,7 @@ foreach ($periods as $period) {
     } else if ($signal != "") {
 ?>
         <img src="graphs.php?signal=<?= rawurlencode($signal) ?>&amp;period=<?= $period ?>&amp;download=1" alt="graf síly signálu" />
-<?
+<?php
     }
 ?>
     </td>

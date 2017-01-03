@@ -234,7 +234,7 @@ function get_admin_email() {
     return get_file_value("/etc/admin_email");
 }
 function get_admin_email_hash() {
-    return ereg_replace("@","<at>",get_file_value("/etc/admin_email"));
+    return preg_replace("@","<at>",get_file_value("/etc/admin_email"));
 }
 
 function get_mail_server() 

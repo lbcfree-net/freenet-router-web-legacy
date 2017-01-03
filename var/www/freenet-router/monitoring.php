@@ -14,7 +14,7 @@ include 'include/header.php';
 
 
 foreach ($_REQUEST as $VALUE => $NAME) {
-    if (eregi("QOS",$VALUE) && ($login)) {
+    if (preg_match('/QOS/i',$VALUE) && ($login)) {
 	$VALUE = str_replace("_",".",substr($VALUE,4));
 	monitoring_set_qos($VALUE,$NAME);
     }
@@ -64,7 +64,7 @@ $ADAPTER = $_GET['actual_interface'];
 $int_num = 0;
 foreach ($ADAPTERS as $a) {
 // menu zobrazime i v případě že adapter neexistuje
-    if (($a != "dummy0") && (!eregi("ifb",$a))) {
+    if (($a != "dummy0") && (!preg_match('/ifb/i',$a))) {
 	if (($int_num == 0) && ($ADAPTER == '')) $ADAPTER = $a;
 ?>	<li><a class="<?= $ADAPTER == $a ? 'active' : '' ?>" href="<?= change_url("actual_interface",$a) ?>"><?= $a ?></a></li>
 <?php	$int_num++;
@@ -78,7 +78,7 @@ foreach ($ADAPTERS as $a) {
 <form method="post" action="<?= $_SERVER['PHP_SELF']."?actual_interface=".$ADAPTER ?>">
 <?php
 $int_num = 0;
-if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!eregi("ifb",$ADAPTER))) || ($ADAPTER == $ADAPTER_ALL)) {
+if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!preg_match('/ifb/i',$ADAPTER))) || ($ADAPTER == $ADAPTER_ALL)) {
     // získáme informace o adapteru
     $loopback = get_adapter_settings_is_loopback($ADAPTER);
     $dummy = get_adapter_settings_is_dummy($ADAPTER);
