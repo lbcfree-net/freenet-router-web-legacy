@@ -9,24 +9,21 @@ function get_quagga_ospf($OSPF,$ADAPTER) {
 }
 function save_quagga_daemons() {
     global $quagga;
-    // tento soubor neni třeba dále měnit
-    if (!file_exists("/etc/quagga/daemons")) {
-	if(($soubor = fopen("/tmp/daemons","w")))
-        {
-            fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
-            fwrite($soubor, "#\n");
-            fwrite($soubor, "zebra=".(($quagga["zebra"] != "") ? $quagga["zebra"] : "yes")."\n");
-            fwrite($soubor, "bgpd=".(($quagga["bgpd"] != "") ? $quagga["bgpd"] : "no")."\n");
-            fwrite($soubor, "ospfd=".(($quagga["ospfd"] != "") ? $quagga["ospfd"] : "yes")."\n");
-            fwrite($soubor, "ospf6d=".(($quagga["ospf6d"] != "") ? $quagga["ospf6d"] : "no")."\n");
-            fwrite($soubor, "ripd=".(($quagga["ripd"] != "") ? $quagga["ripd"] : "no")."\n");
-            fwrite($soubor, "ripngd=".(($quagga["ripngd"] != "") ? $quagga["ripngd"] : "no")."\n");
-            fwrite($soubor, "isisd=".(($quagga["isisd"] != "") ? $quagga["isisd"] : "no")."\n");
-            fwrite($soubor, "\n");
-            fclose($soubor);
-            exec("sudo /bin/cp /tmp/daemons /etc/quagga/daemons");
-            exec("sudo /bin/chown quagga:quagga /etc/quagga/daemons");
-        }
+    if(($soubor = fopen('/tmp/daemons', 'w')))
+    {
+        fwrite($soubor, '# created by Freenet Router web interface ' . date('H:i j.n.Y') . "\n");
+        fwrite($soubor, "#\n");
+        fwrite($soubor, 'zebra=' . (($quagga['zebra'] != '') ? $quagga['zebra'] : 'yes') . "\n");
+        fwrite($soubor, 'bgpd=' . (($quagga['bgpd'] != '') ? $quagga['bgpd'] : 'no') . "\n");
+        fwrite($soubor, 'ospfd=' . (($quagga['ospfd'] != '') ? $quagga['ospfd'] : 'yes') . "\n");
+        fwrite($soubor, 'ospf6d=' . (($quagga['ospf6d'] != '') ? $quagga['ospf6d'] : 'no') . "\n");
+        fwrite($soubor, 'ripd=' . (($quagga['ripd'] != '') ? $quagga['ripd'] : 'no') . "\n");
+        fwrite($soubor, 'ripngd=' . (($quagga['ripngd'] != '') ? $quagga['ripngd'] : 'no') . "\n");
+        fwrite($soubor, 'isisd=' . (($quagga['isisd'] != '') ? $quagga['isisd'] : 'no') . "\n");
+        fwrite($soubor, "\n");
+        fclose($soubor);
+        exec('sudo /bin/cp /tmp/daemons /etc/quagga/daemons');
+        exec('sudo /bin/chown quagga:quagga /etc/quagga/daemons');
     }
 }
 function save_quagga_zebra() {
