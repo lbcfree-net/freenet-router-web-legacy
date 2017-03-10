@@ -16,6 +16,7 @@ case "$1" in
         a2enmod rewrite
 	a2enmod actions 
 	a2enmod alias 
+	a2enmod headers
 	service apache2 restart
 
 	chown -R www-data:www-data /var/www/freenet-router
