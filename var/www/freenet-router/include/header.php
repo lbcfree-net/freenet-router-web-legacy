@@ -81,7 +81,15 @@ function setReloadTime(secs) {
         }
         reloadTimer = setTimeout("setReloadTime()", Math.ceil(parseFloat(secs) * 1000));
     } else {
-        window.location.replace(window.location.href);
+        /* Remove the macguard_conf parametr to prevent a macguard lock recurring */
+        var href = window.location.href;
+        var n = href.indexOf("&macguard_conf");
+
+        if(n > 0){
+            href = href.substr(0, n);
+        }
+        /* Refresh the page */
+        window.location.replace(href);
     }
 }
 //-->
