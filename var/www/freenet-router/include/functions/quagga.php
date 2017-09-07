@@ -83,6 +83,7 @@ function save_quagga_ospfd($DATA) {
     global $hostname;
     global $dummy_ip;
     global $quagga;
+    $pom = false;
     // načteme firewall
     exec("cat /etc/firewall/firewall.conf", $FIREWALL);
     if(($soubor = fopen("/tmp/ospfd.conf","w")))
@@ -147,7 +148,7 @@ function save_quagga_ospfd($DATA) {
             if (($NAME[1] == "ACTIVE") && ($DATA[$NAME[0].$VLAN_POM."_REMOVE"] == "") && ($DATA[$NAME[0].$VLAN_POM."_QUAGGA"] == "ano")) {
                 $J = 0;
                 while ($J < 20) {
-                    if (($DATA[$NAME[0].$VLAN_POM."_IP_".$J] != "") && ($DATA[$NAME[0].$VLAN_POM."_MASK_".$J] != "")) {
+                    if ((filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) && ($DATA[$NAME[0].$VLAN_POM."_MASK_".$J] != "")) {
                         fwrite($soubor, "network ".get_network($DATA[$NAME[0].$VLAN_POM."_IP_".$J],$DATA[$NAME[0].$VLAN_POM."_MASK_".$J])." area 0\n");
                     }
                     $J++;
@@ -167,24 +168,24 @@ function save_quagga_ospfd($DATA) {
         fwrite($soubor, " access-class term\n");
         fwrite($soubor, "#\n");
         fclose($soubor);
-        exec("sudo /bin/cp /tmp/ospfd.conf /etc/quagga/ospfd.conf");
+        exec('sudo /bin/cp /tmp/ospfd.conf /etc/quagga/ospfd.conf');
     }
 }
 function get_quagga_adapter_description($ADAPTER) {
     if (get_adapter_settings_is_bridge($ADAPTER)) {
-	return "BRIDGE".preg_replace("[^0-9]","",$ADAPTER);
+	    return 'BRIDGE';
     } else if (get_adapter_settings_is_ethernet($ADAPTER)) {
-	return "LAN".preg_replace("[^0-9]","",$ADAPTER);
+	    return 'LAN';
     } else if (get_adapter_settings_is_madwifi($ADAPTER)) {
-	return "ATH".preg_replace("[^0-9]","",$ADAPTER);
-    } else if (get_adapter_settings_is_wifi("",$ADAPTER)) {
-	return "WIFI".preg_replace("[^0-9]","",$ADAPTER);
+	    return 'ATH';
+    } else if (get_adapter_settings_is_wifi('', $ADAPTER)) {
+	    return 'WIFI';
     } else if (get_adapter_settings_is_vlan($ADAPTER)) {
-	return "VLAN".preg_replace("[^0-9]","",$ADAPTER);
+	    return 'VLAN';
     } else {
-	return "DEVICE".preg_replace("[^0-9]","",$ADAPTER);
+	    return 'DEVICE';
     }
-    return false;
+    return '';
 }
 function get_quagga_adapter_cost($ADAPTER) {
     global $quagga;
