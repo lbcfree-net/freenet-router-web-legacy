@@ -1,111 +1,105 @@
 <?php
 function save_adapter_settings($DATA,$ADAPTER) {
-if (get_adapter_settings_is_adapter($ADAPTER)) {
-    if(($soubor = fopen("/tmp/".$ADAPTER,"w")))
-    {
-        fwrite($soubor, "#!/bin/bash\n");
-        fwrite($soubor, "# Zakladni udaje pro nastaveni karty:\n");
-        $SETTINGS = array("MODE","ESSID","CHANNEL","KEY","RATE","RATE_LAN","RETRY","W_MODE","TURBO","SENSITIVITY","TXPOWER","DISTANCE","ANTENNA","AP_BRIDGE","WDS","CONNECTION","DUPLEX","TYPE");
-        $SETTINGS_UNITS = array("","","","","M","M","","","","dB","dB","km","","","","","","","");
-        $SETTINGS_DESCRIPTIONS = array("\t\t# [sta|ap|monitor|adhoc] rezim site, doporuceny je pouze sta a ap, ostatni rezimy mohou zlobit","\t# [standardni ESSID]\tnastaveni nazvu bezdratove site","\t\t# [36-165 pro A,1-13 pro B a G] u DFS je nutne zadat rozsah {100-120}, rezim sta vybira kanal automaticky","\t\t# [s: pro ASCII, bez s: pro HEXA, off pro vypnuti] sifrovani spoje, WPA zatim neni podporovano","\t\t# [6,9,12,18,24,36,48,54 - A a G|1,2,5.5,11 - B|auto] vynucene nastaveni rychlosti spojeni","\t\t# [100M pro 100Mbit, 10M pro 10Mbit, 1000M pro 1Gbit]","\t\t# [0-20]\t\ttato funkce zatim neni v ovladaci madwifi podporovana","\t\t# [0=auto|1=A|2=B|3=G]\trezim v jakem karta pracuje, rezim \"A\" se nastavuje automaticky podle kanalu","\t\t# [0=off|1=on]\t\tturbo neni v CR pro 5GHz povoleno, proto je nutne zmenit countrycode aby chodil","\t# [od -100 do -30dB]\tu ovladace madwifi zatim toto nastaveni nefunguje","\t\t# [0.01-50mW|od 0 do 17dB|auto] velmi problematicke nastaveni, 0=off, nektere nastaveni muze zlobit","\t\t# [1m - 20km]\t\tpokud je spoj provozovan na delsi vzdalenost a v pasmu 5GHz, pak je treba zmenit","\t\t# [0|1|2]\t\tnastavuje tx a rx antenu, \"0\" znamena auto, doporucene nastaveni \"1\" main konektor","\t\t# [0=off|1=on]\t\tzakaze, nebo povoli primou komunikaci klientum na ap","\t\t\t# [0=off|1=on]\t\tpokud je karta v interfaces nastavena na bridge, pak se wds rezim nastavi automaticky","\t# [generic|madwifi]\tpokud je druha strana take madwifi ovladac (atheros), pak spravne nastaveni muze\n\t\t\t#\t\t\tzarucit mnohem lepsi rychlost spoje, stabilitu i odezvu, pokud je vsak druha\n\t\t\t#\t\t\tstrana jine zarizeni, pak muze spatne nastaveni vyrazne zhorsit stabilitu spoje\n\t\t\t#\t\t\tpokud jste si jisti ze druha strana vyuziva ovladac madwifi a je nastavena stejne\n\t\t\t#\t\t\tpak je doporucene nastaveni \"madwifi\" jinak pouzivejte \"generic\"","\t\t# [HD=poloduplexni rezim|FD=plneduplexni rezim]","\t\t# [F=vynutit rychlost a duplex,A=doporucit rychlost a duplex]");
-        foreach ($SETTINGS as $I => $SETTING) {
-            if ($DATA[$ADAPTER."_".$SETTING] != "") {
-                if (($SETTING == "RATE") && ($DATA[$ADAPTER."_ESSID"] != "") || ($SETTING != "RATE")) {
-                    $pom = explode(" ",$DATA[$ADAPTER."_".$SETTING]);
-                    if ($SETTING == "KEY") {
-                        if ($DATA[$ADAPTER."_KEY_TYPE"] == "žádný") {
-                            $pom[0] = "off";
-                        } else if ($DATA[$ADAPTER."_KEY_TYPE"] == "64bit ASCII") {
-                            $pom[0] = "s:".$pom[0];
-                        } else if ($DATA[$ADAPTER."_KEY_TYPE"] == "128bit ASCII") {
-                            $pom[0] = "s:".$pom[0];
-                        }
-                    } else if ($SETTING == "RATE") {
-                        if ($pom[0] == "auto") {
-                            $SETTINGS_UNITS[$I] = "";
-                        }
-                    }
-                    fwrite($soubor, $SETTING."=\"".$pom[0].$SETTINGS_UNITS[$I]."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
-                }
-            } else if (($SETTING == "RATE_LAN") && ($DATA[$ADAPTER."_ESSID"] == "")) {
-                $pom = explode(" ",$DATA[$ADAPTER."_RATE"]);
-                fwrite($soubor, "RATE=\"".preg_replace("[^0-9]","",$pom[0]).$SETTINGS_UNITS[$I]."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
-            } else if (($SETTING == "DUPLEX") && ($DATA[$ADAPTER."_ESSID"] == "")) {
-                $pom = explode(" ",$DATA[$ADAPTER."_RATE"]);
-                if (preg_match('/half/',$pom[0])) {
-                    $pom = "HD";
-                } else {
-                    $pom = "FD";
-                }
-                fwrite($soubor, $SETTING."=\"".$pom."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
-            // žádný wep spolu s essid znamená wep = off
-            } else if (($SETTING == "KEY") && ($DATA[$ADAPTER."_ESSID"] != "")) {
-                fwrite($soubor, $SETTING."=\"off".$SETTINGS_UNITS[$I]."\"".$SETTINGS_DESCRIPTIONS[$I]."\n");
-            }
-        }
-        fwrite($soubor, "# Dale uz nic nenastavujeme!\n\n");
-        fwrite($soubor, 'if [ "$1" == "" ]; then'."\n");
-        fwrite($soubor, "\t".'/etc/init.d/set_card $0'."\n");
-        fwrite($soubor, "fi\n");
-        fclose($soubor);
-    }
-    exec("chmod 755 /tmp/".$ADAPTER);
-    exec("sudo /bin/cp /tmp/".$ADAPTER." /etc/network/".$ADAPTER);
-}
+	if (get_adapter_settings_is_adapter($ADAPTER)) {
+		if(($soubor = fopen("/tmp/$ADAPTER",'w'))){
+			fwrite($soubor, "#!/bin/bash\n");
+			fwrite($soubor, "# Zakladni udaje pro nastaveni karty:\n");
+			$SETTINGS = array('MODE','ESSID','CHANNEL','KEY','RATE','RATE_LAN','RETRY','W_MODE','TURBO','SENSITIVITY','TXPOWER','DISTANCE','ANTENNA','AP_BRIDGE','WDS','CONNECTION','DUPLEX','TYPE');
+			$SETTINGS_UNITS = array('','','','','M','M','','','','dB','dB','km','','','','','','','');
+			$SETTINGS_DESCRIPTIONS = array("\t\t# [sta|ap|monitor|adhoc] rezim site, doporuceny je pouze sta a ap, ostatni rezimy mohou zlobit","\t# [standardni ESSID]\tnastaveni nazvu bezdratove site","\t\t# [36-165 pro A,1-13 pro B a G] u DFS je nutne zadat rozsah {100-120}, rezim sta vybira kanal automaticky","\t\t# [s: pro ASCII, bez s: pro HEXA, off pro vypnuti] sifrovani spoje, WPA zatim neni podporovano","\t\t# [6,9,12,18,24,36,48,54 - A a G|1,2,5.5,11 - B|auto] vynucene nastaveni rychlosti spojeni","\t\t# [100M pro 100Mbit, 10M pro 10Mbit, 1000M pro 1Gbit]","\t\t# [0-20]\t\ttato funkce zatim neni v ovladaci madwifi podporovana","\t\t# [0=auto|1=A|2=B|3=G]\trezim v jakem karta pracuje, rezim \"A\" se nastavuje automaticky podle kanalu","\t\t# [0=off|1=on]\t\tturbo neni v CR pro 5GHz povoleno, proto je nutne zmenit countrycode aby chodil","\t# [od -100 do -30dB]\tu ovladace madwifi zatim toto nastaveni nefunguje","\t\t# [0.01-50mW|od 0 do 17dB|auto] velmi problematicke nastaveni, 0=off, nektere nastaveni muze zlobit","\t\t# [1m - 20km]\t\tpokud je spoj provozovan na delsi vzdalenost a v pasmu 5GHz, pak je treba zmenit","\t\t# [0|1|2]\t\tnastavuje tx a rx antenu, \"0\" znamena auto, doporucene nastaveni \"1\" main konektor","\t\t# [0=off|1=on]\t\tzakaze, nebo povoli primou komunikaci klientum na ap","\t\t\t# [0=off|1=on]\t\tpokud je karta v interfaces nastavena na bridge, pak se wds rezim nastavi automaticky","\t# [generic|madwifi]\tpokud je druha strana take madwifi ovladac (atheros), pak spravne nastaveni muze\n\t\t\t#\t\t\tzarucit mnohem lepsi rychlost spoje, stabilitu i odezvu, pokud je vsak druha\n\t\t\t#\t\t\tstrana jine zarizeni, pak muze spatne nastaveni vyrazne zhorsit stabilitu spoje\n\t\t\t#\t\t\tpokud jste si jisti ze druha strana vyuziva ovladac madwifi a je nastavena stejne\n\t\t\t#\t\t\tpak je doporucene nastaveni \"madwifi\" jinak pouzivejte \"generic\"","\t\t# [HD=poloduplexni rezim|FD=plneduplexni rezim]","\t\t# [F=vynutit rychlost a duplex,A=doporucit rychlost a duplex]");
+			foreach ($SETTINGS as $I => $SETTING) {
+				if ($DATA[$ADAPTER."_".$SETTING] != '') {
+					if (($SETTING == "RATE") && ($DATA[$ADAPTER.'_ESSID'] != '') || ($SETTING != 'RATE')) {
+						$pom = explode(' ', $DATA[$ADAPTER.'_'.$SETTING]);
+						if ($SETTING == 'KEY') {
+							if ($DATA[$ADAPTER.'_KEY_TYPE'] == 'žádný') {
+								$pom[0] = 'off';
+							} else if ($DATA[$ADAPTER.'_KEY_TYPE'] == '64bit ASCII') {
+								$pom[0] = 's:' . $pom[0];
+							} else if ($DATA[$ADAPTER . '_KEY_TYPE'] == '128bit ASCII') {
+								$pom[0] = 's:' . $pom[0];
+							}
+						} else if ($SETTING == 'RATE') {
+							if ($pom[0] == 'auto') {
+								$SETTINGS_UNITS[$I] = '';
+							}
+						}
+						fwrite($soubor, $SETTING."=\"" . $pom[0] . $SETTINGS_UNITS[$I] . "\"" . $SETTINGS_DESCRIPTIONS[$I] . "\n");
+					}
+				} else if (($SETTING == 'RATE_LAN') && ($DATA[$ADAPTER . '_ESSID'] == '')) {
+					$pom = explode(' ', $DATA[$ADAPTER . '_RATE']);
+					fwrite($soubor, "RATE=\"".preg_replace('[^0-9]','', $pom[0]) . "\"" . $SETTINGS_DESCRIPTIONS[$I] . "\n");
+				} else if (($SETTING == 'DUPLEX') && ($DATA[$ADAPTER . '_ESSID'] == '')) {
+					$pom = explode(' ', $DATA[$ADAPTER . '_RATE']);
+					if (preg_match('/half/',$pom[0])) {
+						$pom = 'HD';
+					} else {
+						$pom = 'FD';
+					}
+					fwrite($soubor, $SETTING . "=\"" . $pom . "\"" . $SETTINGS_DESCRIPTIONS[$I] . "\n");
+				// žádný wep spolu s essid znamená wep = off
+				} else if (($SETTING == 'KEY') && ($DATA[$ADAPTER . '_ESSID'] != '')) {
+					fwrite($soubor, $SETTING . "=\"off" . $SETTINGS_UNITS[$I] . "\"" . $SETTINGS_DESCRIPTIONS[$I] . "\n");
+				}
+			}
+			fwrite($soubor, "# Dale uz nic nenastavujeme!\n\n");
+			fwrite($soubor, 'if [ "$1" == "" ]; then'."\n");
+			fwrite($soubor, "\t".'/etc/init.d/set_card $0'."\n");
+			fwrite($soubor, "fi\n");
+			fclose($soubor);
+		}
+		exec("chmod 755 /tmp/$ADAPTER");
+		exec("sudo /bin/cp /tmp/$ADAPTER /etc/network/$ADAPTER");
+	}
 }
 // funkce na získání nastavení karty ze souboru
-function get_adapter_settings_value($ADAPTER_INFO,$SETTING) {
+function get_adapter_settings_value($ADAPTER_INFO, $SETTING) {
     if (is_array($ADAPTER_INFO)) {
-	foreach ($ADAPTER_INFO as $ADAPTER_INFO_DATA) {
-	    $ADAPTER_INFO_DATA = preg_split("/[\ \"]+/", $ADAPTER_INFO_DATA);
-	    if ($ADAPTER_INFO_DATA[0] == $SETTING."=") {
-		return $ADAPTER_INFO_DATA[1];
-	    } else if (($ADAPTER_INFO_DATA[0] == "RATE=") && ($SETTING == "RATE_LAN")) {
-		$pom = get_adapter_settings_value($ADAPTER_INFO,"DUPLEX");
-		if ($pom == "HD") {
-		    $pom = "Half";
-		} else {
-		    $pom = "Full";
+		foreach ($ADAPTER_INFO as $ADAPTER_INFO_DATA) {
+	    	$ADAPTER_INFO_DATA = preg_split("/[\ \"]+/", $ADAPTER_INFO_DATA);
+	    	if ($ADAPTER_INFO_DATA[0] == "$SETTING=") {
+				return $ADAPTER_INFO_DATA[1];
+	    	} else if (($ADAPTER_INFO_DATA[0] == 'RATE=') && ($SETTING == 'RATE_LAN')) {
+				return preg_replace('[^0-9]','', $ADAPTER_INFO_DATA[1]);
+	    	}
 		}
-		return preg_replace("[^0-9]","",$ADAPTER_INFO_DATA[1])."baseT/".$pom;
-	    }
-	}
     }
     switch ($SETTING) {
-	case "MODE":
-	    return "ap";
-	case "ESSID":
-	    return "Freenet";
-	case "CHANNEL":
-	    return "01";
-	case "RATE":
-	    return "11";
-	case "RATE_LAN":
-	    return "100baseT/Full";
-	case "RETRY":
-	    return "8";
-	case "W_MODE":
-	    return "0";
-	case "TURBO":
-	    return "0";
-	case "SENSITIVITY":
-	    return "-98";
-	case "TXPOWER":
-	    return "16";
-	case "DISTANCE":
-	    return "1";
-	case "ANTENNA":
-	    return "0";
-	case "CONNECTION":
-	    return "madwifi";
-	case "AP_BRIDGE":
-	    return "1";
-	case "WDS":
-	    return "0";
-	case "TYPE":
-	    return "A";
+		case 'MODE':
+			return 'ap';
+		case 'ESSID':
+			return 'Freenet';
+		case 'CHANNEL':
+			return '01';
+		case 'RATE':
+			return '11';
+		case 'RATE_LAN':
+			return '100baseT/Full';
+		case 'RETRY':
+			return '8';
+		case 'W_MODE':
+			return '0';
+		case 'TURBO':
+			return '0';
+		case 'SENSITIVITY':
+			return '-98';
+		case 'TXPOWER':
+			return '16';
+		case 'DISTANCE':
+			return '1';
+		case 'ANTENNA':
+			return '0';
+		case 'CONNECTION':
+			return 'madwifi';
+		case 'AP_BRIDGE':
+			return '1';
+		case 'WDS':
+			return '0';
+		case 'TYPE':
+			return 'A';
+		default:
+            return '';
     }
-    return "";
 }
 // funkce pro získání dat z iwpriv
 function get_adapter_settings_iwpriv_value($adapter,$string) {
@@ -299,7 +293,7 @@ function get_adapter_settings_ethtool_rate($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (preg_match('/speed/',$LINE)) {
+	    if (preg_match('/speed/i',$LINE)) {
 		$LINE = preg_split("/[\ M]+/", $LINE);
 		return $LINE[1];
 	    }
@@ -310,9 +304,9 @@ function get_adapter_settings_ethtool_rate($ADAPTER) {
 function get_adapter_settings_ethtool_link($ADAPTER) {
     exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
     foreach ($ETHTOOL as $LINE) {
-    	if (preg_match('/link detected: yes/',$LINE)) {
+    	if (preg_match('/link detected: yes/i',$LINE)) {
 	    return "aktivní";
-	} else if (preg_match('/link detected: no/',$LINE)) {
+	} else if (preg_match('/link detected: no/i',$LINE)) {
     	    return "není";
         }
     }
@@ -322,9 +316,9 @@ function get_adapter_settings_ethtool_duplex($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (preg_match('/duplex: full/',$LINE)) {
+	    if (preg_match('/duplex: full/i',$LINE)) {
 		return "plný";
-	    } else if (preg_match('/duplex: half/',$LINE)) {
+	    } else if (preg_match('/duplex: half/i',$LINE)) {
 		return "poloviční";
 	    }
 	}
@@ -335,9 +329,9 @@ function get_adapter_settings_ethtool_autoneg($ADAPTER) {
     if (get_adapter_settings_is_ethernet($ADAPTER)) {
 	exec("sudo /sbin/ethtool ".$ADAPTER,$ETHTOOL);
 	foreach ($ETHTOOL as $LINE) {
-	    if (preg_match('/auto-negotiation: on/',$LINE)) {
+	    if (preg_match('/auto-negotiation: on/i',$LINE)) {
 		return "ano";
-	    } else if (preg_match('/auto-negotiation: off/',$LINE)) {
+	    } else if (preg_match('/auto-negotiation: off/i',$LINE)) {
 		return "ne";
 	    }
 	}
