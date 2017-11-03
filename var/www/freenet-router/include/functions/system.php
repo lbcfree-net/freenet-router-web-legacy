@@ -179,7 +179,7 @@ function system_get_router_accessibility($router) {
     if (file_exists("/var/log/account/routers.txt")) {
 	$file = file("/var/log/account/routers.txt");
 	foreach($file as $line) {
-	    if (!preg_match('/#/', $line) && (preg_match($router, $line))) {
+	    if (!preg_match('/#/', $line) && (preg_match("/$router/", $line))) {
 		$line = preg_split("/[:]+/",$line);
 		if ($line[0] == $router) {
 		    return round((($line[1]/ ($line[1] + $line[2])) * 100),1)."%";
