@@ -2,7 +2,7 @@ Source: freenet-router-web-legacy
 Section: unknown
 Priority: extra
 Maintainer: Karel Picman <karel.picman@lbcfree.net>
-Homepage: https://bbb.nfx.cz/projects/freenet-router-web-legacy
+Homepage: https://redmine.lbcfree.net/projects/freenet-router-web-legacy
 Package: freenet-router-web-legacy
 Version: 1.1
 Architecture: all
