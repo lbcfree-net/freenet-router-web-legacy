@@ -15,6 +15,7 @@ case "$1" in
 		a2ensite freenet-router
 	fi	
 	if [ ! -f /etc/apache2/sites-enabled/freenet-router-ssl.conf ];
+	then
 		a2ensite freenet-router-ssl	
 	fi
 	mkdir -p /var/log/apache2
