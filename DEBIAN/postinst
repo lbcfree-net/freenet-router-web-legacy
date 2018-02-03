@@ -6,9 +6,17 @@ case "$1" in
 
    configure)
    	# Apache
-	a2dissite 000-default
-	a2ensite freenet-router
-	a2ensite freenet-router-ssl	
+	if [ -f /etc/apache2/sites-enabled/000-default.conf ];
+        then
+		a2dissite 000-default
+        fi
+	if [ ! -f /etc/apache2/sites-enabled/freenet-router.conf ];
+	then
+		a2ensite freenet-router
+	fi	
+	if [ ! -f /etc/apache2/sites-enabled/freenet-router-ssl.conf ];
+		a2ensite freenet-router-ssl	
+	fi
 	mkdir -p /var/log/apache2
 	chown root:adm /var/log/apache2
 	chmod 750 /var/log/apache2 
