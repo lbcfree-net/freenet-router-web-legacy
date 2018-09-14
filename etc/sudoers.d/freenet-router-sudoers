@@ -1,3 +1,6 @@
+# Disable logging od web-auth because of the plain text password
+Defaults:www-data !syslog
+
 # macguard
 safe            ALL=NOPASSWD: /sbin/iptables -L -n
 

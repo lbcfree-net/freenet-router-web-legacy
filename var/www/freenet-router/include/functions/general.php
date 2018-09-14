@@ -24,28 +24,19 @@ if (isset($_POST['login']))
 {
     if (isset($_POST['jmeno']) && isset($_POST['heslo'])) 
     {
-
 	$username = escapeshellcmd($_POST['jmeno']);
 	$passwd = escapeshellcmd($_POST['heslo']);
 	
+	exec("logger Freenet Router login: $user");
 	exec('sudo web-auth '.$username.' '.$passwd,$output,$loginResult);
 
-	//if (pam_auth($_POST['jmeno'], $_POST['heslo'], $error)) 
 	if ($loginResult === 0)
         {
-	    //setcookie($cookie_name,$_POST['jmeno'],time()+2592000);
-	    //setcookie($cookie_pass,$_POST['heslo'],time()+2592000);
-	    setcookie($cookie_name,$username,time()+2592000);
-	    setcookie($cookie_pass,$passwd,time()+2592000);
-	    $user = $_POST['jmeno'];
+	    setcookie($cookie_name, $username, time() + 2592000);
+	    setcookie($cookie_pass, $passwd, time() + 2592000);
+	    $user = $username;
 	    $login = true;
 	}
-        /*
-	else
-        {
-            echo $error;
-        }
-	*/
     }
 }
 // nechceme se zkoušet přihlásit s prázdným jménem a heslem
