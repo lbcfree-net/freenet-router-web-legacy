@@ -27,7 +27,7 @@ if (isset($_POST['login']))
 	$username = escapeshellcmd($_POST['jmeno']);
 	$passwd = escapeshellcmd($_POST['heslo']);
 	
-	exec("logger Freenet Router login: $user");
+	exec("logger Freenet Router login: $username");
 	exec('sudo web-auth '.$username.' '.$passwd,$output,$loginResult);
 
 	if ($loginResult === 0)
