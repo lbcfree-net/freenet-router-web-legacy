@@ -14,55 +14,36 @@ $dummy_ip = exec("ip addr show dummy0 | grep inet | grep -v inet6 | awk '{print 
 // jak je název všech adapterů
 $ADAPTER_ALL = "vše";
 // funkce přihlášení přes pam
-$login = false;
-$cookie_name = "cd_admin_". $hostname ."_name";
-$cookie_pass = "cd_admin_". $hostname ."_pass";
-$user = isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : null;
-$password = isset($_COOKIE[$cookie_pass]) ? $_COOKIE[$cookie_pass] : null;
-// prvotní přihlášení na hlavní stránce
-if (isset($_POST['login'])) 
-{
-    if (isset($_POST['jmeno']) && isset($_POST['heslo'])) 
-    {
-	$username = escapeshellcmd($_POST['jmeno']);
-	$passwd = escapeshellcmd($_POST['heslo']);
-	
-	exec("logger Freenet Router login: $username");
-	exec('sudo web-auth '.$username.' '.$passwd,$output,$loginResult);
+session_start();
+$user = $_SESSION['user'];
+$login = $_SESSION['login'];
 
-	if ($loginResult === 0)
-        {
-	    setcookie($cookie_name, $username, time() + 2592000);
-	    setcookie($cookie_pass, $passwd, time() + 2592000);
-	    $user = $username;
-	    $login = true;
-	}
+// prvotní přihlášení na hlavní stránce
+if (isset($_POST['login'])){
+
+    if (isset($_POST['jmeno']) && isset($_POST['heslo'])){
+
+        $username = escapeshellcmd($_POST['jmeno']);
+        $passwd = escapeshellcmd($_POST['heslo']);
+
+        exec("logger Freenet Router login: $username");
+        exec("sudo web-auth $username $passwd",$output,$loginResult);
+
+        if ($loginResult === 0){
+
+            $_SESSION['user'] = $username;
+            $_SESSION['login'] = true;
+            $user = $username;
+            $login = true;
+        }
     }
 }
-// nechceme se zkoušet přihlásit s prázdným jménem a heslem
-if (($user != "") && ($password != "") && (!$login)) 
-{
-    //if (pam_auth($user, $password, $error)) 
-    exec('sudo web-auth '.$user.' '.$password,$output,$loginResult);
-    if ($loginResult === 0)
-    {
-        // obnovíme cookies
-        setcookie($cookie_name,$user,time()+2592000);
-        setcookie($cookie_pass,$password,time()+2592000);
-        $login = true;
-    } 
-    else 
-    {
-	// pokud přihlášení neplatí, tak vymažeme cookies
-	setcookie($cookie_name,'',time()-2592000);
-	setcookie($cookie_pass,'',time()-2592000);
-        //echo $error;
-    }
-}
+
 // odhlášení
 if (isset($_POST['logout'])) {
-    setcookie($cookie_name,'',time()-2592000);
-    setcookie($cookie_pass,'',time()-2592000);
+
+    unset($_SESSION['user']);
+    unset($_SESSION['login']);
     $login = false;
 }
 
