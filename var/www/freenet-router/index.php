@@ -3,9 +3,6 @@
 include 'include/functions/general.php';
 include 'include/functions/index.php';
 include 'include/functions/system.php';
-if (isset($_GET['password']) && $login) {
-    setcookie($cookie_pass,$_GET["password"],time()+2592000);
-}
 include 'include/header.php';
 ?>
 <?php
