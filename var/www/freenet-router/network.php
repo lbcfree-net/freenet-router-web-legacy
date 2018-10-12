@@ -217,7 +217,7 @@ foreach ($ADAPTERS as $ADAPTER) {
 	table_text_array("popis", $ADAPTER."_DESCRIPTION", get_firewall_description($FIREWALL,$ADAPTER),"","");
     }
     // zjistime jestli na rozhrani je zapnuta quagga
-    create_selection('quagga',"${ADAPTER}_QUAGGA", array('ano', 'ne'), get_quagga_ospf($QUAGGA,$ADAPTER),'', 'Pouze pro páteřní spoje a propoje AP!');
+    create_selection('přijímat OSPF',"${ADAPTER}_QUAGGA", array('ano', 'ne'), get_quagga_ospf($QUAGGA,$ADAPTER),'', 'Pouze pro páteřní spoje a propoje AP!');
     if ((!$dummy) && (!$loopback)) {
 	// zjistime jestli na rozhrani běží dhcp server
 	create_selection("dhcp server","${ADAPTER}_DHCP", array("ano", "ne"), get_firewall_dhcp($FIREWALL, $ADAPTER),"");
