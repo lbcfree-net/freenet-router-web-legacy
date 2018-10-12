@@ -53,11 +53,11 @@ if (file_exists("include/config.php")) {
 }
 
 // funkce pro vytvoření selectu
-function create_selection($name ,$select_name, $list, $selected, $units) {
+function create_selection($name, $select_name, $list, $selected, $units, $tooltip = '') {
 ?>
     <tr>
     <td align=left><?= $name ?>: </td>
-    <td align="right">
+    <td align="right" title="<?= $tooltip ?>">
 <?php
     if ((!is_array($list)) && preg_match('/:/',$list)) {
 	$pom = explode('[:]', $list);
