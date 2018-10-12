@@ -129,7 +129,8 @@ function save_quagga_ospfd($DATA) {
         fwrite($soubor, "#\n");
         fwrite($soubor, "router ospf\n");
         fwrite($soubor, " ospf router-id ".$dummy_ip."\n");
-        fwrite($soubor, " redistribute connected route-map just-10\n");
+        //fwrite($soubor, " redistribute connected route-map just-10\n");
+        fwrite($soubor, " redistribute connected\n");
         fwrite($soubor, " redistribute static metric-type 1\n");
         fwrite($soubor, " redistribute kernel metric-type 1\n");
         fwrite($soubor, "#\n");
@@ -161,8 +162,8 @@ function save_quagga_ospfd($DATA) {
         fwrite($soubor, "access-list term permit 127.0.0.1/32\n");
         fwrite($soubor, "access-list term deny any\n");
         fwrite($soubor, "#\n");
-        fwrite($soubor, "route-map just-10 permit 10\n");
-        fwrite($soubor, "match ip address net-10\n");
+        //fwrite($soubor, "route-map just-10 permit 10\n");
+        //fwrite($soubor, "match ip address net-10\n");
         fwrite($soubor, "#\n");
         fwrite($soubor, "line vty\n");
         fwrite($soubor, " access-class term\n");
