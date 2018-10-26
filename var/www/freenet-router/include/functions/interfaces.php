@@ -59,7 +59,7 @@ function save_interfaces_converted($DATA) {
                             if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
                                 fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet static\n");
                             }else{
-                                fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet6 static\n");
+                                fwrite($soubor, 'iface ' . $NAME[0] . "$VLAN inet6 static\n");
                             }
                         }
                         fwrite($soubor,"\taddress ".$DATA[$NAME[0].$VLAN_POM."_IP_".$J]."\n");
