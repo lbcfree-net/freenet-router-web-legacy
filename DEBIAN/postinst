@@ -5,15 +5,23 @@ set -e
 case "$1" in
 
    configure)
-   	# Apache
+   	# Apache - remove old config files without .config and enable freenet-router web site
 	if [ -f /etc/apache2/sites-enabled/000-default.conf ];
         then
 		a2dissite 000-default
+        fi
+        if [ -f /etc/apache2/sites-enabled/freenet-router ];
+        then
+                rm -f /etc/apache2/sites-enabled/freenet-router
         fi
 	if [ ! -f /etc/apache2/sites-enabled/freenet-router.conf ];
 	then
 		a2ensite freenet-router
 	fi	
+        if [ -f /etc/apache2/sites-enabled/freenet-router-ssl ];
+        then
+		rm -f /etc/apache2/sites-enabled/freenet-router-ssl
+	fi
 	if [ ! -f /etc/apache2/sites-enabled/freenet-router-ssl.conf ];
 	then
 		a2ensite freenet-router-ssl	
