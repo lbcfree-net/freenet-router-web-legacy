@@ -14,6 +14,8 @@ $dummy_ip = exec("ip addr show dummy0 | grep inet | grep -v inet6 | awk '{print 
 // jak je název všech adapterů
 $ADAPTER_ALL = "vše";
 // funkce přihlášení přes pam
+// Je potřeba nastavit cestu pro ukládání sessions do zapisovatelné části souborového systému
+session_save_path(realpath(sys_get_temp_dir()));
 session_start();
 $user = $_SESSION['user'];
 $login = $_SESSION['login'];
