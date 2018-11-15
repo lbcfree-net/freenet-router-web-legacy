@@ -39,8 +39,9 @@ case "$1" in
 	chown -R www-data:www-data /var/www/freenet-router
 	chown root:root /etc/sudoers.d/freenet-router-sudoers
 
-	# Make sure that Quagga config files are readable from the web application
+	# Make sure that config files are readable from the web application
 	chmod -f o+r /etc/quagga/*.conf
+	chmod -f o+r /etc/init.d/firewall
    ;;
 
    *)
