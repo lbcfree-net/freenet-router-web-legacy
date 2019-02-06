@@ -42,7 +42,7 @@ if (($_POST[quagga_ospfd] != "") && ($login)) {
 include 'include/header.php';
 ?>
 <form method="post" action="<?=$_SERVER['PHP_SELF']?> ">
-<table width=100%>
+<table width="100%">
     <tr>
     <td width="20%">status quaggy: <font color=<?= (exec("ps ax | grep -v grep | grep quagga") == "") ? '"red">vypnutá' : '"green">zapnutá' ?></font></td>
 <?php
@@ -117,11 +117,11 @@ if ($ospfd_edit) {
     }
 ?>
     <tr>
-    <th width=30%>síť</th>
-    <th width=20%>brána</th>
-    <th width=20%>rozhraní</th>
-    <th width=10%>typ</th>
-    <th width=10%>cost</th>
+    <th width="30%">síť</th>
+    <th width="20%">brána</th>
+    <th width="20%">rozhraní</th>
+    <th width="10%">typ</th>
+    <th width="10%">cost</th>
     </tr>
 <?php
     exec("ip ro",$routes);
