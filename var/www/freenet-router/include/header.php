@@ -100,9 +100,9 @@ function setReloadTime(secs) {
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="content-language" content="cs">
 	<title><?= $header["routername"]." ".$hostname ?> - Freenet router 3.1</title>
-	<link href="styles/style.css" rel="stylesheet" type="text/css">
-    <link href="speedtest/speedtest.css" rel="stylesheet" type="text/css">
-        <script src="speedtest/speedtest.js" type="text/javascript"></script>
+	<link href="/styles/style.css" rel="stylesheet" type="text/css">
+        <link href="/speedtest/speedtest.css" rel="stylesheet" type="text/css">
+        <script src="/speedtest/speedtest.js" type="text/javascript"></script>
     </head>
     <body id="page_bg" <?= ($_SERVER['PHP_SELF'] == "/dalsi.php") ? 'onload="zobrazit_datum_a_cas();zobrazit_uptime();"' : "" ?>>
 	<div id="center">
