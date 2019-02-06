@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<div id="ipArea">
-		IP addresa: <span id="ip"></span>
+		Vaše IP adresa: <span id="ip"></span>
 	</div>
 
     <br/>
