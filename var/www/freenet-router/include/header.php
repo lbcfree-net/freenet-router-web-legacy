@@ -101,6 +101,8 @@ function setReloadTime(secs) {
 	<meta http-equiv="content-language" content="cs">
 	<title><?= $header["routername"]." ".$hostname ?> - Freenet router 3.1</title>
 	<link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="speedtest/speedtest.css" rel="stylesheet" type="text/css">
+        <script src="speedtest/speedtest.js" type="text/javascript"></script>
     </head>
     <body id="page_bg" <?= ($_SERVER['PHP_SELF'] == "/dalsi.php") ? 'onload="zobrazit_datum_a_cas();zobrazit_uptime();"' : "" ?>>
 	<div id="center">
@@ -139,9 +141,10 @@ function setReloadTime(secs) {
 	      <div class="menu">
 		<div class="lastseparator"></div>
 		<div class="menuitem home">
-		    <div class="contents"><a href="/">home</a></div>
-	
+		    <div class="contents"><a href="/">domů</a></div>
 		    <div class="separator"></div>
+            <div class="contents"><a href="speedtest">test rychlosti</a></div>
+            <div class="separator"></div>
 		</div>
 	      </div>
 	    </div>
@@ -189,6 +192,11 @@ switch ($_SERVER['PHP_SELF']) {
     case "/index.php":
 ?>
 		rozhraní pro správu Freenet routeru
+<?php
+    break;
+    case "/speedtest/index.php":
+?>
+        test rychlosti
 <?php
 	break;
     case "/graphs.php":
