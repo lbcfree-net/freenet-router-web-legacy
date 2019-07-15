@@ -9,6 +9,3 @@ Architecture: all
 Conflicts: freenet-router-web
 Depends: ssl-cert, apache2, php, freenet-router, freenet-router-auth, rrdtool, php-gd, ethtool, sysv-rc-conf
 Description: Legacy web interface for a full control of the Freenet router
-
-# Voyage
-# Depends: +chkconfig +php5, +php5-gd, -sysv-rc-conf, -php, -php-gd
