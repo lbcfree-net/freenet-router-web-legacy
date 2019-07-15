@@ -7,5 +7,5 @@ Package: freenet-router-web-legacy
 Version: 1.1 
 Architecture: all
 Conflicts: freenet-router-web
-Depends: ssl-cert, apache2, php, freenet-router, freenet-router-auth, rrdtool, php-gd, ethtool, sysv-rc-conf
+Depends: ssl-cert, apache2, php5, freenet-router, freenet-router-auth, rrdtool, php5-gd, ethtool, chkconfig 
 Description: Legacy web interface for a full control of the Freenet router
