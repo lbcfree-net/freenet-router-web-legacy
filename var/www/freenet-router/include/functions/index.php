@@ -191,7 +191,7 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
   return false;
 }
 function get_primary_dns() {
-    if (($f = fopen('etc/resolv.conf', 'r'))) {
+    if (($f = fopen('/etc/resolv.conf', 'r'))) {
         while (!feof($f)) {            
 	    $value = preg_split("/[\ \t\n]+/", fgets($f,1024));
 	    if ($value[0] == "nameserver") {
