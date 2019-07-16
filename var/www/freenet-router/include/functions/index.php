@@ -37,7 +37,7 @@ function get_startup($SERVICE)
     case 'dhcp':
       foreach($output as $item)
       {
-        if (preg_match('/^isc-dhcp-serr.*\d:on/', $item))
+        if (preg_match('/^isc-dhcp-ser.*\d:on/', $item))
         {
           return true;
         }
