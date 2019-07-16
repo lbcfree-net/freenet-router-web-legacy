@@ -93,7 +93,7 @@ table_line();
     <tr>
     <td colspan="2">obecné</td>
     </tr>
-<?
+<?php
 table_line();
 table_text_array("název routeru", "HOSTNAME", get_hostname(),"23","");
 table_text_array("primární dns server", "PRIMARY_DNS", get_primary_dns(),"23","");
