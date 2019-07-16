@@ -29,7 +29,7 @@ www-data        ALL=NOPASSWD: /sbin/iptables
 www-data        ALL=NOPASSWD: /usr/sbin/pwd_change
 www-data        ALL=NOPASSWD: /usr/local/sbin/ro 
 www-data        ALL=NOPASSWD: /usr/local/sbin/rw
-www-data        ALL=NOPASSWD: /sbin/chkconfig
+www-data        ALL=NOPASSWD: /usr/sbin/sysv-rc-conf 
 www-data        ALL=NOPASSWD: /usr/sbin/service
 www-data        ALL=NOPASSWD: /bin/hostname
 
