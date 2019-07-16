@@ -20,14 +20,14 @@ function get_startup($SERVICE)
   $output = '';
   $result = false;
   
-  exec('sudo chkconfig --list', $output, $result); 
+  exec('sudo sysv-rc-conf --list', $output, $result);
   
   switch ($SERVICE) 
   {
     case 'apache':
       foreach($output as $item)
        {
-         if (preg_match('/^apache2.*[\dS]:on/', $item))
+         if (preg_match('/^apache2.*\d:on/', $item))
          {
            return true;
          }
@@ -37,7 +37,7 @@ function get_startup($SERVICE)
     case 'dhcp':
       foreach($output as $item)
       {
-        if (preg_match('/^isc-dhcp-server.*[\dS]:on/', $item))
+        if (preg_match('/^isc-dhcp-serr.*\d:on/', $item))
         {
           return true;
         }
@@ -47,7 +47,7 @@ function get_startup($SERVICE)
     case 'firewall':
       foreach($output as $item)
       {
-        if (preg_match('/^firewall.*[\dS]:on/', $item) && preg_match('/^firewall6.*[\dS]:on/', $item))
+        if (preg_match('/^firewall.*\d:on/', $item) && preg_match('/^firewall6.*\d:on/', $item))
         {
           return true;
         }
@@ -79,7 +79,7 @@ function get_startup($SERVICE)
 
       foreach($output as $item)
       {
-        if (preg_match('/^firewall.*[\dS]:on/', $item))
+        if (preg_match('/^firewall.*\d:on/', $item))
         {
           return $pom1 && $pom2;
         }
@@ -116,7 +116,7 @@ function get_startup($SERVICE)
 
       foreach($output as $item)
       {
-        if (preg_match('/^firewall.*[\dS]:on/', $item))
+        if (preg_match('/^firewall.*\d:on/', $item))
         {
           return $pom1 && $pom2 && $pom3;
         }
@@ -126,7 +126,7 @@ function get_startup($SERVICE)
     case 'quagga':
       foreach($output as $item)
       {
-        if (preg_match('/^quagga.*[\dS]:on/', $item))
+        if (preg_match('/^quagga.*\d:on/', $item))
         {
           return true;
         }
@@ -136,7 +136,7 @@ function get_startup($SERVICE)
     case 'snmp':
       foreach($output as $item)
       {
-        if (preg_match('/^snmpd.*[\dS]:on/', $item))
+        if (preg_match('/^snmpd.*\d:on/', $item))
         {
           return true;
         }
@@ -146,7 +146,7 @@ function get_startup($SERVICE)
     case 'ssh':
       foreach($output as $item)
       {
-        if (preg_match('/^ssh.*[\dS]:on/', $item))
+        if (preg_match('/^ssh.*\d:on/', $item))
         {
           return true;
         }
@@ -191,7 +191,7 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
   return false;
 }
 function get_primary_dns() {
-    if (($f = fopen("/etc/resolvconf/resolv.conf.d/base","r"))) {        
+    if (($f = fopen('etc/resolv.conf', 'r'))) {
         while (!feof($f)) {            
 	    $value = preg_split("/[\ \t\n]+/", fgets($f,1024));
 	    if ($value[0] == "nameserver") {
@@ -216,7 +216,7 @@ function get_internal_ip() {
     return "";
 }
 function get_secondary_dns() {
-    if (($f = fopen("/etc/resolvconf/resolv.conf.d/base","r"))) {
+    if (($f = fopen('/etc/resolv.conf','r'))) {
 	$pom = false;        
         while (!feof($f)) {            
 	    $value = preg_split("/[\ \t\n]+/", fgets($f,1024));
@@ -333,8 +333,7 @@ function set_dns($dns_primary,$dns_secondary,$domain) {
         fwrite($soubor,"nameserver ".$dns_secondary."\n");
         fclose($soubor);
     }
-    exec("sudo /bin/cp /tmp/resolv.conf /etc/resolvconf/resolv.conf.d/base");
-    exec('sudo resolvconf -u');
+    exec('sudo /bin/cp /tmp/resolv.conf /etc/resolv.conf');
     
     // /etc/firewall/firewall.conf
     if(($soubor = fopen('/tmp/firewall.conf', 'w')))
@@ -466,11 +465,11 @@ function set_startup($SERVICE, $VALUE)
   {
     case 'apache':	    
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
-      exec("sudo chkconfig apache2 $status");      
+      exec("sudo sysv-rc-conf apache2 $status");      
       break;
     case 'dhcp':      
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
-      exec("sudo chkconfig isc-dhcp-server $status");      
+      exec("sudo sysv-rc-conf isc-dhcp-server $status");      
       break;
     case 'firewall':
       if(($soubor = fopen('/tmp/firewall.conf', 'w')))
@@ -501,8 +500,8 @@ function set_startup($SERVICE, $VALUE)
       }	
       
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
-      exec("sudo chkconfig firewall $status");
-      exec("sudo chkconfig firewall6 $status");
+      exec("sudo sysv-rc-conf firewall $status");
+      exec("sudo sysv-rc-conf firewall6 $status");
       break;
     case 'macguard':
       if(($soubor = fopen('/tmp/firewall.conf', 'w')))
@@ -553,7 +552,7 @@ function set_startup($SERVICE, $VALUE)
       
       if ($status == 'on' && $pom1 && $pom2) 
       {        
-        exec("sudo chkconfig firewall $status");      
+        exec("sudo sysv-rc-conf firewall $status");      
       }
       
       break;
@@ -612,40 +611,40 @@ function set_startup($SERVICE, $VALUE)
       
       if ($status == 'on' && $pom1 && $pom2 && $pom3) 
       {        
-        exec("sudo chkconfig firewall $status");      
+        exec("sudo sysv-rc-conf firewall $status");      
       }
       
       break;
     case 'quagga':
       if (convert_czech_to_english($VALUE) == 'yes') 
       {
-        exec('sudo chkconfig quagga on');
+        exec('sudo sysv-rc-conf quagga on');
       }
       else
       {
-        exec('sudo chkconfig quagga off');
+        exec('sudo sysv-rc-conf quagga off');
       }         
 
       break;
     case 'snmp':
       if (convert_czech_to_english($VALUE) == 'yes') 
       {
-        exec('sudo chkconfig snmpd on');
+        exec('sudo sysv-rc-conf snmpd on');
       }
       else
       {
-        exec('sudo chkconfig snmpd off');
+        exec('sudo sysv-rc-conf snmpd off');
       }         
 
       break;
     case 'ssh':
       if (convert_czech_to_english($VALUE) == 'yes') 
       {
-        exec('sudo chkconfig ssh on');
+        exec('sudo sysv-rc-conf ssh on');
       }
       else
       {
-        exec('sudo chkconfig ssh off');
+        exec('sudo sysv-rc-conf ssh off');
       }         
 
       break;

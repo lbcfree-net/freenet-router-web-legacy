@@ -28,6 +28,7 @@ if (($_GET["reset_response"]) && ($login)) {
     table_entry("<a href=\"/graphs.php?cpu=0\">vytížení procesoru</a>",system_get_cpu_usage()."%",true);
     table_entry("počet procesorů",system_get_cpu_count($CPUINFO),true);
     table_entry("teplota procesorů",system_get_cpu_temperature($SENSORS),true);
+    table_entry("spotřeba",system_get_power($SENSORS),true);
     table_entry("velikost operační paměti",system_get_memory_total($MEMINFO)." MB",true);
     table_entry("<a href=\"/graphs.php?memory=0\">velikost volné operační paměti</a>",system_get_memory_free($MEMINFO)." MB",true);
     table_entry("velikost swap paměti",system_get_swap_total($MEMINFO)." MB",true);

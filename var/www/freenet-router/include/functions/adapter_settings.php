@@ -131,13 +131,15 @@ function get_adapter_settings_is_vlan($ADAPTER) {
     return false;
 }
 function get_adapter_settings_is_ethernet($ADAPTER) {
-    if (preg_match('/eth/i',$ADAPTER) && ((!preg_match('/:/',$ADAPTER)) && (!preg_match('/\./',$ADAPTER)))) {
+    if ((preg_match('/enp/i',$ADAPTER) || preg_match('/eth/i',$ADAPTER)) &&
+		((!preg_match('/:/',$ADAPTER)) && (!preg_match('/\./',$ADAPTER)))) {
 	return true;
     }
     return false;
 }
 function get_adapter_settings_is_adapter($ADAPTER) {
-    if ((preg_match('/eth/', $ADAPTER) || preg_match('/wlan/', $ADAPTER) || preg_match('/ath/', $ADAPTER)) &&
+    if (preg_match('/enp/', $ADAPTER) || (preg_match('/eth/', $ADAPTER) ||
+			preg_match('/wlan/', $ADAPTER) || preg_match('/ath/', $ADAPTER)) &&
 		((!preg_match('/:/', $ADAPTER)) && (!preg_match('/\./', $ADAPTER)))) {
 		return true;
     }

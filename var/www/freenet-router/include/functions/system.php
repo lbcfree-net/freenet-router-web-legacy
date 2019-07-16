@@ -10,8 +10,8 @@ function system_get_cpu_model($CPUINFO) {
     return "";
 }
 function system_get_cpu_temperature($sensors) {
-    if(count($sensors) > 2){
-        $temperature = explode(':        +', $sensors[2]);
+    if(count($sensors) > 6){
+        $temperature = explode(':', $sensors[6]);
         $temperature = explode(' C', $temperature[1]);
         if(count($temperature) > 0) {
             if (strpos($temperature[0], '°C') === false) {
@@ -25,6 +25,21 @@ function system_get_cpu_temperature($sensors) {
     }
     return $temperature;
 }
+
+function system_get_power($sensors)
+{
+    if(count($sensors) > 2){
+        $power = explode(':', $sensors[2]);
+        $power = explode(' W', $power[1]);
+        if(count($power) > 0) {
+            $power = $power[0] . ' W';
+        }
+    }else{
+        $power = 'N/A';
+    }
+    return $power;
+}
+
 function system_get_cpu_freq($CPUINFO) {
     foreach ($CPUINFO as $line) {
 	if (preg_match('/cpu MHz/', $line)) {

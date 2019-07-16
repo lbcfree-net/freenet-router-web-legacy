@@ -272,6 +272,12 @@ function sort_adapters($a,$b) {
     if (preg_match('/eth/i',$b)) {
 	$eth_b = true;
     }
+    if (preg_match('/enp/i',$a)) {
+        $enp_a = true;
+    }
+    if (preg_match('/enp/i',$b)) {
+        $enp_b = true;
+    }
     if (preg_match('/ath/i',$a)) {
 	$ath_a = true;
     }
@@ -302,6 +308,12 @@ function sort_adapters($a,$b) {
 	return -1;
     } else if ($eth_b) {
 	return 1;
+    } else if (($enp_a) && ($enp_b)) {
+        return strcmp($a, $b);
+    } else if ($enp_a) {
+        return -1;
+    } else if ($enp_b) {
+        return 1;
     } else if (($ath_a) && ($ath_b)) {
 	return strcmp($a,$b);
     } else if ($ath_a) {
