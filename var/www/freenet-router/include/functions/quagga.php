@@ -1,12 +1,17 @@
 <?php
-function get_quagga_ospf($OSPF,$ADAPTER) {
-    foreach ($OSPF as $LINE) {
-	if ($LINE == "interface ".$ADAPTER) {
-	    return true;
-	}
+function get_quagga_ospf($ospf, $adapter)
+{
+    foreach ($ospf as $line) {
+
+        if ($line == "interface $adapter") {
+
+            return true;
+        }
     }
+
     return false;
 }
+
 function save_quagga_daemons() {
     global $quagga;
     if(($soubor = fopen('/tmp/daemons', 'w')))
@@ -24,6 +29,7 @@ function save_quagga_daemons() {
         fclose($soubor);
         exec('sudo /bin/cp /tmp/daemons /etc/quagga/daemons');
         exec('sudo /bin/chown quagga:quagga /etc/quagga/daemons');
+        exec('sudo /bin/chmod 0644 /etc/quagga/daemons');
     }
 }
 function save_quagga_zebra() {
@@ -76,6 +82,7 @@ function save_quagga_zebra() {
             fwrite($soubor, "\n");
             fclose($soubor);
             exec("sudo /bin/cp /tmp/zebra.conf /etc/quagga/zebra.conf");
+            exec('sudo /bin/chmod 0644 /etc/quagga/zebra.conf');
         }
     }
 }
@@ -171,6 +178,7 @@ function save_quagga_ospfd($DATA) {
         fwrite($soubor, "#\n");
         fclose($soubor);
         exec('sudo /bin/cp /tmp/ospfd.conf /etc/quagga/ospfd.conf');
+        exec('sudo /bin/chmod 0644 /etc/quagga/ospfd.conf');
     }
 }
 function get_quagga_adapter_description($ADAPTER) {
@@ -192,9 +200,9 @@ function get_quagga_adapter_description($ADAPTER) {
 function get_quagga_adapter_cost($ADAPTER) {
     global $quagga;
     // rychlost přečteme z konfigurace firewallu a případně vypočítáme cost
-    $rate = get_firewall_qos_rate($FIREWALL,$ADAPTER);
+    exec('cat /etc/firewall/firewall.conf', $FIREWALL);
+    $rate = get_firewall_qos_rate($FIREWALL, $ADAPTER);
     if ($quagga['cost'] == 'rate') {
-	exec('cat /etc/firewall/firewall.conf', $FIREWALL);
 	
 	if ($rate > 0) {
 	    $cost = bcdiv(1000000,$rate);
