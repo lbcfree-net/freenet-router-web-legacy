@@ -142,7 +142,7 @@ if ($login) {
     <span id="active_ips_text">připojených počítačů: </span>
     </td>
     <td width="150" align="right">
-    <span id="active_ips"><a href="/graphs.php?users=0"><? echo file_exists('/var/log/account/users.txt') ? get_file_value('/var/log/account/users.txt') : '0'; ?></a></span>
+    <span id="active_ips"><a href="/graphs.php?users=0"><?= file_exists('/var/log/account/users.txt') ? get_file_value('/var/log/account/users.txt') : '0'; ?></a></span>
     </td>
     </tr>
     </table>
