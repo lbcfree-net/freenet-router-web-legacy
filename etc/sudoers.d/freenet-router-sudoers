@@ -19,6 +19,7 @@ www-data        ALL=NOPASSWD: /bin/cat
 www-data        ALL=NOPASSWD: /bin/cp
 www-data        ALL=NOPASSWD: /bin/hostname
 www-data        ALL=NOPASSWD: /bin/chown
+www-data        ALL=NOPASSWD: /bin/chmod
 www-data        ALL=NOPASSWD: /bin/ln
 www-data        ALL=NOPASSWD: /bin/rm
 www-data        ALL=NOPASSWD: /sbin/iwconfig
