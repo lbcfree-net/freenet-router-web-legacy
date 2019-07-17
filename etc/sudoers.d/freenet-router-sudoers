@@ -32,6 +32,7 @@ www-data        ALL=NOPASSWD: /usr/local/sbin/rw
 www-data        ALL=NOPASSWD: /usr/sbin/sysv-rc-conf 
 www-data        ALL=NOPASSWD: /usr/sbin/service
 www-data        ALL=NOPASSWD: /bin/hostname
+www-data	ALL-NOPASSWD: /bin/systemctl
 
 # freenet-router
 www-data        ALL=NOPASSWD: /usr/local/bin/web-auth
