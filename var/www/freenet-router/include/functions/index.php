@@ -25,15 +25,11 @@ function get_startup($SERVICE)
   switch ($SERVICE) 
   {
     case 'apache':
-      foreach($output as $item)
-       {
-         if (preg_match('/^apache2.*\d:on/', $item))
-         {
-           return true;
-         }
-       } 
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-enabled apache2', $sout, $res);
 
-       break;
+      return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled'); 
     case 'dhcp':
       foreach($output as $item)
       {
@@ -124,35 +120,32 @@ function get_startup($SERVICE)
 
       break;
     case 'quagga':
-      foreach($output as $item)
-      {
-        if (preg_match('/^quagga.*\d:on/', $item))
-        {
-          return true;
-        }
-      } 
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-enabled zebra', $sout, $res);
 
-      break;
+      if (($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled')) {
+
+        $sout = '';
+        $res = false;
+        exec('sudo systemctl is-enabled ospfd', $sout, $res);
+
+        return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled');
+      }
+
+      return false;
     case 'snmp':
-      foreach($output as $item)
-      {
-        if (preg_match('/^snmpd.*\d:on/', $item))
-        {
-          return true;
-        }
-      } 
+        $sout = '';
+        $res = false;
+        exec('sudo systemctl is-enabled snmpd', $sout, $res);
 
-      break;
+        return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled'); 
     case 'ssh':
-      foreach($output as $item)
-      {
-        if (preg_match('/^ssh.*\d:on/', $item))
-        {
-          return true;
-        }
-      } 
+        $sout = '';
+        $res = false;
+        exec('sudo systemctl is-enabled ssh', $sout, $res);
 
-      break;
+        return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled'); 
   }
 
   return false;
@@ -166,8 +159,11 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
   switch ($SERVICE) 
   {
     case 'apache':
-      exec('sudo service apache2 status', $output, $result);
-      return !$result;
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-active apache2', $sout, $res);
+
+      return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active'); 
     case 'dhcp':
       exec('sudo service isc-dhcp-server status', $output, $result);
       return !$result;
@@ -179,13 +175,32 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
     case 'account':
       return array_eregi_search('ACCOUNT', $IPTABLES);	    
     case 'quagga':
-      return array_eregi_search('/usr/lib/quagga/zebra', $SERVICES);	    
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-active zebra', $sout, $res);
+
+      if (($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active')) {
+
+        $sout = '';
+        $res = false;
+        exec('sudo systemctl is-active ospfd', $sout, $res);
+
+        return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active');
+      }
+
+      return false;
     case 'snmp':
-      exec('sudo service snmpd status', $output, $result);
-      return !$result;
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-active snmpd', $sout, $res);
+
+      return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active'); 
     case 'ssh':
-      exec('sudo service ssh status', $output, $result);
-      return !$result;
+      $sout = '';
+      $res = false;
+      exec('sudo systemctl is-active ssh', $sout, $res);
+
+      return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active'); 
   }
   
   return false;
@@ -464,8 +479,8 @@ function set_startup($SERVICE, $VALUE)
   switch ($SERVICE) 
   {
     case 'apache':	    
-      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
-      exec("sudo sysv-rc-conf apache2 $status");      
+      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
+      exec("sudo systemctl $status apache2");      
       break;
     case 'dhcp':      
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
@@ -616,37 +631,17 @@ function set_startup($SERVICE, $VALUE)
       
       break;
     case 'quagga':
-      if (convert_czech_to_english($VALUE) == 'yes') 
-      {
-        exec('sudo sysv-rc-conf quagga on');
-      }
-      else
-      {
-        exec('sudo sysv-rc-conf quagga off');
-      }         
-
+      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
+      exec("sudo systemctl $status zebra");      
+      exec("sudo systemctl $status ospfd");      
       break;
     case 'snmp':
-      if (convert_czech_to_english($VALUE) == 'yes') 
-      {
-        exec('sudo sysv-rc-conf snmpd on');
-      }
-      else
-      {
-        exec('sudo sysv-rc-conf snmpd off');
-      }         
-
+      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
+      exec("sudo systemctl $status snmpd");      
       break;
     case 'ssh':
-      if (convert_czech_to_english($VALUE) == 'yes') 
-      {
-        exec('sudo sysv-rc-conf ssh on');
-      }
-      else
-      {
-        exec('sudo sysv-rc-conf ssh off');
-      }         
-
+      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
+      exec("sudo systemctl $status ssh");      
       break;
   }
 }
@@ -677,31 +672,34 @@ function set_internal_ip($VALUE) {
 
 function service($SERVICE, $VALUE) 
 {
+  $cmd = convert_czech_to_english($VALUE);
+
   switch ($SERVICE) 
   {
     case 'apache':
-      exec('sudo service apache2 ' . convert_czech_to_english($VALUE));
+      exec("sudo systemctl $cmd apache2");
       break;
     case 'dhcp':
-      exec('sudo service isc-dhcp-server ' . convert_czech_to_english($VALUE));
+      exec("sudo service isc-dhcp-server $cmd");
       break;
     case 'firewall':
-      exec('sudo service firewall ' . convert_czech_to_english($VALUE));
+      exec("sudo service firewall $cmd");
       break;
     case 'macguard':
-      exec('sudo service firewall macguard_' . convert_czech_to_english($VALUE));
+      exec("sudo service firewall macguard_$cmd");
       break;
     case 'account':
-      exec('sudo service firewall account_' . convert_czech_to_english($VALUE));
+      exec("sudo service firewall account_$cmd");
       break;
     case 'quagga':
-      exec('sudo service quagga ' . convert_czech_to_english($VALUE));
+      exec("sudo systemctl $cmd zebra");
+      exec("sudo systemctl $cmd ospfd");
       break;
     case 'snmp':
-      exec('sudo service snmpd ' . convert_czech_to_english($VALUE));
+      exec("sudo systemctl $cmd snmpd");
       break;
     case 'ssh':
-      exec('sudo service ssh ' . convert_czech_to_english($VALUE));
+      exec("sudo systemctl $cmd ssh");
       break;
   }
 }

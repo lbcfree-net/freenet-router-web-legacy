@@ -21,15 +21,18 @@ if (($_POST[save_zebra] == "uložit") && ($login)) {
 }
 // vypnutí quaggy
 if (($_POST[quagga_stop] != "") && ($login)) {
-    exec("sudo /etc/init.d/quagga stop");
+    exec("sudo systemctl stop zebra");
+    exec("sudo systemctl stop ospfd");
 }
 // zapnutí quaggy
 if (($_POST[quagga_start] != "") && ($login)) {
-    exec("sudo /etc/init.d/quagga start");
+    exec("sudo systemctl start zebra");
+    exec("sudo systemctl start ospfd");
 }
 // restartování quaggy
 if (($_POST[quagga_restart] != "") && ($login)) {
-    exec("sudo /etc/init.d/quagga restart");
+    exec("sudo systemctl restart zebra");
+    exec("sudo systemctl restart ospfd");
 }
 // editování souborů quaggy
 $ospfd_edit = false;
