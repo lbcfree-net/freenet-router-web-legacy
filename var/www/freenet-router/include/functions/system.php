@@ -10,8 +10,8 @@ function system_get_cpu_model($CPUINFO) {
     return "";
 }
 function system_get_cpu_temperature($sensors) {
-    if(count($sensors) > 6){
-        $temperature = explode(':', $sensors[6]);
+    if(count($sensors) > 2){
+        $temperature = explode(':', $sensors[2]);
         $temperature = explode(' C', $temperature[1]);
         if(count($temperature) > 0) {
             if (strpos($temperature[0], '°C') === false) {
@@ -28,8 +28,8 @@ function system_get_cpu_temperature($sensors) {
 
 function system_get_power($sensors)
 {
-    if(count($sensors) > 2){
-        $power = explode(':', $sensors[2]);
+    if(count($sensors) > 7){
+        $power = explode(':', $sensors[7]);
         $power = explode(' W', $power[1]);
         if(count($power) > 0) {
             $power = $power[0] . ' W';
@@ -68,7 +68,7 @@ function system_get_memory($MEMINFO,$VALUE) {
 	if (preg_match("/$VALUE/", $line)) {
 	    $line = explode(":",$line);
 	    $pom = preg_split("/[\ \t\n]+/",$line[1]);
-	    return round(($pom[1] / 1024),0);
+	    return round(($pom[1] / 1024 / 1024), 1);
 	}
     }
     return 0;
@@ -89,7 +89,7 @@ function system_get_disk($DISKINFO,$VALUE,$TYPE) {
     foreach ($DISKINFO as $line) {
 	$pom = preg_split("/[\ \t\n]+/",$line);
 	if ($pom[5] == $VALUE) {
-	    return round(($pom[$TYPE] / 1024),0);
+	    return round(($pom[$TYPE] / 1024 / 1024), 1);
 	}
     }
     return 0;
