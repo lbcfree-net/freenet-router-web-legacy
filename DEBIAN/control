@@ -5,6 +5,7 @@ Maintainer: Karel Picman <karel.picman@lbcfree.net>
 Homepage: https://redmine.lbcfree.net/projects/freenet-router-web-legacy
 Package: freenet-router-web-legacy3.2
 Version: 1.1 
+Date: Fri, 19 Jul 13:27:59 +0200
 Architecture: all
 Conflicts: freenet-router-web-legacy
 Depends: ssl-cert, apache2, php, php-gd, freenet-router3.2, freenet-router-auth3.2, rrdtool, ethtool, sysv-rc-conf 
