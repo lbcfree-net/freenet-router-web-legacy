@@ -74,57 +74,51 @@ function system_get_memory($MEMINFO,$VALUE) {
     return 0;
 }
 function system_get_memory_total($MEMINFO) {
-    return system_get_memory($MEMINFO,'MemTotal');
+    return system_get_memory($MEMINFO,"MemTotal");
 }
 function system_get_memory_free($MEMINFO) {
-    return system_get_memory($MEMINFO,'MemFree');
+    return system_get_memory($MEMINFO,"MemFree");
 }
 function system_get_swap_total($MEMINFO) {
-    return system_get_memory($MEMINFO,'SwapTotal');
+    return system_get_memory($MEMINFO,"SwapTotal");
 }
 function system_get_swap_free($MEMINFO) {
-    return system_get_memory($MEMINFO,'SwapFree');
+    return system_get_memory($MEMINFO,"SwapFree");
 }
 function system_get_disk($DISKINFO,$VALUE,$TYPE) {
     foreach ($DISKINFO as $line) {
-        $pom = preg_split("/[\ \t\n]+/",$line);
-        if ($pom[5] == $VALUE) {
-            return round(($pom[$TYPE] / 1024 / 1024), 1);
-        }
+	$pom = preg_split("/[\ \t\n]+/",$line);
+	if ($pom[5] == $VALUE) {
+	    return round(($pom[$TYPE] / 1024 / 1024), 1);
+	}
     }
     return 0;
 }
 function system_get_rootfs_total($DISKINFO) {
-    return system_get_disk($DISKINFO,'/',1);
+    return system_get_disk($DISKINFO,"/",1);
 }
 function system_get_rootfs_free($DISKINFO) {
-    return system_get_disk($DISKINFO,'/',3);
+    return system_get_disk($DISKINFO,"/",3);
 }
 function system_get_tmpfs_total($DISKINFO) {
-    return system_get_disk($DISKINFO, '/var/log', 1);
-}
-function system_get_tmpfs_free($DISKINFO) {
-    return system_get_disk($DISKINFO, '/var/log', 3);
-}
-function system_get_tmpfss_total($DISKINFO) {
     return system_get_disk($DISKINFO, '/tmp', 1);
 }
-function system_get_tmpfss_free($DISKINFO) {
+function system_get_tmpfs_free($DISKINFO) {
     return system_get_disk($DISKINFO, '/tmp', 3);
 }
 function system_get_kernel_version() {
-    $type = preg_split("/[\ \t\n]+/",exec('uname -v'));
+    $type = preg_split("/[\ \t\n]+/",exec("uname -v"));
     
-    return exec('uname -r') . ' ' . $type[1];
+    return exec("uname -r")." ".$type[1];
 }
 function system_get_os_version() {
-    return get_file_value('/etc/issue.net');
+    return get_file_value("/etc/issue.net");
 }
 function system_get_rootfs_status($MOUNTINFO) 
 {
     if (!is_array($MOUNTINFO)) 
     {
-	    exec('mount',$MOUNTINFO);
+	exec("mount",$MOUNTINFO);
     }
     
     $fs = '?';

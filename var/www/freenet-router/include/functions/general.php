@@ -474,5 +474,4 @@ function get_fr_version()
 
     return $version;
 }
-
 ?>

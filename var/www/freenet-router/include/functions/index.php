@@ -15,13 +15,8 @@ function get_hostname()
   return $output;
 }
 
-function get_startup($SERVICE) 
+function get_startup($SERVICE, $output) 
 {
-  $output = '';
-  $result = false;
-  
-  exec('sudo sysv-rc-conf --list', $output, $result);
-  
   switch ($SERVICE) 
   {
     case 'apache':

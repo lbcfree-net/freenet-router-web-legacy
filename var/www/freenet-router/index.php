@@ -66,13 +66,22 @@ if ($login)  {
     <tr>
     <td align="left" colspan="2" width="50%">jste přihlášen jako uživatel: <?= $user ?></td>
     <td width="5%"></td>
-    <td colspan="2" align="left">zápis na disk: <?= ((system_get_rootfs_status_ro("")) ? "<font color=\"red\">nepovolen</font>" : "<font color=\"green\">povolen</font>") ?></td>
+    <?php
+        $ro = system_get_rootfs_status_ro('')
+    ?>
+    <td colspan="2" align="left">
+        zápis na disk: <em class="<?= $ro ? 'ro' : 'rw'?>"><?= $ro ? 'nepovolen' : 'povolen' ?></em>
+    </td>
     </tr>
     <tr>
     <td align="left"><input type="submit" name="logout" value="odhlásit se"></td>
-    <td align="left"><input type="button" name="change_password" value="změnit heslo" onclick="get_variable('password','nové heslo');"></td>
+    <td align="left">
+        <input type="button" name="change_password" value="změnit heslo" onclick="get_variable('password','nové heslo');">
+    </td>
     <td></td>
-    <td colspan="2" align="right"><input type="submit" name="set_<?= ((system_get_rootfs_status_ro("")) ? "rw" : "ro") ?>" value="<?= ((system_get_rootfs_status_ro("")) ? "povolit zápis" : "uzamknout") ?>"></td>
+    <td colspan="2" align="right">
+        <input type="submit" name="set_<?= $ro ? 'rw' : 'ro' ?>" value="<?= $ro ? 'povolit zápis' : 'uzamknout' ?>" disabled>
+    </td>
     </tr>
 <?php
 } else {
@@ -114,16 +123,20 @@ table_line();
     </tr>
 <?php
 table_line();
-exec("ps ax",$SERVICES);
-exec("sudo /sbin/iptables -L -n",$IPTABLES);
-create_selection_service("apache","APACHE", array("ano","ne"), get_startup("apache"),get_running("apache",$SERVICES,$IPTABLES));
-create_selection_service("dhcp server","DHCP", array("ano","ne"), get_startup("dhcp"),get_running("dhcp",$SERVICES,$IPTABLES));
-create_selection_service("firewall","FIREWALL", array("ano","ne"), get_startup("firewall"),get_running("firewall",$SERVICES,$IPTABLES));
-create_selection_service("macguard","MACGUARD", array("ano","ne"), get_startup("macguard"),get_running("macguard",$SERVICES,$IPTABLES));
-create_selection_service("tvorba grafů","ACCOUNT", array("ano","ne"), get_startup("account"),get_running("account",$SERVICES,$IPTABLES));
-create_selection_service("quagga","QUAGGA", array("ano","ne"), get_startup("quagga"),get_running("quagga",$SERVICES,$IPTABLES));
-create_selection_service("snmp","SNMP", array("ano","ne"), get_startup("snmp"),get_running("snmp",$SERVICES,$IPTABLES));
-create_selection_service("ssh","SSH", array("ano","ne"), get_startup("ssh"),get_running("ssh",$SERVICES,$IPTABLES));
+exec('ps ax', $services);
+exec('sudo /sbin/iptables -L -n', $iptables);
+$output = '';
+$result = false;
+exec('sudo sysv-rc-conf --list', $sysv);
+$selection = ['ano', 'ne'];
+create_selection_service('apache','APACHE', $selection, get_startup('apache', $sysv), get_running('apache', $services, $iptables));
+create_selection_service('dhcp server','DHCP', $selection, get_startup('dhcp', $sysv) ,get_running('dhcp', $services, $iptables));
+create_selection_service('firewall','FIREWALL', $selection, get_startup('firewall', $sysv), get_running('firewall', $services, $iptables));
+create_selection_service('macguard','MACGUARD', $selection, get_startup('macguard', $sysv), get_running('macguard', $services, $iptables));
+create_selection_service('tvorba grafů','ACCOUNT', $selection, get_startup('account', $sysv), get_running('account', $services, $iptables));
+create_selection_service('quagga','QUAGGA', $selection, get_startup('quagga', $sysv), get_running('quagga', $services, $iptables));
+create_selection_service('snmp','SNMP', $selection, get_startup('snmp', $sysv), get_running('snmp', $services, $iptables));
+create_selection_service('ssh','SSH', $selection, get_startup('ssh', $sysv), get_running('ssh', $services, $iptables));
 if ($login) {
     table_line();
 ?>
@@ -181,11 +194,11 @@ if ($login) {
     <li>Zozbrazení rout, start, restart quaggy a editaci souborů quaggy můžete provést na stránce <a href="/quagga.php">quagga</a>.</li>
     </ul>
     <hr>
-    <font color="777777">
+    <br/>
 <?php
 }
 ?>
-    <ul class="bullets">
+    <ul class="bullets gray">
     <li>Vítejte, tyto stránky slouží k administraci routeru s operačním systémem Freenet router.</li>
     <li>Po přihlášení získáte dodatečná práva, budete moci editovat konfigurační soubory, ukládat nastavení i restartovat router.</li>
     <li>Bez přihlášení si můžete prohlížet statistiky, grafy a některé další systémové informace.</li>
@@ -193,13 +206,6 @@ if ($login) {
     <li>Další informace o routeru a použítém softwaru najde na stránce <a href="/dalsi.php">další</a>.</li>
     </ul>
     <br>
-<?php
-if ($login) {
-?>
-    </font>
-<?php
-}
-?>
     </td>
     </tr>
 </table>

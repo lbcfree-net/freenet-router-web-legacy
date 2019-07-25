@@ -579,3 +579,15 @@ a.info_link {
 .img_disabled {
     background: url('../images/disabled.png') no-repeat center center;
 }
+
+.rw {
+    color: green;  
+}
+
+.ro {
+    color: red;
+}
+
+ul.gray {
+    color:gray;
+}
