@@ -443,4 +443,36 @@ function convert_units($value,$unit,$limit,$prec = 1) {
         return round(($value / pow($base,4)),$prec)." T".$unit;
     }
 }
+
+function get_fr_version()
+{
+    $output = '';
+    $result = 1;
+    $version = '';
+
+    exec('sudo apt show freenet-router-web-legacy3.2', $output, $result);
+
+    if($result == 0){
+
+        foreach($output as $line){
+
+            if(preg_match('/^Version: 0.(.*)$/', $line, $matches)){
+
+                $version .= 'r' . $matches[1];
+
+            }
+            elseif(preg_match('/^Date:(.*)$/', $line, $matches)){
+
+                $version .= $matches[1];
+
+            }
+
+        }
+
+    }
+
+
+    return $version;
+}
+
 ?>
