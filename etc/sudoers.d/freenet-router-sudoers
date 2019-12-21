@@ -36,7 +36,6 @@ www-data        ALL=NOPASSWD: /bin/hostname
 www-data	ALL=NOPASSWD: /bin/systemctl
 www-data	ALL=NOPASSWD: /usr/bin/apt
 www-data	ALL=NOPASSWD: /sbin/brctl
-www-data	ALL=NOPASSWD: /bin/grep
 
 # freenet-router
 www-data        ALL=NOPASSWD: /usr/local/bin/web-auth
