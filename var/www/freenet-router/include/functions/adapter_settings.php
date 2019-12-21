@@ -368,15 +368,26 @@ function get_adapter_settings_driver($ADAPTER) {
     }
     return "neznámý";
 }
-function get_adapter_settings_irq($ADAPTER) {
-    if ((get_adapter_settings_is_adapter($ADAPTER))) {
-	$pom = get_file_value("/sys/class/net/$ADAPTER/device/irq");
-	if ($pom != "") {
-	    return $pom;
-	}
+
+function get_adapter_settings_irq($ADAPTER)
+{
+    if ((get_adapter_settings_is_adapter($ADAPTER)))
+    {
+    	$filename = "/sys/class/net/$ADAPTER/device/irq";
+
+		if (file_exists($filename))
+		{
+    		$irq = get_file_value($filename);
+
+			if ($irq != '')
+			{
+				return $irq;
+			}
     }
-    return "neznámé";
+
+    return 'neznámé';
 }
+
 function get_adapter_settings_bridge($BRCTL,$ADAPTER) {
     $pom = false;
     // v jakém bridge rozhraní a jakými adaptery je daný adapter
