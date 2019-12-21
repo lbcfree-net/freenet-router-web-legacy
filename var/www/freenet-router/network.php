@@ -111,41 +111,41 @@ if ($interfaces_edit) {
 <?php
 } else {
 // přečteme data z ip
-exec("ip addr show", $NETWORK);
+exec('ip addr show', $NETWORK);
 // jestli je na zařízení quagga aktivní poznáme podle ospfd.conf
-exec("cat /etc/quagga/ospfd.conf", $QUAGGA);
+exec('sudo cat /etc/quagga/ospfd.conf', $QUAGGA);
 // macguarda a qos přečteme z konfigurace firewallu
-exec("cat /etc/firewall/firewall.conf",$FIREWALL);
+exec('sudo cat /etc/firewall/firewall.conf', $FIREWALL);
 // načteme data z iwconfigu
-exec("sudo /sbin/iwconfig 2>/dev/null",$IWCONFIGS);
+exec('sudo /sbin/iwconfig 2>/dev/null', $IWCONFIGS);
 // načteme dat z lspci
-exec("lspci",$LSPCIS);
+exec('lspci', $LSPCIS);
 // některé další věci poznáme z interfaces
-exec("cat /etc/network/interfaces", $INTERFACES);
+exec('cat /etc/network/interfaces', $INTERFACES);
 // nastavení bridge poznáme z brctl
-exec("brctl show", $BRCTL);
+exec('brctl show', $BRCTL);
 // zobrazíme hezkou tabulku
 $ADAPTERS = array_unique(array_merge(get_interfaces_all($INTERFACES),get_networking_all($NETWORK)));
-if (($_GET["adapter_name"] != "") && ($_GET["adapter_name"] != "null")) {
-    if (!in_array($_GET["adapter_name"],$ADAPTERS)) {
-	$ADAPTERS[] = $_GET["adapter_name"];
+if (($_GET['adapter_name'] != '') && ($_GET['adapter_name'] != 'null')) {
+    if (!in_array($_GET['adapter_name'],$ADAPTERS)) {
+	$ADAPTERS[] = $_GET['adapter_name'];
     }
-} else if (($_GET["adapter"] != "") && ($_GET["adapter"] != "null") && ($_GET["vlan_number"] != "") && ($_GET["vlan_number"] != "null")) {
-    if (!in_array($_GET["adapter"].".".$_GET["vlan_number"],$ADAPTERS)) {
-	$ADAPTERS[] = $_GET["adapter"].".".$_GET["vlan_number"];
+} else if (($_GET['adapter'] != '') && ($_GET['adapter'] != 'null') && ($_GET['vlan_number'] != "") && ($_GET["vlan_number"] != "null")) {
+    if (!in_array($_GET['adapter'] . '.' .$_GET['vlan_number'], $ADAPTERS)) {
+	$ADAPTERS[] = $_GET['adapter'] . '.' . $_GET['vlan_number'];
     }
-} else if ($_GET["add_bridge"] == "true") {
+} else if ($_GET['add_bridge'] == 'true') {
     $A = 0;
     while (true) {
-	if (in_array("br".$A,$ADAPTERS)) {
+	if (in_array("br$A", $ADAPTERS)) {
 	    $A++;
 	} else {
-	    $ADAPTERS[] = "br".$A;
+	    $ADAPTERS[] = "br$A";
 	    break;
 	}
     }
 }
-usort($ADAPTERS,"sort_adapters");
+usort($ADAPTERS,'sort_adapters');
 
 // zalozky rozhrani
 ?>

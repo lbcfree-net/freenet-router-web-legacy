@@ -32,29 +32,28 @@ function save_quagga_daemons() {
         exec('sudo /bin/chmod 0644 /etc/quagga/daemons');
     }
 }
-function save_quagga_zebra() {
+
+function save_quagga_zebra()
+{
     global $hostname;
     global $quagga;
-    // ukládáme jen při změně hostname    
-    if(($soubor = fopen("/etc/quagga/zebra.conf","r")))
-    {
-        while (!feof($soubor)) {
-            if (preg_match("/^hostname $hostname/",fgets($soubor, 4096))) {
-                $pom = true;
-                break;
-            }
-        }
-        fclose($soubor);
+
+    // Ukládáme jen při změně hostname
+    exec('sudo cat /etc/quagga/zebra.conf', $zebra);
+
+    if (preg_match("/hostname $hostname/", $zebra)) {
+        $pom = true;
     }
     
-    if (!$pom) {
-	if(($soubor = fopen("/tmp/zebra.conf","w")))
+    if (!$pom)
+    {
+	    if(($soubor = fopen('/tmp/zebra.conf', 'w')))
         {
-            fwrite($soubor, "# created by Freenet Router web interface ".date("H:i j.n.Y")."\n");
+            fwrite($soubor, '# created by Freenet Router web interface ' . date('H:i j.n.Y') . "\n");
             fwrite($soubor, "#\n");
-            fwrite($soubor, "hostname ".$hostname."\n");
-            fwrite($soubor, "password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
-            fwrite($soubor, "enable password ".(($quagga["password"] != "") ? $quagga["password"] : "zebra")."\n");
+            fwrite($soubor, "hostname $hostname\n");
+            fwrite($soubor, 'password ' . (($quagga['password'] != '') ? $quagga['password'] : 'zebra') . "\n");
+            fwrite($soubor, 'enable password ' . (($quagga['password'] != '') ? $quagga['password'] : 'zebra') . "\n");
             fwrite($soubor, "log stdout\n");
             fwrite($soubor, "#log file /var/log/quagga/zebra.log\n");
             fwrite($soubor, "#\n");
@@ -81,7 +80,8 @@ function save_quagga_zebra() {
             fwrite($soubor, "#\n");
             fwrite($soubor, "\n");
             fclose($soubor);
-            exec("sudo /bin/cp /tmp/zebra.conf /etc/quagga/zebra.conf");
+
+            exec('sudo /bin/cp /tmp/zebra.conf /etc/quagga/zebra.conf');
             exec('sudo /bin/chmod 0644 /etc/quagga/zebra.conf');
         }
     }

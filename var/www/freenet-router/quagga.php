@@ -77,15 +77,11 @@ if ($ospfd_edit) {
 ?>
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
 <?php
-    if(($file = fopen("/etc/quagga/ospfd.conf","r"))) {
-	while (!feof($file)) {
-    	    echo fgets($file, 1000);
-	}
-	fclose($file);
-    }
+    exec('sudo cat /etc/quagga/ospfd.conf', $ospfd);
+    echo $ospfd;
 ?>
     </textarea>
-    <br>
+    <br/>
     <input type="submit" name="save_ospfd" value="uložit">
     <input type="hidden" name="quagga_ospfd" value="neco">
 <?php
@@ -93,15 +89,11 @@ if ($ospfd_edit) {
 ?>
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
 <?php
-    if(($file = fopen("/etc/quagga/zebra.conf","r"))) {	
-	while (!feof($file)) {
-    	    echo fgets($file, 1000);
-	}
-	fclose($file);
-    }
+    exec('sudo cat /etc/quagga/zebra.conf', $zebra);
+    echo $zebra;
 ?>
     </textarea>
-    <br>
+    <br/>
     <input type="submit" name="save_zebra" value="uložit">
     <input type="hidden" name="quagga_zebra" value="neco">
 <?php
@@ -109,7 +101,7 @@ if ($ospfd_edit) {
 ?>
     <table align="center" width="98%">
 <?php
-    if ((($_POST['network'] != "") || ($_POST['gateway'] != "") || ($_POST['device'] != "") || ($_POST['type'] != "") || ($_POST['cost'] != "")) && ($_POST['clear'] == "")) {
+    if ((($_POST['network'] != '') || ($_POST['gateway'] != '') || ($_POST['device'] != '') || ($_POST['type'] != '') || ($_POST['cost'] != '')) && ($_POST['clear'] == '')) {
 ?>
 	<tr>
 	<td colspan="5">
@@ -127,7 +119,7 @@ if ($ospfd_edit) {
     <th width="10%">cost</th>
     </tr>
 <?php
-    exec("ip ro",$routes);
+    exec('ip ro', $routes);
     foreach($routes as $I => $route) {
 	$route = preg_split("/[\ ]+/", $route);
 	// pokud je více cest se stejnou váhou
