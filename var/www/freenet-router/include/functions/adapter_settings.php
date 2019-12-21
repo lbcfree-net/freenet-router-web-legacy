@@ -137,14 +137,17 @@ function get_adapter_settings_is_ethernet($ADAPTER) {
     }
     return false;
 }
-function get_adapter_settings_is_adapter($ADAPTER) {
-    if (preg_match('/enp/', $ADAPTER) || (preg_match('/eth/', $ADAPTER) ||
+
+function get_adapter_settings_is_adapter($ADAPTER)
+{
+    if ((preg_match('/enp/', $ADAPTER) || preg_match('/eth/', $ADAPTER) ||
 			preg_match('/wlan/', $ADAPTER) || preg_match('/ath/', $ADAPTER)) &&
 		((!preg_match('/:/', $ADAPTER)) && (!preg_match('/\./', $ADAPTER)))) {
 		return true;
     }
     return false;
 }
+
 function get_adapter_settings_is_wifi($IWCONFIG,$ADAPTER) {
     if (is_array($IWCONFIG)) {
 	foreach ($IWCONFIG as $LINE) {
