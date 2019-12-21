@@ -375,14 +375,13 @@ function get_adapter_settings_irq($ADAPTER)
     {
     	$filename = "/sys/class/net/$ADAPTER/device/irq";
 
-		if (file_exists($filename))
-		{
-    		$irq = get_file_value($filename);
+		if (file_exists($filename)) {
+			$irq = get_file_value($filename);
 
-			if ($irq != '')
-			{
+			if ($irq != '') {
 				return $irq;
 			}
+		}
     }
 
     return 'neznámé';

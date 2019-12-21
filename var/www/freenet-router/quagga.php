@@ -78,11 +78,11 @@ if ($ospfd_edit) {
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
 <?php
     exec('sudo cat /etc/quagga/ospfd.conf', $ospfd);
-    echo $ospfd;
+    echo join("\n", $ospfd);
 ?>
     </textarea>
     <br/>
-    <input type="submit" name="save_ospfd" value="uložit">
+        <input type="submit" name="save_ospfd" value="uložit">
     <input type="hidden" name="quagga_ospfd" value="neco">
 <?php
 } else if ($zebra_edit) {
@@ -90,7 +90,7 @@ if ($ospfd_edit) {
     <textarea cols="130" rows="50" tabindex="2" name="text" wrap="off">
 <?php
     exec('sudo cat /etc/quagga/zebra.conf', $zebra);
-    echo $zebra;
+    echo join("\n", $zebra);
 ?>
     </textarea>
     <br/>

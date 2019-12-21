@@ -41,8 +41,12 @@ function save_quagga_zebra()
     // Ukládáme jen při změně hostname
     exec('sudo cat /etc/quagga/zebra.conf', $zebra);
 
-    if (preg_match("/hostname $hostname/", $zebra)) {
-        $pom = true;
+    foreach($zebra as $line)
+    {
+        if (preg_match("/hostname $hostname/", $line)) {
+            $pom = true;
+            break;
+        }
     }
     
     if (!$pom)
