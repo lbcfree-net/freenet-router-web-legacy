@@ -365,6 +365,9 @@ table.inset_table td a:hover {
     text-decoration: none !important;
 }
 
+textarea {
+	font-family: monospace;
+}
 
 .qos_class_1 {
     background: #ffc1c1 !important;

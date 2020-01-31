@@ -6,6 +6,7 @@ function save_firewall($text){
         exec('sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf');
     }
 }
+
 function save_firewall_converted($DATA){    
     if(($soubor = fopen('/tmp/firewall.conf', 'w'))){
         if(($soubor_orig = fopen('/etc/firewall/firewall.conf', 'r'))){
@@ -36,34 +37,11 @@ function save_firewall_converted($DATA){
                 // výjimka pro bridge
                 if ((!preg_match('/br/',$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != "")) {
                     fwrite($soubor,"DEV".$I."_IFACE=\"".$NAME[0].$VLAN."\"\n");
-                    if ($DATA[$NAME[0].$VLAN_POM."_QOS"] != "") {
-                        fwrite($soubor,"DEV".$I."_QOS=\"".convert_czech_to_english($DATA[$NAME[0].$VLAN_POM."_QOS"])."\"\n");
-                    }
-                    if ($DATA[$NAME[0].$VLAN_POM."_QOS_RATE"] != "") {
-                        fwrite($soubor, "DEV".$I."_QOS_RATE=\"".$DATA[$NAME[0].$VLAN_POM."_QOS_RATE"]."\"\n");
-                    } else {
-                        fwrite($soubor, "DEV".$I."_QOS_RATE=\"2000\"\n");
-                    }
-                    if ($DATA[$NAME[0].$VLAN_POM."_QOS_DUPLEX"] != "") {
-                        fwrite($soubor, "DEV".$I."_QOS_DUPLEX=\"".$DATA[$NAME[0].$VLAN_POM."_QOS_DUPLEX"]."\"\n");
-                    } else {
-                        fwrite($soubor, "DEV".$I."_QOS_DUPLEX=\"FD\"\n");
-                    }
-                    if ($DATA[$NAME[0].$VLAN_POM."_QOS_DIRECTION"] != "") {
-                        fwrite($soubor, "DEV".$I."_QOS_DIRECTION=\"".$DATA[$NAME[0].$VLAN_POM."_QOS_DIRECTION"]."\"\n");
-                    } else {
-                        fwrite($soubor, "DEV".$I."_QOS_DIRECTION=\"LAN\"\n");
-                    }
                     if ($DATA[$NAME[0].$VLAN_POM."_MACGUARD"] != "") {
                         fwrite($soubor, "DEV".$I."_MACGUARD=\"".convert_czech_to_english($DATA[$NAME[0].$VLAN_POM."_MACGUARD"])."\"\n");
                     }
                     if ($DATA[$NAME[0].$VLAN_POM."_DHCP"] != "") {
                         fwrite($soubor, "DEV".$I."_MACGUARD_DHCP=\"".convert_czech_to_english($DATA[$NAME[0].$VLAN_POM."_DHCP"])."\"\n");
-                    }
-                    if ($DATA[$NAME[0].$VLAN_POM."_NO_P2P"] != "") {
-                        fwrite($soubor, "DEV".$I."_NO_P2P=\"".convert_czech_to_english($DATA[$NAME[0].$VLAN_POM."_NO_P2P"])."\"\n");
-                    } else {
-                        fwrite($soubor, "DEV".$I."_NO_P2P=\"no\"\n");
                     }
                     if ($DATA[$NAME[0].$VLAN_POM."_DESCRIPTION"] != "") {
                         fwrite($soubor, "DEV".$I."_DESCRIPTION=\"".$DATA[$NAME[0].$VLAN_POM."_DESCRIPTION"]."\"\n");
@@ -96,70 +74,20 @@ function save_firewall_converted($DATA){
     exec('sudo /bin/cp /tmp/firewall.conf /etc/firewall/firewall.conf');
 }
 
+function save_qos($text){
+    if(($soubor = fopen('/tmp/qos.conf', 'w'))){
+        fwrite($soubor, stripslashes(str_replace("\r", '', $text)));
+        fclose($soubor);
+        exec('sudo /bin/cp /tmp/qos.conf /etc/firewall/qos.conf');
+    }
+}
+
 function get_firewall_macguard($FIREWALL,$ADAPTER) {
     $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
         if ($FIREWALL_DATA_DEV != '') {
             if (preg_match("/^${FIREWALL_DATA_DEV}_MACGUARD=\"yes\"/",$LINE)) {
                 return true;
-    	    }
-        } else {
-            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
-                $FIREWALL_DATA_DEV = explode("_",$LINE);
-                $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
-            }
-        }
-    }
-    return false;
-}
-
-function get_firewall_qos($FIREWALL,$ADAPTER) {
-    $FIREWALL_DATA_DEV = '';
-    foreach ($FIREWALL as $LINE) {
-        if ($FIREWALL_DATA_DEV != "") {
-            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS=\"yes\"/",$LINE)) {
-                return true;
-    	    }
-        } else {
-            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
-                $FIREWALL_DATA_DEV = explode("_",$LINE);
-                $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
-            }
-        }
-    }
-    return false;
-}
-
-function get_firewall_qos_direction($FIREWALL,$ADAPTER) {
-    $FIREWALL_DATA_DEV = '';
-    foreach ($FIREWALL as $LINE) {
-        if ($FIREWALL_DATA_DEV != "") {
-            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WAN\"/",$LINE)) {
-                return "WAN";
-            }else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"WBCK\"/",$LINE)) {
-                return "WBCK";
-            }else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"LBCK\"/",$LINE)) {
-                return "LBCK";
-    	    } else if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_DIRECTION=\"NAT\"/",$LINE)) {
-                return "NAT";
-    	    }
-        } else {
-            if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {
-                $FIREWALL_DATA_DEV = explode("_",$LINE);
-                $FIREWALL_DATA_DEV = $FIREWALL_DATA_DEV[0];
-            }
-        }
-    }
-    return "LAN";
-}
-
-function get_firewall_qos_rate($FIREWALL,$ADAPTER) {
-    $FIREWALL_DATA_DEV = '';
-    foreach ($FIREWALL as $LINE) {
-        if ($FIREWALL_DATA_DEV != "") {
-            if (preg_match("/^${FIREWALL_DATA_DEV}_QOS_RATE=/",$LINE)) {
-		$LINE = preg_split("/[=\"]+/",$LINE);
-                return $LINE[1];
     	    }
         } else {
             if (preg_match("/^DEV._IFACE=\"$ADAPTER\"/",$LINE)) {

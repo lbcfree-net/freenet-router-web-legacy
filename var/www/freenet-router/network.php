@@ -114,7 +114,7 @@ if ($interfaces_edit) {
 exec('ip addr show', $NETWORK);
 // jestli je na zařízení quagga aktivní poznáme podle ospfd.conf
 exec('sudo cat /etc/quagga/ospfd.conf', $QUAGGA);
-// macguarda a qos přečteme z konfigurace firewallu
+// macguarda přečteme z konfigurace firewallu
 exec('sudo cat /etc/firewall/firewall.conf', $FIREWALL);
 // načteme data z iwconfigu
 exec('sudo /sbin/iwconfig 2>/dev/null', $IWCONFIGS);
@@ -221,13 +221,9 @@ foreach ($ADAPTERS as $ADAPTER) {
     if ((!$dummy) && (!$loopback)) {
 	// zjistime jestli na rozhrani běží dhcp server
 	create_selection("dhcp server","${ADAPTER}_DHCP", array("ano", "ne"), get_firewall_dhcp($FIREWALL, $ADAPTER),"");
-	// zjistime jestli na rozhrani je aktivovan macguard a qos
+	// zjistime jestli na rozhrani je aktivovan macguard
 	// macguard
 	create_selection("macguard",$ADAPTER."_MACGUARD", array("ano", "ne"), get_firewall_macguard($FIREWALL, $ADAPTER),"");
-	// qos
-	create_selection("qos",$ADAPTER."_QOS", array("ano", "ne"), get_firewall_qos($FIREWALL, $ADAPTER),"");
-	create_selection("qos - typ",$ADAPTER."_QOS_DIRECTION", array("LAN", "WAN", "NAT", "WBCK", "LBCK"), get_firewall_qos_direction($FIREWALL, $ADAPTER),"");
-	table_text_array("rychlost", $ADAPTER."_QOS_RATE", get_firewall_qos_rate($FIREWALL, $ADAPTER),"6","kbit/s","Reálně dosažitelná rychlost na rozhraní!");
 	create_selection("dhcp klient",$ADAPTER."_DHCP_CLIENT", array("ano", "ne"), get_interfaces_dhcp($INTERFACES,$ADAPTER),"");
     }
     table_line();
