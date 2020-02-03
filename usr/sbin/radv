@@ -1,0 +1,131 @@
+#!/bin/bash
+# Author: Martin Hunek
+# Licence: GNU/GPLv3
+
+BIRD="birdc6"
+CONF_LOCATION="/etc/bird/bird6.conf"
+CONF_LOCATION_BAK="/etc/bird/bird6.conf.bak"
+
+### DO NOT EDIT BELLOW THIS LINE ###
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+NAME="radv"
+DESC="IPv6 RA"
+test -f /usr/sbin/$BIRD || echo "bird not found!" && exit 1
+
+. /lib/lsb/init-functions
+
+test_config()
+{
+    if [ ! -f $CONF_LOCATION -o ! -r $CONF_LOCATION ]; then
+        log_failure_msg "Bird cofiguration not found!"
+        log_end_msg 1
+        exit 1
+    fi
+    if [[ $($BIRD configure check | grep -c "Configuration OK") != 1 ]]; then
+	log_failure_msg "Error in bird configuration!"
+	log_end_msg 1
+	exit 1
+    fi
+}
+
+enable_radv()
+{
+    #rw
+    cp $CONF_LOCATION $CONF_LOCATION_BAK
+    sed -i -z -E "s/(protocol radv \{\s*\n\s+)disabled;/\1#disabled;/g" $CONF_LOCATION
+    if [[ $($BIRD configure check | grep -c "Configuration OK") != 1 ]]; then
+        log_failure_msg "Error in bird configuration!"
+	cp $CONF_LOCATION_BAK $CONF_LOCATION
+	rm -f $CONF_LOCATION_BAK
+        log_end_msg 1
+        exit 1
+    fi
+    $BIRD configure
+    rm -f $CONF_LOCATION_BAK
+    #ro
+}
+
+disable_radv()
+{
+    #rw
+    cp $CONF_LOCATION $CONF_LOCATION_BAK
+    sed -i -z -E "s/(protocol radv \{\s*\n\s+)#disabled;/\1disabled;/g" $CONF_LOCATION
+    if [[ $($BIRD configure check | grep -c "Configuration OK") != 1 ]]; then
+        log_failure_msg "Error in bird configuration!"
+        cp $CONF_LOCATION_BAK $CONF_LOCATION
+	rm -f $CONF_LOCATION_BAK
+        log_end_msg 1
+        exit 1
+    fi
+    $BIRD configure
+    rm -f $CONF_LOCATION_BAK
+    #ro
+}
+
+case "$1" in
+
+enable)
+    log_daemon_msg "Starting $DESC" "$NAME"
+    test_config
+    enable_radv
+    log_end_msg 0
+    ;;
+
+disable)
+    log_daemon_msg "Stopping $DESC" "$NAME"
+    test_config
+    disable_radv
+    log_end_msg 0
+    ;;
+
+start)
+    "$0" run
+    ;;
+
+stop)
+    "$0" suspend
+    ;;
+    
+restart)
+    "$0" start
+    ;;
+    
+force-reload)
+    log_daemon_msg "Reloading $DESC" "$NAME"
+    test_config
+    $BIRD reload radv1
+    log_end_msg 0
+    ;;
+
+status)
+    if [[ $($BIRD show protocols | grep radv1 | grep -c -E "\s+up\s+") == 1 ]]; then echo "Running"; fi
+    ;;
+
+suspend)
+    log_daemon_msg "Suspending $DESC" "$NAME"
+    test_config
+    $BIRD disable radv1
+    log_end_msg 0
+    ;;
+
+run)
+    log_daemon_msg "Running $DESC" "$NAME"
+    test_config
+    $BIRD enable radv1
+    log_end_msg 0
+    ;;	
+
+get-startup)
+    #awk 'BEGIN { RS="\f"; z=1 } /radv {\s*\n\s+#disabled/{ z=0; print "Running" } END { exit z }' $CONF_LOCATION
+    awk 'BEGIN { RS="\f"; z=1 } /#disabled/{ z=0; print "Running" } END { exit z }' $CONF_LOCATION
+    exit $?
+    ;;
+
+*)
+    echo "Usage: $0 {enable|disable|restart|force-reload|status|suspend|run|get-startup}"
+    exit 1
+    
+esac
+
+exit 0

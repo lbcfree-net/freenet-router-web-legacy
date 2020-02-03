@@ -14,6 +14,7 @@ if (isset($_POST['save']) && $login) {
     set_mail_server($_POST["MAIL_SERVER"]);
     set_physical_location($_POST["PHYSICAL_LOCATION"]);
     set_startup("apache",$_POST["APACHE"]);
+    set_startup("radv",$_POST["RADV"]);
     set_startup("dhcp",$_POST["DHCP"]);
     set_startup("firewall",$_POST["FIREWALL"]);
     set_startup("macguard",$_POST["MACGUARD"]);
@@ -27,6 +28,8 @@ if (isset($_POST['save']) && $login) {
     set_rootfs_ro();
 } else if (isset($_POST["APACHE_BUTTON"]) && $login) {
     service("apache",$_POST["APACHE_BUTTON"]);
+} else if (isset($_POST["RADV_BUTTON"]) && $login) {
+      service("radv",$_POST["RADV_BUTTON"]);
 } else if (isset($_POST["DHCP_BUTTON"]) && $login) {
     service("dhcp",$_POST["DHCP_BUTTON"]);
 } else if (isset($_POST["FIREWALL_BUTTON"]) && $login) {
@@ -130,6 +133,7 @@ $result = false;
 exec('sudo sysv-rc-conf --list', $sysv);
 $selection = ['ano', 'ne'];
 create_selection_service('apache','APACHE', $selection, get_startup('apache', $sysv), get_running('apache', $services, $iptables));
+create_selection_service("ra","RADV", $selection, get_startup("radv", $sysv),get_running("radv",$SERVICES,$IPTABLES));
 create_selection_service('dhcp server','DHCP', $selection, get_startup('dhcp', $sysv) ,get_running('dhcp', $services, $iptables));
 create_selection_service('firewall','FIREWALL', $selection, get_startup('firewall', $sysv), get_running('firewall', $services, $iptables));
 create_selection_service('macguard','MACGUARD', $selection, get_startup('macguard', $sysv), get_running('macguard', $services, $iptables));

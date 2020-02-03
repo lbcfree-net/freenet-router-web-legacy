@@ -25,6 +25,14 @@ function get_startup($SERVICE, $output)
       exec('sudo systemctl is-enabled apache2', $sout, $res);
 
       return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'enabled'); 
+    case 'radv':
+      unset($output);
+      exec('sudo radv get-startup', $output, $result);
+      if (!$result)
+      {
+        return true;
+      }
+      break;
     case 'dhcp':
       foreach($output as $item)
       {
@@ -159,6 +167,9 @@ function get_running($SERVICE, $SERVICES, $IPTABLES)
       exec('sudo systemctl is-active apache2', $sout, $res);
 
       return ($res == 0) && (sizeof($sout) > 0) && ($sout[0] == 'active'); 
+    case 'radv':
+      exec('sudo radv status | grep Running', $output, $result);
+      return !$result;
     case 'dhcp':
       exec('sudo service isc-dhcp-server status', $output, $result);
       return !$result;
@@ -300,7 +311,7 @@ function get_domain() {
         fclose($f);
     }
     // doména musí být zadaná!
-    return "lbcfree.czf";
+    return "lbcfree.net";
 }
 
 // funkce set -----------------
@@ -476,6 +487,10 @@ function set_startup($SERVICE, $VALUE)
     case 'apache':	    
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
       exec("sudo systemctl $status apache2");      
+      break;
+    case 'radv':
+      $status = (convert_czech_to_english($VALUE) == 'yes') ? 'enable' : 'disable';
+      exec("sudo radv $status");
       break;
     case 'dhcp':      
       $status = (convert_czech_to_english($VALUE) == 'yes') ? 'on' : 'off';
@@ -673,6 +688,9 @@ function service($SERVICE, $VALUE)
   {
     case 'apache':
       exec("sudo systemctl $cmd apache2");
+      break;
+    case 'radv':
+      exec("sudo radv $cmd");
       break;
     case 'dhcp':
       exec("sudo service isc-dhcp-server $cmd");
