@@ -97,14 +97,14 @@ if ($login) {
 <hr>
 <?php
 if ($cmd_output) {
-	echo '<br>';
-	echo '<table class=bordered><tr><th>Command output</th></tr></table>';
-	echo '<br>';
-	$rows = min(max(3, count($cmd_output) + 5) , 30);
+    echo '<br>';
+    echo '<table class=bordered><tr><th>Command output</th></tr></table>';
+    echo '<br>';
+    $rows = min(max(3, count($cmd_output) + 5) , 30);
     echo "<textarea cols=\"130\" rows=\"$rows\" name=\"text\" wrap=\"on\" spellcheck=\"false\" readonly=\"true\">";
     echo implode("\n", $cmd_output);
-	echo "\n\n";
-	echo "Return code: $cmd_retcode";
+    echo "\n\n";
+    echo "Return code: $cmd_retcode";
     echo '</textarea>';
 }
 ?>
