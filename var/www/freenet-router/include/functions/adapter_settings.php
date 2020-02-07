@@ -74,7 +74,7 @@ function get_adapter_settings_value($ADAPTER_INFO, $SETTING) {
 		case 'RATE':
 			return '11';
 		case 'RATE_LAN':
-			return '100baseT/Full';
+			return '1000baseT/Full';
 		case 'RETRY':
 			return '8';
 		case 'W_MODE':
