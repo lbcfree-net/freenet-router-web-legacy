@@ -418,7 +418,6 @@ function monitoring_get_mikrotik_signal($ADAPTER, $MAC) {
     }
     return "";
 }
-
 function sort_by_mac($a,$b) {
     return strcmp($a["mac"],$b["mac"]);
 }
@@ -523,6 +522,40 @@ function change_url($name,$value) {
     }
     if (!$pom) $array[] = urlencode($name)."=".urlencode($value);
     return $_SERVER['PHP_SELF']."?".implode("&amp;",$array);
+}
+
+function monitoring_get_is_in_macguard_conf($mac,$ip) 
+{   
+    if(($file = fopen("/etc/firewall/macguard.conf","r")))
+    {
+        while (!feof($file)) 
+        {
+            $line = fgets($file,1024);
+            /* přeskočíme zamřížkované řádky */
+            if ($line[0] == "#") continue;
+
+            /* rozdělíme data do pole */
+            $line_array = preg_split("/[\ \"\t\r\n]+/",$line);
+
+            if ((strcasecmp($mac,$line_array[1]) != 0) || (strcasecmp($ip,$line_array[2]) != 0)) continue;
+
+            if (strcasecmp("ALLOW",$line_array[0]) == 0)
+            {
+                fclose($file);
+                return 1;
+            }
+            if (strcasecmp("DENY",$line_array[0]) == 0)
+            {
+                fclose($file);
+                return 2;
+            }
+            fclose($file);
+            return false;
+        }
+        fclose($file);
+    }
+
+    return false;
 }
 
 function monitoring_set_macguard_conf($val) {
