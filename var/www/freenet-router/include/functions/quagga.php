@@ -203,29 +203,14 @@ function get_quagga_adapter_description($ADAPTER) {
 }
 function get_quagga_adapter_cost($ADAPTER) {
     global $quagga;
-    /*
-    // quagga cost from qos rate calculation below not used anymore
-    // rychlost přečteme z konfigurace firewallu a případně vypočítáme cost
-    exec('cat /etc/firewall/firewall.conf', $FIREWALL);
-    $rate = get_firewall_qos_rate($FIREWALL, $ADAPTER);
-    if ($quagga['cost'] == 'rate') {
-        if ($rate > 0) {
-            $cost = bcdiv(1000000,$rate);
-            if ($cost > 0) {
-                return $cost;
-            }
-        }
-    }
     
-    $qos_dir = get_firewall_qos_direction($FIREWALL,$ADAPTER);
-    if (($qos_dir == "WBCK" || $qos_dir == "LBCK" )) {
-        $cost = 7;
+    exec('cat /etc/firewall/qos.conf', $QOS);
+    $qos_dir = get_firewall_qos_direction($QOS,$ADAPTER);
+    if ($qos_dir == "WBCK" || $qos_dir == "LBCK" ) {
+        $cost = 17;
     } else {
-        $cost = 0;
+        $cost = 10;
     }
-    */
-
-    $cost = 0;
 
     if (get_adapter_settings_is_bridge($ADAPTER)) {
         return $cost+ 100;

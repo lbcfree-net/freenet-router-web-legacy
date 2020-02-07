@@ -82,6 +82,22 @@ function save_qos($text){
     }
 }
 
+function get_firewall_qos_direction($qos, $adapter) {
+	$qos_link = "";
+
+	foreach ($qos as $line) {
+		if ($qos_link != "") {
+			if (preg_match("/^${qos_link}_DIRECTION=\"(.*)\"/", $line, $dir)) {
+				return $dir[1];
+			}
+		} else if (preg_match("/^(QOS_LINK[0-9]+)_IFACES=\".*$adapter.*\"/", $line, $m)) {
+			$qos_link = $m[1];
+		}
+	}
+
+	return "LAN";
+}
+
 function get_firewall_macguard($FIREWALL,$ADAPTER) {
     $FIREWALL_DATA_DEV = '';
     foreach ($FIREWALL as $LINE) {
