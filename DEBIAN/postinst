@@ -40,8 +40,7 @@ case "$1" in
 	chown root:root /etc/sudoers.d/freenet-router-sudoers
 
 	# Make sure that config files are readable from the web application
-	chmod -f o+r /etc/quagga/*.conf
-	chmod -f o+r /etc/init.d/firewall
+	chmod o+r /etc/init.d/firewall
 	
 	# Make sure that script for controlling RA has right privileges
 	chown root:root /usr/sbin/radv
