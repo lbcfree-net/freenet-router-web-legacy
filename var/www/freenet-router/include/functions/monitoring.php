@@ -20,10 +20,7 @@ function monitoring_get_ips_info_all($ADAPTER,$IPS) {
             $array[$I]["enabled"] = true;
             $array[$I]["active"] = $line["active"];
             $array[$I]["signal"] = "";
-            /* pro ip adresy, které nemají MAC adresu, nikdy QoS na MAC nemůže být aktivní */
-            $array[$I]["qos"] = false;
             $array[$I]["ips"][0] = $line;
-            $array[$I]["ips"][0]["qos"] = monitoring_get_is_in_qos($ADAPTER,$line["ip"]);
             $array[$I]["ips"][0]["macguard"] = monitoring_get_is_in_macguard_conf("0",$line["ip"]);
         }
     }
@@ -31,14 +28,13 @@ function monitoring_get_ips_info_all($ADAPTER,$IPS) {
 }
 function monitoring_get_macs_info_all($ADAPTER, $MACS) {
     // pro tyto řazení musíme řadit ještě vnitřní pole s ip adresami pro každou mac
-    if (in_array($_GET['sort_by'],array("name","ip","upload","download","upload_rate","download_rate","name_desc","ip_desc","upload_desc","download_desc","upload_rate_desc","download_rate_desc","qos","qos_desc"))) $pom = true;
+    if (in_array($_GET['sort_by'],array("name","ip","upload","download","upload_rate","download_rate","name_desc","ip_desc","upload_desc","download_desc","upload_rate_desc","download_rate_desc"))) $pom = true;
     $array = array();
     if (is_array($MACS)) {
 	foreach ($MACS as $I => $line) {
 	    $array[$I]["mac"] = $line;
 	    $array[$I]["enabled"] = monitoring_get_mac_is_enabled($ADAPTER,$line);
 	    $array[$I]["active"] = monitoring_get_mac_is_active($ADAPTER,$line);
-	    $array[$I]["qos"] = monitoring_get_is_in_qos($ADAPTER,$line);
 	    $array[$I]["signal"] = monitoring_get_mac_signal($ADAPTER,$line);
 	    $array[$I]["ips"] = monitoring_get_mac_ips($ADAPTER,$line);
 	    // nebudeme zbytečně řadit tam kde máme jen jednu ip
@@ -82,45 +78,9 @@ function monitoring_get_mac_ips($ADAPTER,$MAC) {
 	$array[$K]["download"] = $pom[1];
 	$array[$K]["upload_rate"] = $pom[2];
 	$array[$K]["download_rate"] = $pom[3];
-	$array[$K]["qos"] = monitoring_get_is_in_qos($ADAPTER,$VALUES["ip"]);
 	$array[$K]["macguard"] = monitoring_get_is_in_macguard_conf($MAC,$VALUES["ip"]);
     }
     return $array;
-}
-
-/* Matchujeme MAC adresu, nebo IP adresu v souboru /etc/firewall/qos.conf */
-function monitoring_get_is_in_qos($ADAPTER,$MAC) {
-    global $QOS_DATA;
-    global $ADAPTER_ALL;
-    
-    if (!is_array($QOS_DATA)) return false;
-
-    foreach ($QOS_DATA as $line) {
-        /* přeskočíme zamřížkované řádky */
-        if ($line[0] == "#") continue;
-        /* pokud řádek neobsahuje mac adresu, nebo ip adresu, tak ho také přeskočíme, urychlí match */
-        if (!preg_match("/$MAC/i", $line)) continue;
-        $line = preg_split("/[\ \"=\t\n]+/",$line);
-        /* pokud první znak z prvního matche je opět mřížka, tak řádek přeskočíme, musíme použít ' */
-        if (!preg_match('/CLASS_([\d]+)\[\$\{#CLASS_[\d]+\[\*\]\}\]/',$line[0],$class)) continue;
-
-        /* pokud mac adresa neodpovídá hledané mac adrese, tak přeskočíme řádek */
-        $match = false;
-        for ($i = 3; $i < sizeof($line); $i++) {
-            if (strcasecmp($line[$i],$MAC) != 0) continue;
-            $match = true;
-            break;
-        }
-
-        if (!$match) continue;
-
-        /* match na základě adapteru */
-        if (strcasecmp($line[1],$ADAPTER) == 0) return $class[1];
-        if (strcasecmp($line[1],"all") == 0) return $class[1];
-        if ($ADAPTER == $ADAPTER_ALL) return $class[1];
-    }
-
-    return false;
 }
 
 function monitoring_get_mac_is_active($ADAPTER,$MAC) {
@@ -458,85 +418,7 @@ function monitoring_get_mikrotik_signal($ADAPTER, $MAC) {
     }
     return "";
 }
-function monitoring_set_qos($mac,$limit) {
-    if ($mac == "") return true;
 
-    $limit = (substr($limit,0,6) == "omezit");
-
-    if(($tmp_file = fopen("/tmp/qos.conf","w")))
-    {
-        $inserted = false;
-
-        if(($file = fopen("/etc/firewall/qos.conf","r")))
-        {            
-            while (!feof($file)) {
-                $line = fgets($file,1024);
-                /* přeskočíme zamřížkované řádky */
-                if ($line[0] == "#") {
-                    fwrite($tmp_file,$line);
-                    continue;
-                }
-
-                /* rozdělíme data do pole */
-                $line_array = preg_split("/[\ \"=\t\r\n]+/",$line);
-
-                /* občas zůstane na konci pole prázdná buňka, je potřeba jí odstranit */
-                if ($line_array[(sizeof($line_array) - 1)] == "") unset ($line_array[(sizeof($line_array) - 1)]);
-
-                /* najdeme danou ip, nebo mac */
-                $match = false;
-                for ($i = 3; $i < sizeof($line_array); $i++) {
-                    if (strcasecmp($line_array[$i],$mac) != 0) continue;
-                    $match = true;
-                    break;
-                }
-
-                if ($match) $inserted = true;
-
-                if (($match) && (!$limit)) {
-                    /* musíme odstranit danou ip, nebo mac ze seznamu, pokud není více IP, tak řádek nezachováme */
-                    if (sizeof($line_array) > 4) {
-                        /* mělo by zůstat správné $i z předchozí funkce */
-                        $macs = array();
-                        for ($j = 3; $j < sizeof($line_array); $j++) {
-                            if ($j == $i) continue;
-                            $macs[] = $line_array[$j];
-                        }
-                        fwrite($tmp_file,'CLASS_1[${#CLASS_1[*]}]="all '.$line_array[2].' '.implode(" ",$macs)."\"\n");
-                    }
-                } else {
-                    fwrite($tmp_file,$line);
-                }
-            }
-            fclose($file);
-        }
-
-        if ((!$inserted) && ($limit)) {
-            fwrite($tmp_file,'CLASS_1[${#CLASS_1[*]}]="all web '.$mac."\"\n");
-        }
-
-        fclose($tmp_file);
-    }
-
-    /* je potřeba odemknout fs */
-    if (system_get_rootfs_status_ro("")) {
-        set_rootfs_rw();
-        exec("sudo /bin/cp /tmp/qos.conf /etc/firewall/qos.conf");
-        set_rootfs_ro();
-    } else {
-        exec("sudo /bin/cp /tmp/qos.conf /etc/firewall/qos.conf");
-    }
-
-    if ($limit) {
-        exec("sudo /etc/init.d/firewall qos_guaranted_class_add_user 1 ".$mac." all");
-    } else {
-        exec("sudo /etc/init.d/firewall qos_guaranted_class_del_user ".$mac);
-    }
-
-    unlink("/tmp/qos.conf");
-
-    return true;
-}
 function sort_by_mac($a,$b) {
     return strcmp($a["mac"],$b["mac"]);
 }
@@ -558,29 +440,6 @@ function sort_by_status($a,$b) {
 	}
     } else {
 	return (($a["active"] || ($a["signal"] != "")) <= ($b["active"] || ($b["signal"] != ""))) ? 1 : -1;
-    }
-}
-function sort_by_qos($a,$b) {
-    // jako první chceme omezené
-    if (is_array($a) || is_array($b)) {
-	// velmi složitý případ, řazení nejen podle omezených ip, ale ještě řazení podle omezené mac
-	if (($a["ip"] != "") || ($b["ip"] != "")) {
-	    return ($a["qos"] <= $b["qos"]) ? 1 : -1;
-	} else {
-	    foreach ($a["ips"] as $a_ip) {
-		if ($a_ip["qos"]) {
-		    $a_pom = true;
-		    break;
-		}
-	    }
-	    foreach ($b["ips"] as $b_ip) {
-		if ($b_ip["qos"]) {
-		    $b_pom = true;
-		    break;
-		}
-	    }
-	    return (($a_pom || $a["qos"]) <= ($b_pom || $b["qos"])) ? 1 : -1;
-	}
     }
 }
 function sort_by_signal($a,$b) {
@@ -637,7 +496,6 @@ function sort_by_download_rate($a,$b) {
 }
 function sort_by_mac_desc($a, $b) { return sort_by_mac($b, $a); }
 function sort_by_status_desc($a, $b) { return sort_by_status($b, $a); }
-function sort_by_qos_desc($a, $b) { return sort_by_qos($b, $a); }
 function sort_by_signal_desc($a, $b) {
     // signal je trochu jiný, chceme odfiltrovat nulové hodnoty
     return ($a["signal"] <= $b["signal"]) ? 1 : -1;
@@ -659,46 +517,12 @@ function change_url($name,$value) {
 		$array[] = urlencode($NAME)."=".urlencode($value);
 	    }
 	    $pom = true;
-	} else if ((substr(strtolower($NAME),0,3) != "qos") && (strtolower($NAME) != "macguard_conf")) {
+	} else if (strtolower($NAME) != "macguard_conf") {
 	    $array[] = urlencode($NAME)."=".urlencode($VALUE);
 	}
     }
     if (!$pom) $array[] = urlencode($name)."=".urlencode($value);
     return $_SERVER['PHP_SELF']."?".implode("&amp;",$array);
-}
-
-function monitoring_get_is_in_macguard_conf($mac,$ip) 
-{   
-    if(($file = fopen("/etc/firewall/macguard.conf","r")))
-    {
-        while (!feof($file)) 
-        {
-            $line = fgets($file,1024);
-            /* přeskočíme zamřížkované řádky */
-            if ($line[0] == "#") continue;
-
-            /* rozdělíme data do pole */
-            $line_array = preg_split("/[\ \"\t\r\n]+/",$line);
-
-            if ((strcasecmp($mac,$line_array[1]) != 0) || (strcasecmp($ip,$line_array[2]) != 0)) continue;
-
-            if (strcasecmp("ALLOW",$line_array[0]) == 0)
-            {
-                fclose($file);
-                return 1;
-            }
-            if (strcasecmp("DENY",$line_array[0]) == 0)
-            {
-                fclose($file);
-                return 2;
-            }
-            fclose($file);
-            return false;
-        }
-        fclose($file);
-    }
-
-    return false;
 }
 
 function monitoring_set_macguard_conf($val) {
