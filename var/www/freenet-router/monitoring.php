@@ -13,12 +13,6 @@ include 'include/functions/index.php';
 include 'include/header.php';
 
 
-foreach ($_REQUEST as $VALUE => $NAME) {
-    if (preg_match('/QOS/i',$VALUE) && ($login)) {
-	$VALUE = str_replace("_",".",substr($VALUE,4));
-	monitoring_set_qos($VALUE,$NAME);
-    }
-}
 if (($_POST["RESET_COUNTS"] != "") && ($login)) {
     exec("sudo /etc/init.d/firewall account_reset");
 } else if (($_POST["RESET_ALL"] != "") && ($login)) {
@@ -43,8 +37,6 @@ if (file_exists("/var/log/account/data.txt")) $ACCOUNTS_DATA = file("/var/log/ac
 if (file_exists("/var/log/account/mikrotik_wifi.txt")) $MIKROTIK_WIFI_DATA = file("/var/log/account/mikrotik_wifi.txt");
 // některé další věci poznáme z interfaces
 if (file_exists("/etc/network/interfaces")) $INTERFACES = file("/etc/network/interfaces");
-// získáme data o QoSu
-if (file_exists("/etc/firewall/qos.conf")) $QOS_DATA = file("/etc/firewall/qos.conf");
 
 if (file_exists('/etc/firewall/firewall.conf')) exec('/etc/firewall/firewall.conf', $FIREWALL);
 
@@ -126,7 +118,6 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!pre
             <th width="9%"><a href="<?= change_url("sort_by","upload_rate") ?>" class="sort_link">rychlost</a></th>
             <th width="9%"><a href="<?= change_url("sort_by","download") ?>" class="sort_link">přijato</a></th>
             <th width="9%"><a href="<?= change_url("sort_by","download_rate") ?>" class="sort_link">rychlost</a></th>
-            <th width="9%"><a href="<?= change_url("sort_by","qos") ?>" class="sort_link">omezení</a></th>
             <th width="6%"><a href="<?= change_url("sort_by","signal") ?>" class="sort_link">signál</a></th>
         </tr>
 <?php
@@ -165,17 +156,6 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!pre
             <td align="right"><?= convert_units($v[3],$monitoring["rate_units"],"k") ?>/s</td>
             <td align="right"><?= convert_units($v[2],"bytes","M") ?></td>
             <td align="right"><?= convert_units($v[4],$monitoring["rate_units"],"k") ?>/s</td>
-<?php
-            if ($ADAPTER == $ADAPTER_ALL) {
-?>
-            <td><br/></td>
-<?php
-            } else {
-?>
-            <td><?= ((get_firewall_qos($FIREWALL,$ADAPTER)) ? "zapnuto" : "vypnuto") ?></td>
-<?php
-            }
-?>
             <td><br/></td>
         </tr>
 <?php
@@ -308,32 +288,6 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!pre
         }
 ?>
             </td>
-            <td class="td_inset">
-                <table class="inset_table">
-<?php
-        foreach ($OPTION["ips"] as $i => $OPTION_IP) {
-?>
-                    <tr>
-                        <td class="td_50<?= ($OPTION_IP["qos"] ? " qos_class_".$OPTION_IP["qos"] : "") ?>"><?= ($login) ? '<a href="'.change_url("QOS_".$OPTION_IP["ip"],($OPTION_IP["qos"] ? 'povolit' : 'omezit')).'">ip</a>' : "ip" ?></td>
-<?php
-            if ($i == 0) {
-                if  ($OPTION["mac"] != "") {
-?>
-                        <td rowspan="<?= sizeof($OPTION["ips"]) ?>" class="td_50<?= ($OPTION["qos"] ? " qos_class_".$OPTION["qos"] : "") ?>"><?= ($login) ? '<a href="'.change_url("QOS_".$OPTION["mac"],($OPTION["qos"] ? 'povolit' : 'omezit')).'">mac</a>' : "mac" ?></td>
-<?php
-                } else {
-?>
-                        <td rowspan="<?= sizeof($OPTION["ips"]) ?>" class="td_50"><br/></td>
-<?php
-                }
-            }
-?>
-                    </tr>
-<?php
-        }
-?>
-                </table>
-            </td>
 <?php
         } else {
 ?>
@@ -345,14 +299,6 @@ if (((file_exists("/sys/class/net/$ADAPTER")) && ($ADAPTER != "dummy0") && (!pre
             <td><br/></td>
             <td><br/></td>
             <td><br/></td>
-            <td class="td_inset">
-                <table class="inset_table">
-                    <tr>
-                        <td class="td_50"><br/></td>
-                        <td class="td_50<?= ($OPTION["qos"] ? " qos_class_".$OPTION["qos"] : "") ?>"><?= ($login) ? '<a href="'.change_url("QOS_".$OPTION["mac"],($OPTION["qos"] ? "povolit" : "omezit")).'">mac</a>' : "mac" ?></td>
-                    </tr>
-                </table>
-            </td>
 <?php
         }
 ?>
