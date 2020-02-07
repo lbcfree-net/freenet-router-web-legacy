@@ -2,7 +2,6 @@
 // načteme hlavičku a často používané funkce, create_selection, is_ip_from_subnet
 include 'include/functions/general.php';
 include 'include/functions/adapter_settings.php';
-include 'include/functions/firewall.php';
 include 'include/functions/networking.php';
 include 'include/functions/interfaces.php';
 include 'include/functions/monitoring.php';
@@ -37,8 +36,6 @@ if (file_exists("/var/log/account/data.txt")) $ACCOUNTS_DATA = file("/var/log/ac
 if (file_exists("/var/log/account/mikrotik_wifi.txt")) $MIKROTIK_WIFI_DATA = file("/var/log/account/mikrotik_wifi.txt");
 // některé další věci poznáme z interfaces
 if (file_exists("/etc/network/interfaces")) $INTERFACES = file("/etc/network/interfaces");
-
-if (file_exists('/etc/firewall/firewall.conf')) exec('/etc/firewall/firewall.conf', $FIREWALL);
 
 // získáme seznam zařízení
 $ADAPTERS = array_unique(array_merge(get_interfaces_all($INTERFACES),get_networking_all($NETWORK)));
