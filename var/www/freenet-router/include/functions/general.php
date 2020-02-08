@@ -450,7 +450,7 @@ function get_fr_version()
     $result = 1;
     $version = '';
 
-    exec('sudo apt show freenet-router-web-legacy3.2', $output, $result);
+    exec('apt-cache show freenet-router-web-legacy3.2', $output, $result);
 
     if($result == 0){
 
