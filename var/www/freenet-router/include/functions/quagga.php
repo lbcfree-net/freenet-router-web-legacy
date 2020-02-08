@@ -202,8 +202,6 @@ function get_quagga_adapter_description($ADAPTER) {
     return '';
 }
 function get_quagga_adapter_cost($ADAPTER) {
-    global $quagga;
-    
     exec('cat /etc/firewall/qos.conf', $QOS);
     $qos_dir = get_firewall_qos_direction($QOS,$ADAPTER);
     if ($qos_dir == "WBCK" || $qos_dir == "LBCK" ) {
@@ -212,19 +210,6 @@ function get_quagga_adapter_cost($ADAPTER) {
         $cost = 10;
     }
 
-    if (get_adapter_settings_is_bridge($ADAPTER)) {
-        return $cost+ 100;
-    } else if (get_adapter_settings_is_ethernet($ADAPTER)) {
-        return $cost+ 10;
-    } else if (get_adapter_settings_is_madwifi($ADAPTER)) {
-        return $cost+ 10;
-    } else if (get_adapter_settings_is_wifi("",$ADAPTER)) {
-        return $cost+ 100;
-    } else if (get_adapter_settings_is_vlan($ADAPTER)) {
-        return $cost+ 10;
-    } else {
-        return $cost+ 100;
-    }
-    return false;
+    return $cost;
 }
 ?>
