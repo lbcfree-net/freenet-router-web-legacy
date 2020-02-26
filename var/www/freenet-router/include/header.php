@@ -99,7 +99,7 @@ function setReloadTime(secs) {
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="content-language" content="cs">
-	<title><?= $header["routername"]." ".$hostname ?> - Freenet router 3.1</title>
+	<title><?= $header["routername"] . " $hostname" ?> - Freenet router 3.2</title>
 	<link href="/styles/style.css" rel="stylesheet" type="text/css">
         <link href="/speedtest/speedtest.css" rel="stylesheet" type="text/css">
         <script src="/speedtest/speedtest.js" type="text/javascript"></script>
@@ -143,7 +143,7 @@ function setReloadTime(secs) {
 		<div class="menuitem home">
 		    <div class="contents"><a href="/">domů</a></div>
 		    <div class="separator"></div>
-            <div class="contents"><a href="speedtest">test rychlosti</a></div>
+            <div class="contents"><a href="/speedtest">test rychlosti</a></div>
             <div class="separator"></div>
 		</div>
 	      </div>
