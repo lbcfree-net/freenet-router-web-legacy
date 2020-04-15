@@ -9,36 +9,27 @@ function system_get_cpu_model($CPUINFO) {
     }
     return "";
 }
-function system_get_cpu_temperature($sensors) {
-    if(count($sensors) > 2){
-        $temperature = explode(':', $sensors[2]);
-        $temperature = explode(' C', $temperature[1]);
-        if(count($temperature) > 0) {
-            if (strpos($temperature[0], '°C') === false) {
-                $temperature = $temperature[0] . '°C';
-            } else {
-                $temperature = $temperature[0];
-            }
+
+function system_get_cpu_temperature($sensors)
+{
+    foreach($sensors as $line){
+        if (preg_match('/^temp\d*:\s+([\+-]\d+\.\d+)/', $line, $matches)) {
+            return $matches[1] . ' °C';
         }
-    }else{
-        $temperature = 'N/A';
     }
-    return $temperature;
+    return 'N/A';
 }
 
 function system_get_power($sensors)
 {
-    if(count($sensors) > 7){
-        $power = explode(':', $sensors[7]);
-        $power = explode(' W', $power[1]);
-        if(count($power) > 0) {
-            $power = $power[0] . ' W';
+    foreach($sensors as $line){
+        if (preg_match('/^power\d*:\s+(\d+\.\d+ W)/', $line, $matches)) {
+            return $matches[1];
         }
-    }else{
-        $power = 'N/A';
     }
-    return $power;
+    return 'N/A';
 }
+
 
 function system_get_cpu_freq($CPUINFO) {
     foreach ($CPUINFO as $line) {
