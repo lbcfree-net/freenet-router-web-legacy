@@ -160,10 +160,12 @@ function system_get_rootfs_status_ro($MOUNTINFO)
     return false;
 }
 
-function system_get_ping_response($HOST) {
-    $response = preg_split("/[\ \/\t\n]+/",exec("ping ".$HOST." -c 1 -s 1024 -q -v -W 1 | grep min"));
-    return (is_numeric($response[6])) ? $response[6]." ms" : "no response";
+function system_get_ping_response($HOST)
+{
+    $response = preg_split("/[\ \/\t\n]+/",exec("ping $HOST -c 1 -s 1024 -q -W 1 | grep min"));
+    return (is_numeric($response[6])) ? $response[6] . ' ms' : 'no response';
 }
+
 function system_get_ping_response_from_defined_routers() {
     if (file_exists("/etc/firewall/routers.conf")) {
 	$routers = file("/etc/firewall/routers.conf");
@@ -200,15 +202,21 @@ function system_get_ping_response_from_all_dummy() {
     foreach($array as $ip) system_table_entry_ping($ip);
 }
 
-function system_table_entry_ping($string_1,$string_2 = "<br>",$string_3 = "<br>",$string_4 = "<br>") {
-?>
+function system_table_entry_ping($string_1, $string_2 = '<br/>', $string_3 = '<br/>', $string_4 = '<br/>')
+{
+    ?>
     <tr>
-    <td align="left"><a href="http://<?= $string_1 ?>" class="info_link"><?= $string_1 ?></a></td>
-    <td align="left"><?= $string_2 ?></td>
-    <td align="left"><?= $string_3 ?></td>
-    <td align="right"><?= (is_file("/var/log/account/rrd/ping-".$string_1.".rrd")) ? '<a href="/graphs.php?ping='.$string_1.'" class="info_link">'.system_get_ping_response($string_1).'</a>' : system_get_ping_response($string_1) ?></td>
-    <td align="right"><?= $string_4 ?></td>
+        <td align="left"><a href="http://<?= $string_1 ?>" class="info_link"><?= $string_1 ?></a></td>
+        <td align="left"><?= $string_2 ?></td>
+        <td align="left"><?= $string_3 ?></td>
+        <td align="right">
+            <?= is_file("/var/log/account/rrd/ping-$string_1.rrd") ?
+                "<a href=\"/graphs.php?ping=$string_1\" class=\"info_link\">" . system_get_ping_response($string_1) . '</a>' :
+                system_get_ping_response($string_1) ?>
+        </td>
+        <td align="right"><?= $string_4 ?></td>
     </tr>
-<?php
+    <?php
 }
+
 ?>
