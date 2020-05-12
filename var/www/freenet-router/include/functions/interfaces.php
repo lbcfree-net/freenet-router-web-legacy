@@ -51,10 +51,12 @@ function save_interfaces_converted($DATA) {
                         $pom = true;
                     }
                     // zapsání ip
-                    if ($DATA[$NAME[0].$VLAN_POM."_IP_".$J] != "") {
+                    if ($DATA[$NAME[0].$VLAN_POM . '_IP_' . $J] != '') {
                         if ($K != 0) {
-                            if (($VALUE == "ano") && ((!preg_match('/br/',$DATA[$NAME[0]."_BRIDGE"])) || ($DATA[$DATA[$NAME[0]."_BRIDGE"]."_REMOVE"] != ""))) {
-                                fwrite($soubor, "auto ".$NAME[0].$VLAN.":".$J."\n");
+                            if (($VALUE == 'ano') && ((!preg_match('/br/', $DATA[$NAME[0] . '_BRIDGE'])) &&
+                                    filter_var($DATA[$NAME[0] . $VLAN_POM . '_IP_' . $J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
+                                    ($DATA[$DATA[$NAME[0] . '_BRIDGE'] . '_REMOVE'] != ''))) {
+                                fwrite($soubor, 'auto ' . $NAME[0] . $VLAN . ':' . $J . "\n");
                             }
                             if(filter_var($DATA[$NAME[0].$VLAN_POM."_IP_".$J], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
                                 fwrite($soubor, "iface ".$NAME[0].$VLAN.":".$J." inet static\n");
