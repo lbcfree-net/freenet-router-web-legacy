@@ -133,7 +133,7 @@ $result = false;
 exec('sudo sysv-rc-conf --list', $sysv);
 $selection = ['ano', 'ne'];
 create_selection_service('apache','APACHE', $selection, get_startup('apache', $sysv), get_running('apache', $services, $iptables));
-create_selection_service("ra","RADV", $selection, get_startup("radv", $sysv),get_running("radv",$SERVICES,$IPTABLES));
+create_selection_service('radv','RADV', $selection, get_startup('radv', $sysv),get_running('radv',$SERVICES,$IPTABLES));
 create_selection_service('dhcp server','DHCP', $selection, get_startup('dhcp', $sysv) ,get_running('dhcp', $services, $iptables));
 create_selection_service('firewall','FIREWALL', $selection, get_startup('firewall', $sysv), get_running('firewall', $services, $iptables));
 create_selection_service('macguard','MACGUARD', $selection, get_startup('macguard', $sysv), get_running('macguard', $services, $iptables));

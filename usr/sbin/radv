@@ -11,7 +11,7 @@ CONF_LOCATION_BAK="/etc/bird/bird6.conf.bak"
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 NAME="radv"
 DESC="IPv6 RA"
-test -f /usr/sbin/$BIRD || echo "bird not found!" && exit 1
+test -f /usr/sbin/$BIRD || (echo "bird not found!" && exit 1)
 
 . /lib/lsb/init-functions
 
