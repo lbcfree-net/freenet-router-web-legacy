@@ -137,7 +137,7 @@ function setReloadTime(secs) {
 	      </div>
 	    </div>
 	    <div class="left">
-	      <div class="pad"></div>
+	      <div class="pad"><?php echo exec("domainname --fqdn"); ?></div>
 	      <div class="menu">
 		<div class="lastseparator"></div>
 		<div class="menuitem home">

@@ -184,6 +184,8 @@ foreach ($ADAPTERS as $ADAPTER) {
     $ADAPTER_MAC = get_network_adapter_mac($NETWORK,$ADAPTER);
     $ADAPTER_BRIDGE = get_adapter_settings_bridge($BRCTL,$ADAPTER);
     $ADAPTER_VLAN = get_networking_adapter_vlan($NETWORK,$ADAPTER);
+    $ADAPTER_OSPF=get_quagga_ospf($QUAGGA,$ADAPTER); // zjistime jestli na rozhrani je zapnuta quagga
+    $ADAPTER_OSPF_COST=get_quagga_adapter_cost_string($QUAGGA,$ADAPTER);
     // ethernet
     $ADAPTER_LINK = get_adapter_settings_ethtool_link($ADAPTER);
     $ADAPTER_DUPLEX = get_adapter_settings_ethtool_duplex($ADAPTER);
@@ -216,9 +218,13 @@ foreach ($ADAPTERS as $ADAPTER) {
     if ((!$dummy) && (!$loopback)) {
 	table_text_array("popis", $ADAPTER."_DESCRIPTION", get_firewall_description($FIREWALL,$ADAPTER),"","");
     }
-    // zjistime jestli na rozhrani je zapnuta quagga
-    create_selection('přijímat OSPF',"${ADAPTER}_QUAGGA", array('ano', 'ne'), get_quagga_ospf($QUAGGA,$ADAPTER),'', 'Pouze pro páteřní spoje a propoje AP!');
+
+    create_selection('přijímat OSPF',"${ADAPTER}_QUAGGA", array('ano', 'ne'), $ADAPTER_OSPF,'', 'Pouze pro páteřní spoje a propoje AP!');
+
     if ((!$dummy) && (!$loopback)) {
+        if ($ADAPTER_OSPF == "ano") {
+          create_selection('váha cesty OSPF',"${ADAPTER}_OSPF_COST", array('primární (10)', 'záložní (17)'), $ADAPTER_OSPF_COST,'', 'OSPF cost - nastavení priority (váhy) cesty');
+        }
 	// zjistime jestli na rozhrani běží dhcp server
 	create_selection("dhcp server","${ADAPTER}_DHCP", array("ano", "ne"), get_firewall_dhcp($FIREWALL, $ADAPTER),"");
 	// zjistime jestli na rozhrani je aktivovan macguard

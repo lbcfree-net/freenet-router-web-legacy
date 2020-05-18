@@ -126,7 +126,7 @@ function save_quagga_ospfd($DATA) {
             if (($NAME[1] == "ACTIVE") && (!get_adapter_settings_is_dummy($NAME[0])) && ($DATA[$NAME[0].$VLAN_POM."_REMOVE"] == "") && ($DATA[$NAME[0].$VLAN_POM."_QUAGGA"] == "ano")) {
                 fwrite($soubor, "interface ".$NAME[0].$VLAN."\n");
                 fwrite($soubor, " description ".get_quagga_adapter_description($NAME[0].$VLAN)." ".get_firewall_description($FIREWALL,$NAME[0].$VLAN)."\n");
-                fwrite($soubor, " ip ospf cost ".get_quagga_adapter_cost($NAME[0].$VLAN)."\n");
+		fwrite($soubor, " ip ospf cost ".get_quagga_adapter_cost_value($DATA[$NAME[0].$VLAN_POM."_OSPF_COST"])."\n");
                 if (($quagga["dead-interval"] > 0) || ($quagga["dead-interval"] == "")) {
                     fwrite($soubor, " ip ospf dead-interval ".(($quagga["dead-interval"] != "") ? $quagga["dead-interval"] : "240")."\n");
                 }
@@ -201,15 +201,39 @@ function get_quagga_adapter_description($ADAPTER) {
     }
     return '';
 }
-function get_quagga_adapter_cost($ADAPTER) {
-    exec('cat /etc/firewall/qos.conf', $QOS);
-    $qos_dir = get_firewall_qos_direction($QOS,$ADAPTER);
-    if ($qos_dir == "WBCK" || $qos_dir == "LBCK" ) {
-        $cost = 17;
-    } else {
-        $cost = 10;
-    }
 
-    return $cost;
+function get_quagga_adapter_cost_string($OSPF, $ADAPTER) {
+    $primary_cost = "primární (10)";
+    $primary_secondary = "záložní (17)";
+
+    $adapter_section_reached = false;
+    foreach ($OSPF as $line) {
+        if (!$adapter_section_reached && $line == "interface $ADAPTER") {
+            $adapter_section_reached = true;
+        }
+        else if ($adapter_section_reached) {
+            if (preg_match("/^[ \t]*ip ospf cost [0-9]+/" , $line)) {
+               $cost = end(explode(" ",$line));
+               if ($cost == 10) {
+		    return $primary_cost;
+               } else if ($cost == 17) {
+		    return $primary_secondary;
+               } else {
+                    return $cost;
+               }
+            }
+        } 
+    }
+    return $primary_cost; //default cost
 }
+
+function get_quagga_adapter_cost_value($COST_STRING) {
+  if (is_numeric($COST_STRING)) {
+    return $COST_STRING;
+  } else {
+    return explode(")", explode("(", $COST_STRING)[1])[0];
+  }
+
+}
+
 ?>
